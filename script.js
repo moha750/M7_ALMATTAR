@@ -9,7 +9,7 @@ const siteData = {
     info: {
         name: "محمد المطر",
         jobTitle: "مصمم جرافيك وموشن جرافيكر",
-        location: "الرياض، المملكة العربية السعودية",
+        location: "الأحساء، المملكة العربية السعودية",
         email: "mohammad.bin.ismael@gmail.com",
         phone: "+966 55 490 9663",
         workingHours: "الأحد - الخميس: 9ص - 5م",
@@ -1051,15 +1051,14 @@ function loadContactInfo() {
     document.getElementById('contact-location').textContent = info.location;
     document.getElementById('contact-email').textContent = info.email;
     document.getElementById('contact-phone').textContent = info.phone;
-    document.getElementById('contact-hours').textContent = info.workingHours;
     
-    // تحديث روابط التواصل الاجتماعي
-    const socialLinks = document.querySelectorAll('.contact .social-link');
-    socialLinks[0].href = info.socialLinks.behance;
-    socialLinks[1].href = info.socialLinks.dribbble;
-    socialLinks[2].href = info.socialLinks.linkedin;
-    socialLinks[3].href = info.socialLinks.instagram;
-    socialLinks[4].href = info.socialLinks.github;
+    // تحديث روابط التواصل الاجتماعي في الكارد الجديد
+    const socialLinks = document.querySelectorAll('.social-mini');
+    socialLinks[0].href = info.socialLinks.x-twitter;
+    socialLinks[1].href = info.socialLinks.instagram;
+    socialLinks[2].href = info.socialLinks.youtube;
+    socialLinks[3].href = info.socialLinks.tiktok;
+    socialLinks[4].href = info.socialLinks.LinkedIn;
     
     // إضافة وظيفة نسخ النص
     document.querySelectorAll('.btn-copy').forEach(button => {

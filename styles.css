@@ -2578,3 +2578,38 @@ textarea.form-control {
         gap: 1rem;
     }
 }
+
+/* أنماط كارد منصات التواصل */
+.social-links-mini {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.social-mini {
+    width: 36px;
+    height: 36px;
+    background: rgba(108, 92, 231, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.social-mini:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+}
+
+/* تعديل حجم الأيقونات في الكارد */
+.contact-card .contact-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+}
