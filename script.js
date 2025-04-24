@@ -10,8 +10,8 @@ const siteData = {
         name: "محمد المطر",
         jobTitle: "مصمم جرافيك وموشن جرافيكر",
         location: "الرياض، المملكة العربية السعودية",
-        email: "mohammed@example.com",
-        phone: "+966 50 123 4567",
+        email: "mohammad.bin.ismael@gmail.com",
+        phone: "+966 55 490 9663",
         workingHours: "الأحد - الخميس: 9ص - 5م",
         socialLinks: {
             behance: "#",
@@ -1020,5 +1020,89 @@ function loadSkillsSection() {
         card.style.opacity = '0';
         card.style.transform = 'translateY(30px)';
         observer.observe(card);
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function loadContactInfo() {
+    const info = siteData.info;
+    
+    // تحديث معلومات التواصل
+    document.getElementById('contact-location').textContent = info.location;
+    document.getElementById('contact-email').textContent = info.email;
+    document.getElementById('contact-phone').textContent = info.phone;
+    document.getElementById('contact-hours').textContent = info.workingHours;
+    
+    // تحديث روابط التواصل الاجتماعي
+    const socialLinks = document.querySelectorAll('.contact .social-link');
+    socialLinks[0].href = info.socialLinks.behance;
+    socialLinks[1].href = info.socialLinks.dribbble;
+    socialLinks[2].href = info.socialLinks.linkedin;
+    socialLinks[3].href = info.socialLinks.instagram;
+    socialLinks[4].href = info.socialLinks.github;
+    
+    // إضافة وظيفة نسخ النص
+    document.querySelectorAll('.btn-copy').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const textToCopy = document.getElementById(targetId).textContent;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check"></i> تم النسخ';
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                }, 2000);
+            });
+        });
+    });
+    
+    // تحسين نموذج التواصل
+    const contactForm = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+    
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // إظهار حالة التحميل
+        formStatus.textContent = 'جاري إرسال الرسالة...';
+        formStatus.className = 'form-status';
+        formStatus.style.opacity = '1';
+        
+        // محاكاة إرسال النموذج (في الواقع سيكون هناك اتصال بخادم)
+        setTimeout(() => {
+            formStatus.textContent = 'تم إرسال الرسالة بنجاح! سأرد عليك قريباً.';
+            formStatus.className = 'form-status success';
+            contactForm.reset();
+            
+            // إخفاء الرسالة بعد 5 ثواني
+            setTimeout(() => {
+                formStatus.style.opacity = '0';
+                setTimeout(() => {
+                    formStatus.textContent = '';
+                }, 300);
+            }, 5000);
+        }, 1500);
     });
 }

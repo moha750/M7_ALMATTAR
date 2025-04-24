@@ -209,75 +209,119 @@
     </div>
 </section>
 
-    <!-- قسم التواصُل -->
-    <section class="contact" id="contact">
+<!-- قسم التواصُل المحسن -->
+<section class="contact" id="contact">
+    <div class="container">
         <h2 class="section-title">تواصل معي</h2>
+        <p class="section-subtitle">هل لديك مشروع أو فكرة تريد مناقشتها؟ لا تتردد في التواصل معي</p>
+        
         <div class="contact-container">
+            <!-- معلومات التواصل -->
             <div class="contact-info">
-                <div class="contact-item">
+                <div class="contact-card">
                     <div class="contact-icon">
                         <i class="fas fa-map-marker-alt"></i>
                     </div>
-                    <div>
+                    <div class="contact-details">
                         <h3>العنوان</h3>
-                        <p>[مدينتك، بلدك]</p>
+                        <p id="contact-location">الرياض، المملكة العربية السعودية</p>
                     </div>
                 </div>
                 
-                <div class="contact-item">
+                <div class="contact-card">
                     <div class="contact-icon">
                         <i class="fas fa-envelope"></i>
                     </div>
-                    <div>
+                    <div class="contact-details">
                         <h3>البريد الإلكتروني</h3>
-                        <p>your.email@example.com</p>
+                        <p id="contact-email">mohammed@example.com</p>
+                        <button class="btn-copy" data-target="contact-email">
+                            <i class="far fa-copy"></i> نسخ
+                        </button>
                     </div>
                 </div>
                 
-                <div class="contact-item">
+                <div class="contact-card">
                     <div class="contact-icon">
                         <i class="fas fa-phone"></i>
                     </div>
-                    <div>
+                    <div class="contact-details">
                         <h3>الهاتف</h3>
-                        <p>+966 50 123 4567</p>
+                        <p id="contact-phone">+966 55 490 9663</p>
+                        <button class="btn-copy" data-target="contact-phone">
+                            <i class="far fa-copy"></i> نسخ
+                        </button>
                     </div>
                 </div>
                 
-                <div class="contact-item">
+                <div class="contact-card">
                     <div class="contact-icon">
                         <i class="fas fa-clock"></i>
                     </div>
-                    <div>
+                    <div class="contact-details">
                         <h3>أوقات العمل</h3>
-                        <p>الأحد - الخميس: 9ص - 5م</p>
+                        <p id="contact-hours">الأحد - الخميس: 9ص - 5م</p>
                     </div>
+                </div>
+                
+                <div class="social-links">
+                    <a href="#" class="social-link" target="_blank" title="Behance">
+                        <i class="fab fa-behance"></i>
+                    </a>
+                    <a href="#" class="social-link" target="_blank" title="Dribbble">
+                        <i class="fab fa-dribbble"></i>
+                    </a>
+                    <a href="#" class="social-link" target="_blank" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="social-link" target="_blank" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-link" target="_blank" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
                 </div>
             </div>
             
+            <!-- نموذج التواصل -->
             <div class="contact-form">
                 <form id="contactForm">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="اسمك" required>
+                    <div class="form-header">
+                        <h3>أرسل لي رسالة</h3>
+                        <p>سأرد عليك في أقرب وقت ممكن</p>
                     </div>
                     
                     <div class="form-group">
-                        <input type="email" class="form-control" placeholder="بريدك الإلكتروني" required>
+                        <input type="text" id="name" class="form-control" placeholder="اسمك الكامل" required>
+                        <i class="fas fa-user form-icon"></i>
                     </div>
                     
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="الموضوع">
+                        <input type="email" id="email" class="form-control" placeholder="بريدك الإلكتروني" required>
+                        <i class="fas fa-envelope form-icon"></i>
                     </div>
                     
                     <div class="form-group">
-                        <textarea class="form-control" placeholder="رسالتك" required></textarea>
+                        <input type="text" id="subject" class="form-control" placeholder="موضوع الرسالة">
+                        <i class="fas fa-tag form-icon"></i>
                     </div>
                     
-                    <button type="submit" class="btn">إرسال الرسالة</button>
+                    <div class="form-group">
+                        <textarea id="message" class="form-control" placeholder="رسالتك..." required></textarea>
+                        <i class="fas fa-comment form-icon textarea-icon"></i>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> إرسال الرسالة
+                        </button>
+                        <div class="form-status" id="formStatus"></div>
+                    </div>
                 </form>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- التذييل -->
     <footer>
