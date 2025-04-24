@@ -1672,75 +1672,526 @@ footer {
 
 
 
-/* قسم المهارات */
+/* ==================== قسم المهارات المتقدم ==================== */
 .skills-section {
-    padding: 5rem 0;
+    padding: 6rem 0;
     background: var(--white);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f5f6fa 0%, #ffffff 100%);
+}
+
+.skills-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.skill-particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(108, 92, 231, 0.1);
+    animation: floatParticle 15s infinite linear;
+}
+
+@keyframes floatParticle {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+}
+
+.skills-container {
+    position: relative;
+    z-index: 2;
+}
+
+.skills-header {
+    text-align: center;
+    margin-bottom: 3rem;
 }
 
 .skills-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
+    gap: 2.5rem;
+    perspective: 1000px;
 }
 
 .skill-card {
-    background: var(--light);
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: var(--shadow);
-    transition: var(--transition);
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    border: 1px solid rgba(108, 92, 231, 0.15);
+    z-index: 1;
+}
+
+.skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 100%);
+    z-index: -1;
+    backdrop-filter: blur(5px);
+}
+
+.skill-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.1) 50%,
+        rgba(255,255,255,0) 100%
+    );
+    transform: rotate(30deg);
+    animation: lightSweep 8s infinite linear;
+    z-index: -1;
 }
 
 .skill-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-15px) rotateX(5deg) rotateY(-5deg);
+    box-shadow: 0 20px 40px rgba(108, 92, 231, 0.2);
+}
+
+.skill-card-inner {
+    position: relative;
+    z-index: 2;
 }
 
 .skill-card-header {
     display: flex;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.skill-icon-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-left: 1.5rem;
+    flex-shrink: 0;
+}
+
+.skill-icon-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--skill-color) 0%,
+        var(--skill-color) calc(var(--skill-percent) * 1%),
+        rgba(108, 92, 231, 0.1) calc(var(--skill-percent) * 1%),
+        rgba(108, 92, 231, 0.1) 100%
+    );
+    transform: rotate(-90deg);
+    transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .skill-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: var(--white);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 1rem;
-    color: var(--white);
-    font-size: 1.5rem;
-    flex-shrink: 0;
+    color: var(--skill-color);
+    font-size: 1.8rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.skill-title-container {
+    flex: 1;
 }
 
 .skill-title {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     color: var(--dark);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
 }
 
-.skill-level-container {
-    height: 10px;
-    background: #eee;
-    border-radius: 5px;
+.skill-level-text {
+    font-size: 1.1rem;
+    color: var(--dark-light);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.skill-level-text strong {
+    color: var(--skill-color);
+    font-size: 1.3rem;
+}
+
+.skill-projects-container {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(108, 92, 231, 0.1);
+}
+
+.skill-projects-title {
+    font-size: 0.9rem;
+    color: var(--dark-light);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.skill-projects-title i {
+    margin-left: 0.5rem;
+    color: var(--skill-color);
+}
+
+.skill-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+}
+
+.skill-project-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.skill-project-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.skill-project-thumb:hover img {
+    transform: scale(1.1);
+}
+
+.skill-project-thumb::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(108, 92, 231, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.skill-project-thumb:hover::after {
+    opacity: 1;
+}
+
+.view-all-projects {
+    display: inline-flex;
+    align-items: center;
+    background: var(--primary);
+    color: var(--white);
+    padding: 0.6rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.view-all-projects:hover {
+    background: var(--primary-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+}
+
+/* تأثيرات خاصة لكل مهارة */
+.skill-card[data-skill="التصميم الجرافيكي"] {
+    --skill-color: #FD79A8;
+}
+.skill-card[data-skill="الموشن جرافيك"] {
+    --skill-color: #6C5CE7;
+}
+.skill-card[data-skill="المونتاج"] {
+    --skill-color: #00CEFF;
+}
+.skill-card[data-skill="التعليق الصوتي"] {
+    --skill-color: #00B894;
+}
+.skill-card[data-skill="تطوير الويب"] {
+    --skill-color: #FDCB6E;
+}
+
+/* Lightbox للمشاريع */
+.skill-project-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.skill-project-lightbox.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.lightbox-content {
+    position: relative;
+    max-width: 900px;
+    width: 90%;
+    background: var(--white);
+    border-radius: 15px;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.skill-project-lightbox.active .lightbox-content {
+    transform: scale(1);
+}
+
+.close-lightbox {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 2rem;
+    color: var(--white);
+    cursor: pointer;
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.close-lightbox:hover {
+    background: var(--primary);
+}
+
+.lightbox-image {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+}
+
+.lightbox-info {
+    padding: 2rem;
+}
+
+.lightbox-info h3 {
+    font-size: 1.8rem;
     margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.lightbox-info p {
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+    line-height: 1.7;
+}
+
+.lightbox-meta {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.lightbox-meta p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--dark-light);
+}
+
+/* التكيف مع الشاشات الصغيرة */
+@media (max-width: 992px) {
+    .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .skill-card {
+        padding: 2rem;
+    }
+    
+    .skill-projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .skill-card {
+        padding: 1.5rem;
+    }
+    
+    .skill-icon-container {
+        width: 70px;
+        height: 70px;
+        margin-left: 1rem;
+    }
+    
+    .skill-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .skill-projects-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.project-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(108, 92, 231, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    color: var(--primary);
+}
+
+.skill-level-text .project-badge {
+    margin-right: 0.5rem;
+}
+
+/* تحسينات متقدمة لشريط المهارات */
+.skill-level-text {
+    position: relative;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid var(--skill-color);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
     overflow: hidden;
 }
 
-.skill-level-bar {
+.skill-level-text::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--primary));
-    border-radius: 5px;
-    position: relative;
-    transition: width 1.5s ease;
+    background: linear-gradient(135deg, 
+                rgba(108, 92, 231, 0.03) 0%, 
+                rgba(253, 121, 168, 0.05) 100%);
+    z-index: -1;
 }
 
-.skill-level-bar::after {
+.skill-level-text:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(108, 92, 231, 0.15);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.skill-level-text strong {
+    font-size: 1.4rem;
+    color: var(--skill-color);
+    position: relative;
+    display: inline-block;
+}
+
+.skill-level-text strong::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.skill-level-text:hover strong::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* شريط التقدم المتحسن */
+.skill-progress-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.8rem;
+}
+
+.skill-progress-label {
+    font-size: 0.9rem;
+    color: var(--dark-light);
+    min-width: 80px;
+}
+
+.skill-progress-container {
+    flex: 1;
+    height: 8px;
+    background: rgba(108, 92, 231, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.skill-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, 
+                var(--skill-color) 0%, 
+                color-mix(in srgb, var(--skill-color), white 30%) 100%);
+    border-radius: 4px;
+    width: 0;
+    transition: width 1.5s ease-out 0.3s;
+    position: relative;
+}
+
+.skill-progress-bar::after {
     content: '';
     position: absolute;
     top: 0;
@@ -1748,48 +2199,39 @@ footer {
     right: 0;
     bottom: 0;
     background: linear-gradient(90deg, 
-        rgba(255,255,255,0.3) 0%, 
-        transparent 50%, 
-        rgba(255,255,255,0.3) 100%);
-    animation: shine 2s infinite;
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.4) 50%, 
+                rgba(255,255,255,0) 100%);
+    animation: shine 2.5s infinite;
+    border-radius: 4px;
 }
 
-@keyframes shine {
-    0% { background-position: -100px 0; }
-    100% { background-position: 100px 0; }
+/* تأثيرات النسبة المئوية */
+@keyframes pulse-glow {
+    0% { text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+    50% { text-shadow: 0 0 8px var(--skill-color); }
+    100% { text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
 }
 
-.skill-meta {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 0.5rem;
-    color: var(--dark-light);
-    font-size: 0.9rem;
+.skill-level-text:hover strong {
+    animation: pulse-glow 1.5s infinite;
 }
 
-.skill-projects {
-    display: inline-block;
-    background: var(--primary);
-    color: var(--white);
-    padding: 0.3rem 0.8rem;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    margin-top: 1rem;
+/* تأثيرات إضافية */
+.skill-level-text .progress-percent {
+    font-weight: bold;
+    color: var(--dark);
+    margin-right: 0.5rem;
+    font-feature-settings: "tnum";
 }
 
-/* تأثيرات خاصة للبطاقات */
-.skill-card:nth-child(1) .skill-icon {
-    background: linear-gradient(135deg, #FD79A8, #FF6B9D);
+.skill-level-text .progress-icon {
+    color: var(--skill-color);
+    margin-left: 0.5rem;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
 }
-.skill-card:nth-child(2) .skill-icon {
-    background: linear-gradient(135deg, #6C5CE7, #5649C0);
-}
-.skill-card:nth-child(3) .skill-icon {
-    background: linear-gradient(135deg, #00CEFF, #0096D6);
-}
-.skill-card:nth-child(4) .skill-icon {
-    background: linear-gradient(135deg, #00B894, #008F7A);
-}
-.skill-card:nth-child(5) .skill-icon {
-    background: linear-gradient(135deg, #FDCB6E, #F39C12);
+
+.skill-level-text:hover .progress-icon {
+    transform: rotate(15deg) scale(1.2);
 }

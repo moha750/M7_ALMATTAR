@@ -25,9 +25,9 @@ const siteData = {
     // المهارات
     skills: [
         { name: "التصميم الجرافيكي", level: 95, icon: "fas fa-paint-brush" },
-        { name: "الموشن جرافيك", level: 90, icon: "fas fa-film" },
+        { name: "الموشن جرافيك", level: 65, icon: "fas fa-film" },
         { name: "المونتاج", level: 85, icon: "fas fa-video" },
-        { name: "التعليق الصوتي", level: 80, icon: "fas fa-microphone" },
+        { name: "التعليق الصوتي", level: 70, icon: "fas fa-microphone" },
         { name: "تطوير الويب", level: 75, icon: "fas fa-code" }
     ],
     
@@ -784,50 +784,241 @@ if ('serviceWorker' in navigator) {
 }
 
 function loadSkillsSection() {
-    const skillsContainer = document.querySelector('.skills-grid');
-    skillsContainer.innerHTML = '';
+    const skillsGrid = document.getElementById('skillsGrid');
+    const skillsParticles = document.getElementById('skillsParticles');
     
-    siteData.skills.forEach(skill => {
-        // العثور على عدد المشاريع لكل مهارة من بيانات الخدمات
+    // إنشاء جسيمات خلفية ديناميكية
+    createParticles(skillsParticles, 30);
+    
+    // بيانات المهارات المحسنة
+    const enhancedSkills = siteData.skills.map(skill => {
         const service = siteData.services.find(s => s.icon === skill.icon);
-        const projectsCount = service ? service.projects : 0;
+        const projects = siteData.portfolio.filter(p => p.category === 
+            (skill.name === 'التصميم الجرافيكي' ? 'graphic' :
+             skill.name === 'الموشن جرافيك' ? 'motion' :
+             skill.name === 'المونتاج' ? 'video' :
+             skill.name === 'التعليق الصوتي' ? 'voice' : 'web'));
         
-        const skillHTML = `
-            <div class="skill-card">
+        return {
+            ...skill,
+            projects: projects.slice(0, 3), // عرض 3 مشاريع فقط في البطاقة
+            allProjects: projects,
+            projectsCount: service ? service.projects : 0,
+            category: getSkillCategory(skill.name)
+        };
+    });
+    
+    // تصنيفات المهارات
+    function getSkillCategory(skillName) {
+        const designSkills = ['التصميم الجرافيكي', 'الموشن جرافيك'];
+        const mediaSkills = ['المونتاج', 'التعليق الصوتي'];
+        
+        if (designSkills.includes(skillName)) return 'design';
+        if (mediaSkills.includes(skillName)) return 'media';
+        if (skillName === 'تطوير الويب') return 'development';
+        return 'other';
+    }
+    
+    // إنشاء بطاقات المهارات
+    enhancedSkills.forEach(skill => {
+        const skillCard = document.createElement('div');
+        skillCard.className = 'skill-card';
+        skillCard.dataset.skill = skill.name;
+        skillCard.dataset.category = skill.category;
+        skillCard.style.setProperty('--skill-percent', skill.level);
+        skillCard.style.setProperty('--skill-color', 
+            skill.name === 'التصميم الجرافيكي' ? '#FD79A8' :
+            skill.name === 'الموشن جرافيك' ? '#6C5CE7' :
+            skill.name === 'المونتاج' ? '#00CEFF' :
+            skill.name === 'التعليق الصوتي' ? '#00B894' : '#FDCB6E');
+        
+            skillCard.innerHTML = `
+            <div class="skill-card-inner">
                 <div class="skill-card-header">
-                    <div class="skill-icon">
-                        <i class="${skill.icon}"></i>
+                    <div class="skill-icon-container">
+                        <div class="skill-icon-bg"></div>
+                        <div class="skill-icon">
+                            <i class="${skill.icon}"></i>
+                        </div>
                     </div>
-                    <h3 class="skill-title">${skill.name}</h3>
+                    <div class="skill-title-container">
+                        <h3 class="skill-title">${skill.name}</h3>
+                    </div>
                 </div>
                 
-                <div class="skill-level-container">
-                    <div class="skill-level-bar" style="width: ${skill.level}%"></div>
+                <div class="skill-level-text">
+                    <i class="fas fa-chart-line"></i>
+                    <span>مستوى الإتقان: <strong>${skill.level}%</strong></span>
                 </div>
                 
-                <div class="skill-meta">
-                    <span>${skill.level}% إتقان</span>
-                    <span>${projectsCount} مشروع</span>
+                ${skill.projects.length > 0 ? `
+                <div class="skill-projects-container">
+                    <h4 class="skill-projects-title">
+                        <i class="fas fa-folder-open"></i> مشاريع حديثة
+                    </h4>
+                    <div class="skill-projects-grid">
+                        ${skill.projects.map(project => `
+                            <div class="skill-project-thumb" 
+                                 data-title="${project.title}"
+                                 data-description="${project.description}"
+                                 data-client="${project.client}"
+                                 data-date="${project.date}"
+                                 data-category="${project.category}">
+                                <img src="${project.image}" alt="${project.title}">
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
-                
-                ${projectsCount > 0 ? `<span class="skill-projects">${projectsCount} مشروع مكتمل</span>` : ''}
+                ` : ''}
             </div>
         `;
         
-        skillsContainer.insertAdjacentHTML('beforeend', skillHTML);
+        skillsGrid.appendChild(skillCard);
     });
     
-    // تحريك أشرطة المهارات عند التمرير إليها
-    const skillBars = document.querySelectorAll('.skill-level-bar');
+    // فلترة المهارات حسب التصنيف
+    const categoryButtons = document.querySelectorAll('.skill-category-btn');
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            const category = button.dataset.category;
+            const skillCards = document.querySelectorAll('.skill-card');
+            
+            skillCards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    gsap.to(card, {
+                        display: 'block',
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        ease: "power2.out"
+                    });
+                } else {
+                    gsap.to(card, {
+                        display: 'none',
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.3,
+                        ease: "power2.in"
+                    });
+                }
+            });
+        });
+    });
+    
+    // تهيئة Lightbox للمشاريع
+    initProjectLightbox();
+    
+    // إنشاء جسيمات الخلفية
+    function createParticles(container, count) {
+        container.innerHTML = '';
+        
+        for (let i = 0; i < count; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'skill-particle';
+            
+            // أحجام عشوائية بين 5px و 15px
+            const size = Math.random() * 10 + 5;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            
+            // مواقع عشوائية
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            
+            // ألوان عشوائية من اللون الأساسي
+            const hue = 250; // اللون الأساسي أرجواني
+            const saturation = 70;
+            const lightness = Math.random() * 20 + 60;
+            particle.style.background = `hsla(${hue}, ${saturation}%, ${lightness}%, 0.2)`;
+            
+            // تأخيرات وتكرارات عشوائية
+            particle.style.animationDelay = `${Math.random() * 15}s`;
+            particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            
+            container.appendChild(particle);
+        }
+    }
+    
+    // Lightbox للمشاريع
+    function initProjectLightbox() {
+        const lightbox = document.getElementById('projectLightbox');
+        const closeBtn = lightbox.querySelector('.close-lightbox');
+        const projectThumbs = document.querySelectorAll('.skill-project-thumb');
+        
+        projectThumbs.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                const title = this.dataset.title;
+                const description = this.dataset.description;
+                const client = this.dataset.client;
+                const date = this.dataset.date;
+                const category = this.dataset.category;
+                const imageSrc = this.querySelector('img').src;
+                
+                lightbox.querySelector('.lightbox-image').src = imageSrc;
+                lightbox.querySelector('h3').textContent = title;
+                lightbox.querySelector('p').textContent = description;
+                lightbox.querySelector('.lightbox-client').textContent = client;
+                lightbox.querySelector('.lightbox-date').textContent = date;
+                
+                // تحويل الفئة إلى نص
+                const categoryNames = {
+                    'graphic': 'تصميم جرافيك',
+                    'motion': 'موشن جرافيك',
+                    'video': 'مونتاج فيديو',
+                    'voice': 'تعليق صوتي',
+                    'web': 'تطوير ويب'
+                };
+                lightbox.querySelector('.lightbox-category').textContent = 
+                    categoryNames[category] || category;
+                
+                lightbox.classList.add('active');
+                document.body.classList.add('no-scroll');
+            });
+        });
+        
+        closeBtn.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        });
+        
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+            }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                lightbox.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+            }
+        });
+    }
+    
+    // تأثيرات الحركة عند التمرير
+    const skillCards = document.querySelectorAll('.skill-card');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const bar = entry.target;
-                bar.style.width = bar.style.width; // إعادة تشغيل الانتقال
-                observer.unobserve(bar);
+                gsap.to(entry.target, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: "back.out(1.2)",
+                    delay: Array.from(skillCards).indexOf(entry.target) * 0.1
+                });
+                observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.5 });
+    }, { threshold: 0.1 });
     
-    skillBars.forEach(bar => observer.observe(bar));
+    skillCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        observer.observe(card);
+    });
 }
