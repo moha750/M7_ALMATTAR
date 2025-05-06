@@ -151,9 +151,9 @@ img {
     font-weight: 800;
 }
 
-/* .site-header.scrolled .logo {
-    width: 5rem;
-} */
+.site-header.scrolled .logo {
+    width: 4rem;
+}
 
 .main-nav {
     display: flex;
@@ -251,7 +251,7 @@ img {
     display: block;
     width: 100%;
     height: 3px;
-    background: var(--white);
+    background: #dda853;
     border-radius: 3px;
     transition: all 0.3s ease;
     transform-origin: right center;
@@ -826,7 +826,7 @@ img {
     content: '';
     position: absolute;
     top: 5px;
-    right: 14px;
+    right: 14.4px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -951,7 +951,7 @@ img {
     }
 
     .resume-timeline li::before {
-        right: 10px;
+        right: 9px;
     }
     
     .resume-card {
