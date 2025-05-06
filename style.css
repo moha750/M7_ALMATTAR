@@ -826,12 +826,12 @@ img {
     content: '';
     position: absolute;
     top: 5px;
-    right: 15px;
+    right: 14px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: var(--white);
-    border: 3px solid var(--dark);
+    background: #dda853;
+    border: 1px solid #dda853;
     z-index: 1;
 }
 
@@ -859,13 +859,6 @@ img {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-}
-
-.resume-institute::before, .resume-company::before {
-    content: '\f19c';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-    font-size: 0.8rem;
 }
 
 .resume-grade {
@@ -908,7 +901,7 @@ img {
     top: 0;
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
-    color: var(--light);
+    color: #dda853;
     font-size: 1rem;
 }
 
@@ -955,6 +948,10 @@ img {
     
     .resume-timeline li {
         padding-right: 2rem;
+    }
+
+    .resume-timeline li::before {
+        right: 10px;
     }
     
     .resume-card {
@@ -2326,12 +2323,6 @@ img {
     box-shadow: 0 8px 25px rgba(86, 129, 188, 0.4);
 }
 
-/* تأثيرات الحركة */
-@keyframes cardFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
 .service-card:nth-child(1) { animation: cardFloat 6s ease-in-out infinite; }
 .service-card:nth-child(2) { animation: cardFloat 7s ease-in-out infinite 1s; }
 .service-card:nth-child(3) { animation: cardFloat 5s ease-in-out infinite 0.5s; }
@@ -3147,4 +3138,8 @@ input[type="file"]:focus {
         padding: 0.7rem 1.5rem;
         font-size: 0.9rem;
     }
+}
+.resume-details li::before {
+    background: none !important;
+    border: none !important;
 }
