@@ -94,14 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
     createParticles(document.getElementById('skillsParticles'), 30);
 });
 
-// ==================== الوظائف الأساسية ====================
-
-function loadDynamicData() {
-    loadSkillsSection();
-    loadPortfolio();
-    initPortfolioLightbox();
-}
-
 
 
 // ==================== hero sec ====================
@@ -705,3 +697,573 @@ function initHeroAnimations() {
         });
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// إضافة هذه الدوال إلى ملف script.js
+function initContactForm() {
+    const contactForm = document.getElementById('enhancedContactForm');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // إظهار حالة التحميل
+            const submitBtn = contactForm.querySelector('.submit-btn');
+            const submitLoader = submitBtn.querySelector('.submit-loader');
+            const submitText = submitBtn.querySelector('span');
+            
+            submitText.textContent = 'جاري الإرسال...';
+            submitLoader.style.display = 'block';
+            submitBtn.disabled = true;
+            
+            // محاكاة إرسال النموذج (في الواقع سيكون لديك اتصال AJAX هنا)
+            setTimeout(() => {
+                // إخفاء حالة التحميل
+                submitLoader.style.display = 'none';
+                submitText.textContent = 'تم الإرسال بنجاح!';
+                submitBtn.style.backgroundColor = '#2ecc71';
+                
+                // إظهار رسالة النجاح
+                const successMessage = document.getElementById('formSuccess');
+                successMessage.textContent = 'شكراً لك! سنتواصل معك قريباً.';
+                successMessage.style.display = 'block';
+                
+                // إعادة تعيين النموذج بعد 3 ثوان
+                setTimeout(() => {
+                    contactForm.reset();
+                    submitText.textContent = 'إرسال الرسالة';
+                    submitBtn.style.backgroundColor = '';
+                    submitBtn.disabled = false;
+                    successMessage.style.display = 'none';
+                }, 3000);
+            }, 2000);
+        });
+
+        // داخل دالة initContactForm()
+contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // التحقق من الصحة
+    const isNameValid = validateName();
+    const isEmailValid = validateEmail();
+    const isMessageValid = validateMessage();
+    
+    if (!isNameValid || !isEmailValid || !isMessageValid) {
+        return;
+    }
+    
+    // إظهار حالة التحميل
+    const submitBtn = contactForm.querySelector('.submit-btn');
+    const submitLoader = submitBtn.querySelector('.submit-loader');
+    const submitText = submitBtn.querySelector('span');
+    
+    submitText.textContent = 'جاري الإرسال...';
+    submitLoader.style.display = 'block';
+    submitBtn.disabled = true;
+    
+    // إنشاء FormData لإرسال الملفات
+    const formData = new FormData();
+    formData.append('name', document.getElementById('contactName').value);
+    formData.append('email', document.getElementById('contactEmail').value);
+    formData.append('phone', document.getElementById('contactPhone').value || '');
+    formData.append('subject', document.getElementById('contactSubject').value || '');
+    formData.append('message', document.getElementById('contactMessage').value);
+    
+    if (fileInput.files[0]) {
+        formData.append('file', fileInput.files[0]);
+    }
+    
+    // هنا يمكنك إضافة كود AJAX لإرسال البيانات إلى الخادم
+    // محاكاة الإرسال (لأغراض العرض فقط)
+    setTimeout(() => {
+        submitLoader.style.display = 'none';
+        submitText.textContent = 'تم الإرسال بنجاح!';
+        submitBtn.style.backgroundColor = '#2ecc71';
+        
+        const successMessage = document.getElementById('formSuccess');
+        successMessage.textContent = 'شكراً لك! سنتواصل معك قريباً.';
+        successMessage.style.display = 'block';
+        
+        // إعادة تعيين النموذج بعد 3 ثوان
+        setTimeout(() => {
+            contactForm.reset();
+            filePreview.innerHTML = '';
+            submitText.textContent = 'إرسال الرسالة';
+            submitBtn.style.backgroundColor = '';
+            submitBtn.disabled = false;
+            successMessage.style.display = 'none';
+        }, 3000);
+    }, 2000);
+});
+        
+        // التحقق من الصحة أثناء الكتابة
+        const nameInput = document.getElementById('contactName');
+        const emailInput = document.getElementById('contactEmail');
+        const messageInput = document.getElementById('contactMessage');
+        
+        nameInput.addEventListener('input', validateName);
+        emailInput.addEventListener('input', validateEmail);
+        messageInput.addEventListener('input', validateMessage);
+    }
+}
+
+function validateName() {
+    const name = document.getElementById('contactName').value.trim();
+    const errorElement = document.getElementById('nameError');
+    
+    if (name.length < 3) {
+        errorElement.textContent = 'الاسم يجب أن يكون على الأقل 3 أحرف';
+        errorElement.style.display = 'block';
+        return false;
+    } else {
+        errorElement.style.display = 'none';
+        return true;
+    }
+}
+
+function validateEmail() {
+    const email = document.getElementById('contactEmail').value.trim();
+    const errorElement = document.getElementById('emailError');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!emailRegex.test(email)) {
+        errorElement.textContent = 'البريد الإلكتروني غير صالح';
+        errorElement.style.display = 'block';
+        return false;
+    } else {
+        errorElement.style.display = 'none';
+        return true;
+    }
+}
+
+function validateMessage() {
+    const message = document.getElementById('contactMessage').value.trim();
+    const errorElement = document.getElementById('messageError');
+    
+    if (message.length < 10) {
+        errorElement.textContent = 'الرسالة يجب أن تكون على الأقل 10 أحرف';
+        errorElement.style.display = 'block';
+        return false;
+    } else {
+        errorElement.style.display = 'none';
+        return true;
+    }
+}
+
+// داخل دالة initContactForm()
+const fileInput = document.getElementById('contactFile');
+const filePreview = document.getElementById('filePreview');
+
+if (fileInput) {
+    fileInput.addEventListener('change', handleFileUpload);
+}
+
+function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // التحقق من حجم الملف (5MB كحد أقصى)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('حجم الملف يجب أن يكون أقل من 5MB');
+        e.target.value = '';
+        return;
+    }
+
+    // عرض معاينة الملف
+    displayFilePreview(file);
+}
+
+function displayFilePreview(file) {
+    filePreview.innerHTML = '';
+    
+    const fileInfo = document.createElement('div');
+    fileInfo.className = 'file-info';
+    
+    const fileName = document.createElement('span');
+    fileName.textContent = file.name;
+    
+    const fileSize = document.createElement('span');
+    fileSize.textContent = formatFileSize(file.size);
+    
+    const removeBtn = document.createElement('button');
+    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+    removeBtn.className = 'remove-file';
+    removeBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        filePreview.innerHTML = '';
+    });
+    
+    fileInfo.appendChild(fileName);
+    fileInfo.appendChild(fileSize);
+    fileInfo.appendChild(removeBtn);
+    filePreview.appendChild(fileInfo);
+    
+    // إذا كان الملف صورة، عرض معاينة لها
+    if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const imgPreview = document.createElement('img');
+            imgPreview.src = e.target.result;
+            imgPreview.className = 'image-preview';
+            filePreview.insertBefore(imgPreview, fileInfo);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' bytes';
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    else return (bytes / 1048576).toFixed(1) + ' MB';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// دالة تهيئة قسم الخدمات
+function initServicesSection() {
+    // فلترة الخدمات حسب التبويبات
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            const category = button.dataset.category;
+            filterServices(category);
+        });
+    });
+    
+    // عرض الخدمات بشكل متدرج
+    animateServices();
+    
+    // فتح مودال طلب الخدمة
+    const serviceButtons = document.querySelectorAll('.btn-service-cta, .btn-custom-service');
+    serviceButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const serviceName = button.dataset.service || 'خدمة مخصصة';
+            openServiceModal(serviceName);
+        });
+    });
+    
+    // إغلاق المودال
+    document.querySelector('.close-modal').addEventListener('click', closeServiceModal);
+    
+    // إرسال نموذج الخدمة
+    document.getElementById('serviceForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitServiceRequest();
+    });
+    
+    // عرض تفاصيل الخدمة
+    const detailButtons = document.querySelectorAll('.btn-service-details');
+    detailButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const serviceId = button.dataset.service;
+            showServiceDetails(serviceId);
+        });
+    });
+}
+
+// فلترة الخدمات حسب التصنيف
+function filterServices(category) {
+    const services = document.querySelectorAll('.service-card');
+    
+    services.forEach(service => {
+        if (category === 'all' || service.dataset.category === category) {
+            service.style.display = 'block';
+            gsap.to(service, {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                ease: "back.out(1.2)"
+            });
+        } else {
+            gsap.to(service, {
+                opacity: 0,
+                y: 30,
+                duration: 0.3,
+                onComplete: () => service.style.display = 'none'
+            });
+        }
+    });
+}
+
+// عرض الخدمات بشكل متدرج
+function animateServices() {
+    const services = document.querySelectorAll('.service-card');
+    
+    services.forEach((service, index) => {
+        gsap.to(service, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            delay: index * 0.15,
+            ease: "back.out(1.2)",
+            onComplete: () => service.classList.add('visible')
+        });
+    });
+}
+
+// فتح مودال طلب الخدمة
+function openServiceModal(serviceName) {
+    const modal = document.getElementById('serviceModal');
+    const serviceNameInput = document.getElementById('serviceName');
+    
+    serviceNameInput.value = serviceName;
+    modal.classList.add('active');
+    document.body.classList.add('no-scroll');
+    
+    gsap.from(modal.querySelector('.modal-content'), {
+        opacity: 0,
+        y: 50,
+        duration: 0.5,
+        ease: "back.out(1.7)"
+    });
+}
+
+// إغلاق مودال الخدمة
+function closeServiceModal() {
+    const modal = document.getElementById('serviceModal');
+    
+    gsap.to(modal.querySelector('.modal-content'), {
+        opacity: 0,
+        y: 50,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+            modal.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
+    });
+}
+
+// إرسال طلب الخدمة
+function submitServiceRequest() {
+    const form = document.getElementById('serviceForm');
+    const submitBtn = form.querySelector('.btn-submit-service');
+    const originalText = submitBtn.innerHTML;
+    
+    // عرض حالة التحميل
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+    submitBtn.disabled = true;
+    
+    // محاكاة إرسال البيانات (في الواقع سيتم استخدام AJAX)
+    setTimeout(() => {
+        // عرض رسالة النجاح
+        Swal.fire({
+            title: 'تم إرسال طلبك بنجاح!',
+            text: 'سيتم التواصل معك خلال 24 ساعة لتأكيد التفاصيل',
+            icon: 'success',
+            confirmButtonText: 'حسناً',
+            customClass: {
+                confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+        });
+        
+        // إعادة تعيين النموذج
+        form.reset();
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        closeServiceModal();
+    }, 2000);
+}
+
+// عرض تفاصيل الخدمة
+function showServiceDetails(serviceId) {
+    // يمكنك إضافة بيانات تفصيلية لكل خدمة هنا
+    const serviceDetails = {
+        '1': {
+            title: 'حزمة الهوية البصرية الكاملة',
+            description: 'هذه الحزمة تشمل كل ما تحتاجه لبناء هوية بصرية قوية ومتماسكة لعلامتك التجارية، بدءاً من تصميم الشعار وحتى دليل الاستخدام.',
+            features: [
+                'تصميم شعار احترافي بثلاث مفاهيم مختلفة',
+                'دليل استخدام الهوية البصرية (PDF + طباعة)',
+                'تصميم بطاقات العمل والورق الرسمي',
+                'ملفات مصدرية (AI, PSD, PDF)',
+                '3 مراجعات مجانية خلال عملية التصميم',
+                'تسليم خلال 5-7 أيام عمل'
+            ],
+            price: '1,500 - 3,000 ر.س'
+        },
+        '2': {
+            title: 'إعلان موشن جرافيك',
+            description: 'إعلان متحرك احترافي يجذب انتباه جمهورك ويعبر عن رسالة علامتك التجارية بطريقة إبداعية وجذابة.',
+            features: [
+                '30-60 ثانية رسوم متحركة عالية الجودة',
+                'سيناريو إبداعي واحترافي',
+                'مؤثرات صوتية وموسيقى تتناسب مع الهوية',
+                '3 سيناريوهات مختلفة للاختيار منها',
+                'تعديلات غير محدودة حتى الإرضاء',
+                'تسليم خلال 7-10 أيام عمل'
+            ],
+            price: '2,500 - 5,000 ر.س'
+        },
+        '3': {
+            title: 'مونتاج فيديو احترافي',
+            description: 'تحويل لقطاتك الفيديوية إلى محتوى احترافي جاهز للنشر على جميع المنصات مع إضافة المؤثرات والتحسينات اللازمة.',
+            features: [
+                'مونتاج فيديو حتى 5 دقائق',
+                'إضافة مؤثرات بصرية ونصوص متحركة',
+                'تحسين جودة الصوت وإضافة موسيقى',
+                '3 نسخ مختلفة للاختيار منها',
+                'تنسيقات متعددة (MP4, MOV, للوسائط الاجتماعية)',
+                'تسليم خلال 3-5 أيام عمل'
+            ],
+            price: '1,200 - 2,500 ر.س'
+        },
+        '4': {
+            title: 'حزمة وسائل التواصل',
+            description: 'حل متكامل لإدارة محتوى وسائل التواصل الاجتماعي الخاص بعلامتك التجارية بتصاميم احترافية وجذابة.',
+            features: [
+                '10 تصاميم شهرياً (منشورات، ستوريات، بانرات)',
+                'صور ومنشورات احترافية متناسقة مع الهوية',
+                'تصاميم مخصصة للمناسبات والأحداث',
+                'تعديلات غير محدودة على التصاميم',
+                'ملفات جاهزة للنشر (PNG, JPG, MP4)',
+                'تسليم دوري حسب الجدول المتفق عليه'
+            ],
+            price: '900 - 1,800 ر.س/شهر'
+        }
+    };
+    
+    const service = serviceDetails[serviceId] || {
+        title: 'تفاصيل الخدمة',
+        description: 'لا تتوفر تفاصيل إضافية لهذه الخدمة حالياً.',
+        features: [],
+        price: 'غير محدد'
+    };
+    
+    // عرض التفاصيل في SweetAlert
+    let featuresHTML = '';
+    service.features.forEach(feature => {
+        featuresHTML += `<li><i class="fas fa-check-circle"></i> ${feature}</li>`;
+    });
+    
+    Swal.fire({
+        title: service.title,
+        html: `
+            <p class="service-detail-description">${service.description}</p>
+            <div class="service-detail-features">
+                <h4>المميزات:</h4>
+                <ul>${featuresHTML}</ul>
+            </div>
+            <div class="service-detail-price">
+                <h4>السعر:</h4>
+                <p>${service.price}</p>
+            </div>
+        `,
+        icon: 'info',
+        confirmButtonText: 'طلب الخدمة',
+        showCancelButton: true,
+        cancelButtonText: 'إغلاق',
+        customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-outline'
+        },
+        buttonsStyling: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            openServiceModal(service.title);
+        }
+    });
+}
+
+// تعديل الدالة loadDynamicData لتشمل تهيئة قسم الخدمات
+function loadDynamicData() {
+    loadSkillsSection();
+    loadPortfolio();
+    initPortfolioLightbox();
+    initContactForm();
+    initServicesSection();
+// إضافة سنة حقوق النشر الحالية
+document.getElementById('currentYear').textContent = new Date().getFullYear();}
