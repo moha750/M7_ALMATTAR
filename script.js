@@ -1260,10 +1260,209 @@ function showServiceDetails(serviceId) {
 
 // تعديل الدالة loadDynamicData لتشمل تهيئة قسم الخدمات
 function loadDynamicData() {
+    initHeaderScroll();
     loadSkillsSection();
     loadPortfolio();
     initPortfolioLightbox();
     initContactForm();
     initServicesSection();
-// إضافة سنة حقوق النشر الحالية
-document.getElementById('currentYear').textContent = new Date().getFullYear();}
+    // Update copyright year
+document.getElementById('year').textContent = new Date().getFullYear();
+}
+
+// Update copyright year
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Add animation to footer elements
+const footerElements = document.querySelectorAll('.footer-col, .footer-bottom');
+footerElements.forEach((el, index) => {
+    gsap.from(el, {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        delay: index * 0.2,
+        ease: "back.out(1.2)",
+        scrollTrigger: {
+            trigger: '.site-footer',
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+        }
+    });
+});
+
+// Animate social icons
+const socialIcons = document.querySelectorAll('.social-icon');
+socialIcons.forEach((icon, i) => {
+    gsap.from(icon, {
+        opacity: 0,
+        scale: 0.5,
+        y: 20,
+        duration: 0.5,
+        delay: 0.1 * i,
+        ease: "back.out(1.7)",
+        scrollTrigger: {
+            trigger: '.footer-social',
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// تحسينات الهيدر
+function initHeaderScroll() {
+    const header = document.querySelector('.site-header');
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navList = document.querySelector('.nav-list');
+    const scrollProgressBar = document.querySelector('.scroll-progress-bar');
+    const downloadCVBtn = document.getElementById('downloadCV');
+    
+    // تأثير التمرير
+    window.addEventListener('scroll', () => {
+        // تأثير ظهور/اختفاء الهيدر عند التمرير
+        if (window.scrollY > 100) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+        
+        // شريط التقدم
+        if (scrollProgressBar) {
+            const windowHeight = window.innerHeight;
+            const docHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const progress = (scrollTop / (docHeight - windowHeight)) * 100;
+            scrollProgressBar.style.width = progress + '%';
+        }
+    });
+    
+    // زر تحميل السيرة الذاتية
+    if (downloadCVBtn) {
+        downloadCVBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // يمكنك هنا إضافة منطق تحميل الملف
+            Swal.fire({
+                title: 'تحميل السيرة الذاتية',
+                text: 'سيتم تحميل ملف السيرة الذاتية بصيغة PDF',
+                icon: 'info',
+                confirmButtonText: 'تحميل',
+                cancelButtonText: 'إلغاء',
+                showCancelButton: true,
+                customClass: {
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-outline'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // محاكاة عملية التحميل
+                    Swal.fire({
+                        title: 'جاري التحميل',
+                        html: 'يتم تجهيز ملف السيرة الذاتية...',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    }).then(() => {
+                        Swal.fire(
+                            'تم التحميل!',
+                            'تم تحميل السيرة الذاتية بنجاح',
+                            'success'
+                        );
+                    });
+                }
+            });
+        });
+    }
+    
+    // قائمة الجوال
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenuBtn.classList.toggle('active');
+        navList.classList.toggle('active');
+        
+        // إيقاف التمرير عند فتح القائمة
+        if (navList.classList.contains('active')) {
+            document.body.classList.add('no-scroll');
+        } else {
+            document.body.classList.remove('no-scroll');
+        }
+    });
+    
+    // إغلاق القائمة عند النقر على رابط
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (navList.classList.contains('active')) {
+                mobileMenuBtn.classList.remove('active');
+                navList.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+            }
+        });
+    });
+    
+    // تأثيرات إضافية للروابط
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            gsap.to(link, {
+                scale: 1.05,
+                duration: 0.3
+            });
+        });
+        
+        link.addEventListener('mouseleave', () => {
+            gsap.to(link, {
+                scale: 1,
+                duration: 0.3
+            });
+        });
+    });
+    
+    // تأثيرات الشعار
+    const logo = document.querySelector('.logo');
+    if (logo) {
+        logo.addEventListener('mouseenter', () => {
+            gsap.to(logo, {
+                scale: 1.05,
+                duration: 0.3
+            });
+        });
+        
+        logo.addEventListener('mouseleave', () => {
+            gsap.to(logo, {
+                scale: 1,
+                duration: 0.3
+            });
+        });
+    }
+}
+
