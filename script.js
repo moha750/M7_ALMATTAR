@@ -5,13 +5,58 @@ const siteData = {
     skills: [
         { name: "التصميم الجرافيكي", level: 95, icon: "fas fa-paint-brush" },
         { name: "الموشن جرافيك", level: 65, icon: "fas fa-film" },
-        { name: "المونتاج", level: 85, icon: "fas fa-video" },
+        { name: "المونتاج المرئي", level: 85, icon: "fas fa-video" },
         { name: "التعليق الصوتي", level: 70, icon: "fas fa-microphone" },
         { name: "تطوير الويب", level: 75, icon: "fas fa-code" }
     ],
     
     // معرض الأعمال
     portfolio: [
+        { 
+            category: "graphic", 
+            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
+            title: "تصميم شعار", 
+            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
+            client: "مطعم البحر الأحمر",
+            date: "يناير 2023",
+            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
+        },
+        { 
+            category: "graphic", 
+            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
+            title: "تصميم شعار", 
+            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
+            client: "مطعم البحر الأحمر",
+            date: "يناير 2023",
+            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
+        },
+        { 
+            category: "graphic", 
+            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
+            title: "تصميم شعار", 
+            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
+            client: "مطعم البحر الأحمر",
+            date: "يناير 2023",
+            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
+        },
+        { 
+            category: "graphic", 
+            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
+            title: "تصميم شعار", 
+            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
+            client: "مطعم البحر الأحمر",
+            date: "يناير 2023",
+            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
+        },
+        { 
+            category: "graphic", 
+            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
+            title: "تصميم شعار", 
+            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
+            client: "مطعم البحر الأحمر",
+            date: "يناير 2023",
+            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
+        },
         { 
             category: "graphic", 
             image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
@@ -284,7 +329,7 @@ function initPortfolioLightbox() {
     lightbox.className = 'portfolio-lightbox';
     lightbox.innerHTML = `
         <div class="lightbox-content">
-            <span class="close-lightbox">&times;</span>
+            <span class="close-lightbox"><i class="fas fa-times"></i></span>
             <div class="lightbox-image-container">
                 <img src="" alt="" class="lightbox-image">
                 <div class="image-nav">
@@ -422,16 +467,15 @@ function initPortfolioLightbox() {
     }
     
     function closeLightbox() {
-        gsap.to(lightbox.querySelector('.lightbox-content'), {
-            opacity: 0,
-            y: 50,
-            duration: 0.3,
-            ease: "power2.in",
-            onComplete: () => {
-                lightbox.classList.remove('active');
-                document.body.classList.remove('no-scroll');
-            }
-        });
+        const lightbox = document.querySelector('.portfolio-lightbox');
+        lightbox.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+        
+        // إعادة تعيين المحتوى
+        lightbox.querySelector('.lightbox-image').src = '';
+        lightbox.querySelector('.lightbox-title').textContent = '';
+        lightbox.querySelector('.info-description').textContent = '';
+        lightbox.querySelector('.project-tags').innerHTML = '';
     }
 }
 
@@ -472,11 +516,6 @@ function loadSkillsSection() {
         skillCard.dataset.skill = skill.name;
         skillCard.dataset.category = skill.category;
         skillCard.style.setProperty('--skill-percent', skill.level);
-        skillCard.style.setProperty('--skill-color', 
-            skill.name === 'التصميم الجرافيكي' ? '#FD79A8' :
-            skill.name === 'الموشن جرافيك' ? '#6C5CE7' :
-            skill.name === 'المونتاج' ? '#00CEFF' :
-            skill.name === 'التعليق الصوتي' ? '#00B894' : '#FDCB6E');
         
         skillCard.innerHTML = `
             <div class="skill-card-inner">
@@ -500,19 +539,22 @@ function loadSkillsSection() {
                 ${skill.projects.length > 0 ? `
                 <div class="skill-projects-container">
                     <h4 class="skill-projects-title">
-                        <i class="fas fa-folder-open"></i> مشاريع حديثة (${skill.projectsCount})
+                        <i class="fas fa-folder-open"></i> عدد مشاريعي (${skill.projectsCount})
                     </h4>
-                    <div class="skill-projects-grid">
-                        ${skill.projects.map(project => `
-                            <div class="skill-project-thumb" 
-                                 data-title="${project.title}"
-                                 data-description="${project.description}"
-                                 data-client="${project.client}"
-                                 data-date="${project.date}"
-                                 data-category="${project.category}">
-                                <img src="${project.image}" alt="${project.title}">
-                            </div>
-                        `).join('')}
+                        <div class="skill-projects-grid">
+                            ${skill.projects.map(project => `
+                                <div class="skill-project-thumb" 
+                                    data-title="${project.title}"
+                                    data-description="${project.description}"
+                                    data-client="${project.client}"
+                                    data-date="${project.date}"
+                                    data-category="${project.category}">
+                                    <img src="${project.image}" alt="${project.title}">
+                                    <div class="project-view-icon">
+                                        <i class="fas fa-eye"></i>
+                                    </div>
+                                </div>
+                            `).join('')}
                     </div>
                 </div>
                 ` : ''}
