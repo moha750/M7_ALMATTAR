@@ -145,6 +145,7 @@ img {
     transition: all 0.3s ease;
     z-index: 10;
     width: 5rem;
+    padding: 1.2rem 0;
 }
 
 .site-header.scrolled .logo {
@@ -201,7 +202,7 @@ img {
 .btn-download-cv {
     background: #dda853;
     color: #f5eedc;
-    padding: 0.8rem 1.5rem;
+    padding: 0.5rem 1.2rem;
     border-radius: 50px;
     font-weight: 600;
     font-size: 0.95rem;
@@ -304,14 +305,48 @@ img {
 @media (max-width: 1200px) {
     .btn-download-cv {
         margin-right: 1rem;
-        padding: 0.7rem 1.2rem;
+        padding: 0.5rem 1rem;
         font-size: 0.9rem;
     }
 }
 
 @media (max-width: 992px) {
+    .header-content {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .logo {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: center;
+        margin: 0 auto;
+        width: 4rem;
+    }
+    
+    .mobile-menu-btn {
+        grid-column: 1; /* نقل إلى العمود الأول */
+        grid-row: 1;
+        justify-self: start; /* محاذاة إلى اليسار */
+        display: flex;
+        margin-right: auto;
+    }
+    
     .btn-download-cv {
-        display: none;
+        grid-column: 3; /* نقل إلى العمود الثالث */
+        grid-row: 1;
+        justify-self: end; /* محاذاة إلى اليمين */
+        display: flex !important;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        margin-right: 0;
+    }
+    
+    .nav-list {
+        grid-column: 1 / -1;
+        grid-row: 2;
     }
     
     .nav-list {
@@ -333,10 +368,6 @@ img {
     
     .nav-list.active {
         right: 0;
-    }
-    
-    .mobile-menu-btn {
-        display: flex;
     }
 }
 
