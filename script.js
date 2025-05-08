@@ -1,4 +1,3 @@
-
 const siteData = {
 
     // المهارات
@@ -859,7 +858,6 @@ contactForm.addEventListener('submit', function(e) {
         // إعادة تعيين النموذج بعد 3 ثوان
         setTimeout(() => {
             contactForm.reset();
-            filePreview.innerHTML = '';
             submitText.textContent = 'إرسال الرسالة';
             submitBtn.style.backgroundColor = '';
             submitBtn.disabled = false;
@@ -922,383 +920,20 @@ function validateMessage() {
     }
 }
 
-// داخل دالة initContactForm()
-const fileInput = document.getElementById('contactFile');
-const filePreview = document.getElementById('filePreview');
-
 if (fileInput) {
     fileInput.addEventListener('change', handleFileUpload);
 }
 
-function handleFileUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
 
-    // التحقق من حجم الملف (5MB كحد أقصى)
-    if (file.size > 5 * 1024 * 1024) {
-        alert('حجم الملف يجب أن يكون أقل من 5MB');
-        e.target.value = '';
-        return;
-    }
 
-    // عرض معاينة الملف
-    displayFilePreview(file);
-}
 
-function displayFilePreview(file) {
-    filePreview.innerHTML = '';
-    
-    const fileInfo = document.createElement('div');
-    fileInfo.className = 'file-info';
-    
-    const fileName = document.createElement('span');
-    fileName.textContent = file.name;
-    
-    const fileSize = document.createElement('span');
-    fileSize.textContent = formatFileSize(file.size);
-    
-    const removeBtn = document.createElement('button');
-    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
-    removeBtn.className = 'remove-file';
-    removeBtn.addEventListener('click', () => {
-        fileInput.value = '';
-        filePreview.innerHTML = '';
-    });
-    
-    fileInfo.appendChild(fileName);
-    fileInfo.appendChild(fileSize);
-    fileInfo.appendChild(removeBtn);
-    filePreview.appendChild(fileInfo);
-    
-    // إذا كان الملف صورة، عرض معاينة لها
-    if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const imgPreview = document.createElement('img');
-            imgPreview.src = e.target.result;
-            imgPreview.className = 'image-preview';
-            filePreview.insertBefore(imgPreview, fileInfo);
-        };
-        reader.readAsDataURL(file);
-    }
-}
 
-function formatFileSize(bytes) {
-    if (bytes < 1024) return bytes + ' bytes';
-    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    else return (bytes / 1048576).toFixed(1) + ' MB';
-}
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// دالة تهيئة قسم الخدمات
-function initServicesSection() {
-    // فلترة الخدمات حسب التبويبات
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            const category = button.dataset.category;
-            filterServices(category);
-        });
-    });
-    
-    // عرض الخدمات بشكل متدرج
-    animateServices();
-    
-    // فتح مودال طلب الخدمة
-    const serviceButtons = document.querySelectorAll('.btn-service-cta, .btn-custom-service');
-    serviceButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            const serviceName = button.dataset.service || 'خدمة مخصصة';
-            openServiceModal(serviceName);
-        });
-    });
-    
-    // إغلاق المودال
-    document.querySelector('.close-modal').addEventListener('click', closeServiceModal);
-    
-    // إرسال نموذج الخدمة
-    document.getElementById('serviceForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        submitServiceRequest();
-    });
-    
-    // عرض تفاصيل الخدمة
-    const detailButtons = document.querySelectorAll('.btn-service-details');
-    detailButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            const serviceId = button.dataset.service;
-            showServiceDetails(serviceId);
-        });
-    });
-}
-
-// فلترة الخدمات حسب التصنيف
-function filterServices(category) {
-    const services = document.querySelectorAll('.service-card');
-    
-    services.forEach(service => {
-        if (category === 'all' || service.dataset.category === category) {
-            service.style.display = 'block';
-            gsap.to(service, {
-                opacity: 1,
-                y: 0,
-                duration: 0.6,
-                ease: "back.out(1.2)"
-            });
-        } else {
-            gsap.to(service, {
-                opacity: 0,
-                y: 30,
-                duration: 0.3,
-                onComplete: () => service.style.display = 'none'
-            });
-        }
-    });
-}
-
-// عرض الخدمات بشكل متدرج
-function animateServices() {
-    const services = document.querySelectorAll('.service-card');
-    
-    services.forEach((service, index) => {
-        gsap.to(service, {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            delay: index * 0.15,
-            ease: "back.out(1.2)",
-            onComplete: () => service.classList.add('visible')
-        });
-    });
-}
-
-// فتح مودال طلب الخدمة
-function openServiceModal(serviceName) {
-    const modal = document.getElementById('serviceModal');
-    const serviceNameInput = document.getElementById('serviceName');
-    
-    serviceNameInput.value = serviceName;
-    modal.classList.add('active');
-    document.body.classList.add('no-scroll');
-    
-    gsap.from(modal.querySelector('.modal-content'), {
-        opacity: 0,
-        y: 50,
-        duration: 0.5,
-        ease: "back.out(1.7)"
-    });
-}
-
-// إغلاق مودال الخدمة
-function closeServiceModal() {
-    const modal = document.getElementById('serviceModal');
-    
-    gsap.to(modal.querySelector('.modal-content'), {
-        opacity: 0,
-        y: 50,
-        duration: 0.3,
-        ease: "power2.in",
-        onComplete: () => {
-            modal.classList.remove('active');
-            document.body.classList.remove('no-scroll');
-        }
-    });
-}
-
-// إرسال طلب الخدمة
-function submitServiceRequest() {
-    const form = document.getElementById('serviceForm');
-    const submitBtn = form.querySelector('.btn-submit-service');
-    const originalText = submitBtn.innerHTML;
-    
-    // عرض حالة التحميل
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
-    submitBtn.disabled = true;
-    
-    // محاكاة إرسال البيانات (في الواقع سيتم استخدام AJAX)
-    setTimeout(() => {
-        // عرض رسالة النجاح
-        Swal.fire({
-            title: 'تم إرسال طلبك بنجاح!',
-            text: 'سيتم التواصل معك خلال 24 ساعة لتأكيد التفاصيل',
-            icon: 'success',
-            confirmButtonText: 'حسناً',
-            customClass: {
-                confirmButton: 'btn btn-primary'
-            },
-            buttonsStyling: false
-        });
-        
-        // إعادة تعيين النموذج
-        form.reset();
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        closeServiceModal();
-    }, 2000);
-}
-
-// عرض تفاصيل الخدمة
-function showServiceDetails(serviceId) {
-    // يمكنك إضافة بيانات تفصيلية لكل خدمة هنا
-    const serviceDetails = {
-        '1': {
-            title: 'حزمة الهوية البصرية الكاملة',
-            description: 'هذه الحزمة تشمل كل ما تحتاجه لبناء هوية بصرية قوية ومتماسكة لعلامتك التجارية، بدءاً من تصميم الشعار وحتى دليل الاستخدام.',
-            features: [
-                'تصميم شعار احترافي بثلاث مفاهيم مختلفة',
-                'دليل استخدام الهوية البصرية (PDF + طباعة)',
-                'تصميم بطاقات العمل والورق الرسمي',
-                'ملفات مصدرية (AI, PSD, PDF)',
-                '3 مراجعات مجانية خلال عملية التصميم',
-                'تسليم خلال 5-7 أيام عمل'
-            ],
-            price: '1,500 - 3,000 ر.س'
-        },
-        '2': {
-            title: 'إعلان موشن جرافيك',
-            description: 'إعلان متحرك احترافي يجذب انتباه جمهورك ويعبر عن رسالة علامتك التجارية بطريقة إبداعية وجذابة.',
-            features: [
-                '30-60 ثانية رسوم متحركة عالية الجودة',
-                'سيناريو إبداعي واحترافي',
-                'مؤثرات صوتية وموسيقى تتناسب مع الهوية',
-                '3 سيناريوهات مختلفة للاختيار منها',
-                'تعديلات غير محدودة حتى الإرضاء',
-                'تسليم خلال 7-10 أيام عمل'
-            ],
-            price: '2,500 - 5,000 ر.س'
-        },
-        '3': {
-            title: 'مونتاج فيديو احترافي',
-            description: 'تحويل لقطاتك الفيديوية إلى محتوى احترافي جاهز للنشر على جميع المنصات مع إضافة المؤثرات والتحسينات اللازمة.',
-            features: [
-                'مونتاج فيديو حتى 5 دقائق',
-                'إضافة مؤثرات بصرية ونصوص متحركة',
-                'تحسين جودة الصوت وإضافة موسيقى',
-                '3 نسخ مختلفة للاختيار منها',
-                'تنسيقات متعددة (MP4, MOV, للوسائط الاجتماعية)',
-                'تسليم خلال 3-5 أيام عمل'
-            ],
-            price: '1,200 - 2,500 ر.س'
-        },
-        '4': {
-            title: 'حزمة وسائل التواصل',
-            description: 'حل متكامل لإدارة محتوى وسائل التواصل الاجتماعي الخاص بعلامتك التجارية بتصاميم احترافية وجذابة.',
-            features: [
-                '10 تصاميم شهرياً (منشورات، ستوريات، بانرات)',
-                'صور ومنشورات احترافية متناسقة مع الهوية',
-                'تصاميم مخصصة للمناسبات والأحداث',
-                'تعديلات غير محدودة على التصاميم',
-                'ملفات جاهزة للنشر (PNG, JPG, MP4)',
-                'تسليم دوري حسب الجدول المتفق عليه'
-            ],
-            price: '900 - 1,800 ر.س/شهر'
-        }
-    };
-    
-    const service = serviceDetails[serviceId] || {
-        title: 'تفاصيل الخدمة',
-        description: 'لا تتوفر تفاصيل إضافية لهذه الخدمة حالياً.',
-        features: [],
-        price: 'غير محدد'
-    };
-    
-    // عرض التفاصيل في SweetAlert
-    let featuresHTML = '';
-    service.features.forEach(feature => {
-        featuresHTML += `<li><i class="fas fa-check-circle"></i> ${feature}</li>`;
-    });
-    
-    Swal.fire({
-        title: service.title,
-        html: `
-            <p class="service-detail-description">${service.description}</p>
-            <div class="service-detail-features">
-                <h4>المميزات:</h4>
-                <ul>${featuresHTML}</ul>
-            </div>
-            <div class="service-detail-price">
-                <h4>السعر:</h4>
-                <p>${service.price}</p>
-            </div>
-        `,
-        icon: 'info',
-        confirmButtonText: 'طلب الخدمة',
-        showCancelButton: true,
-        cancelButtonText: 'إغلاق',
-        customClass: {
-            confirmButton: 'btn btn-primary',
-            cancelButton: 'btn btn-outline'
-        },
-        buttonsStyling: false
-    }).then((result) => {
-        if (result.isConfirmed) {
-            openServiceModal(service.title);
-        }
-    });
-}
 
 // تعديل الدالة loadDynamicData لتشمل تهيئة قسم الخدمات
 function loadDynamicData() {
@@ -1307,9 +942,9 @@ function loadDynamicData() {
     loadPortfolio();
     initPortfolioLightbox();
     initContactForm();
-    initServicesSection();
+    initStatsCounter(); // إضافة هذا السطر
     // Update copyright year
-document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('year').textContent = new Date().getFullYear();
 }
 
 // Update copyright year
@@ -1508,3 +1143,106 @@ function initHeaderScroll() {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// تحسين عداد الأرقام
+function initStatsCounter() {
+    const statCards = document.querySelectorAll('.stat-card');
+    
+    statCards.forEach((card, index) => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // تأثيرات الحركة للبطاقة
+                    gsap.from(card, {
+                        opacity: 0,
+                        y: 50,
+                        scale: 0.9,
+                        duration: 0.8,
+                        ease: "back.out(1.7)",
+                        delay: index * 0.1
+                    });
+                    
+                    // بدء العداد
+                    startCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        
+        observer.observe(card);
+    });
+}
+
+function startCounter(card) {
+    const numberElement = card.querySelector('.stat-number');
+    const targetNumber = parseInt(numberElement.dataset.count);
+    const duration = 2000; // مدة العد بالمللي ثانية
+    const startTime = performance.now();
+    
+    function updateCounter(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        const currentNumber = Math.floor(progress * targetNumber);
+        
+        numberElement.textContent = currentNumber.toLocaleString();
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+        } else {
+            numberElement.textContent = targetNumber.toLocaleString();
+            
+            // تأثيرات عند اكتمال العداد
+            gsap.to(numberElement, {
+                scale: 1.1,
+                duration: 0.3,
+                yoyo: true,
+                repeat: 1
+            });
+        }
+    }
+    
+    requestAnimationFrame(updateCounter);
+}
