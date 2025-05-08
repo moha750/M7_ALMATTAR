@@ -857,12 +857,15 @@ function initHeroAnimations() {
 
 
 
+
+
+
 // إضافة هذه الدوال إلى ملف script.js
 function initContactForm() {
     const contactForm = document.getElementById('enhancedContactForm');
     
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // إظهار حالة التحميل
@@ -874,85 +877,62 @@ function initContactForm() {
             submitLoader.style.display = 'block';
             submitBtn.disabled = true;
             
-            // محاكاة إرسال النموذج (في الواقع سيكون لديك اتصال AJAX هنا)
-            setTimeout(() => {
+            // جمع بيانات النموذج
+            const formData = {
+                "الاسم": document.getElementById('contactName').value.trim(),
+                "البريد الإلكتروني": document.getElementById('contactEmail').value.trim(),
+                "رقم الهاتف": document.getElementById('contactPhone').value.trim() || '',
+                "الموضوع": document.getElementById('contactSubject').value.trim() || '',
+                "الرسالة": document.getElementById('contactMessage').value.trim(),
+                "التاريخ": new Date().toLocaleString('ar-SA') // تاريخ الإرسال
+            };
+            
+            try {
+                // استبدل هذا الرابط برابط SheetDB API الخاص بك
+                const sheetDbUrl = 'https://sheetdb.io/api/v1/dnr96icde5zgz';
+                
+                const response = await fetch(sheetDbUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ data: [formData] }) // يجب أن تكون البيانات داخل مصفوفة data
+                });
+                
+                const result = await response.json();
+                
+                if (result.created > 0) {
+                    // إظهار رسالة النجاح
+                    const successMessage = document.getElementById('formSuccess');
+                    successMessage.textContent = 'شكراً لك! تم إرسال رسالتك بنجاح.';
+                    successMessage.style.display = 'block';
+                    
+                    // إعادة تعيين النموذج
+                    contactForm.reset();
+                } else {
+                    throw new Error('فشل في حفظ البيانات');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                const successMessage = document.getElementById('formSuccess');
+                successMessage.textContent = '⚠ حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.';
+                successMessage.style.color = '#e74c3c';
+                successMessage.style.display = 'block';
+            } finally {
                 // إخفاء حالة التحميل
                 submitLoader.style.display = 'none';
-                submitText.textContent = 'تم الإرسال بنجاح!';
-                submitBtn.style.backgroundColor = '#2ecc71';
+                submitText.textContent = 'إرسال الرسالة';
+                submitBtn.disabled = false;
                 
-                // إظهار رسالة النجاح
-                const successMessage = document.getElementById('formSuccess');
-                successMessage.textContent = 'شكراً لك! سنتواصل معك قريباً.';
-                successMessage.style.display = 'block';
-                
-                // إعادة تعيين النموذج بعد 3 ثوان
+                // إخفاء الرسالة بعد 5 ثوان
                 setTimeout(() => {
-                    contactForm.reset();
-                    submitText.textContent = 'إرسال الرسالة';
-                    submitBtn.style.backgroundColor = '';
-                    submitBtn.disabled = false;
+                    const successMessage = document.getElementById('formSuccess');
                     successMessage.style.display = 'none';
-                }, 3000);
-            }, 2000);
+                }, 5000);
+            }
         });
 
-        // داخل دالة initContactForm()
-contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // التحقق من الصحة
-    const isNameValid = validateName();
-    const isEmailValid = validateEmail();
-    const isMessageValid = validateMessage();
-    
-    if (!isNameValid || !isEmailValid || !isMessageValid) {
-        return;
-    }
-    
-    // إظهار حالة التحميل
-    const submitBtn = contactForm.querySelector('.submit-btn');
-    const submitLoader = submitBtn.querySelector('.submit-loader');
-    const submitText = submitBtn.querySelector('span');
-    
-    submitText.textContent = 'جاري الإرسال...';
-    submitLoader.style.display = 'block';
-    submitBtn.disabled = true;
-    
-    // إنشاء FormData لإرسال الملفات
-    const formData = new FormData();
-    formData.append('name', document.getElementById('contactName').value);
-    formData.append('email', document.getElementById('contactEmail').value);
-    formData.append('phone', document.getElementById('contactPhone').value || '');
-    formData.append('subject', document.getElementById('contactSubject').value || '');
-    formData.append('message', document.getElementById('contactMessage').value);
-    
-    if (fileInput.files[0]) {
-        formData.append('file', fileInput.files[0]);
-    }
-    
-    // هنا يمكنك إضافة كود AJAX لإرسال البيانات إلى الخادم
-    // محاكاة الإرسال (لأغراض العرض فقط)
-    setTimeout(() => {
-        submitLoader.style.display = 'none';
-        submitText.textContent = 'تم الإرسال بنجاح!';
-        submitBtn.style.backgroundColor = '#2ecc71';
-        
-        const successMessage = document.getElementById('formSuccess');
-        successMessage.textContent = 'شكراً لك! سنتواصل معك قريباً.';
-        successMessage.style.display = 'block';
-        
-        // إعادة تعيين النموذج بعد 3 ثوان
-        setTimeout(() => {
-            contactForm.reset();
-            submitText.textContent = 'إرسال الرسالة';
-            submitBtn.style.backgroundColor = '';
-            submitBtn.disabled = false;
-            successMessage.style.display = 'none';
-        }, 3000);
-    }, 2000);
-});
-        
         // التحقق من الصحة أثناء الكتابة
         const nameInput = document.getElementById('contactName');
         const emailInput = document.getElementById('contactEmail');
@@ -1333,7 +1313,6 @@ function startCounter(card) {
     
     requestAnimationFrame(updateCounter);
 }
-
 
 
 

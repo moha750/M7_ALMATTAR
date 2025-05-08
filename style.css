@@ -519,17 +519,6 @@ img {
     transition: transform 0.5s ease;
 }
 
-.hero-badge {
-    position: absolute;
-    bottom: -20px;
-    left: -20px;
-    background: #dda853;
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: 0 10px 20px rgba(221, 168, 83, 0.5);
-    animation: pulse 2s infinite;
-}
-
 .badge-content {
     display: flex;
     flex-direction: column;
@@ -621,7 +610,7 @@ img {
 /* Animations */
 @keyframes float {
     0% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+    50% { transform: translateY(-7px); }
     100% { transform: translateY(0px); }
 }
 
@@ -3562,7 +3551,7 @@ img {
     left: -20px;
     background: linear-gradient(135deg, #dda853 0%, #f5c266 100%);
     border-radius: 15px;
-    padding: 1.5rem;
+    padding: 1rem;
     box-shadow: 0 15px 30px rgba(221, 168, 83, 0.5);
     animation: pulse 2s infinite;
     z-index: 3;
