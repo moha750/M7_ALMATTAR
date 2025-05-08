@@ -2421,6 +2421,19 @@ img {
     overflow: hidden;
 }
 
+.contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.contact-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
 .contact-title {
     text-align: center;
     font-size: 2.5rem;
@@ -2439,43 +2452,6 @@ img {
     height: 4px;
     background: #27548a;
     border-radius: 2px;
-}
-
-.contact-pattern {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(rgba(86, 129, 188, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-    z-index: 0;
-}
-
-.contact-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    position: relative;
-    z-index: 1;
-}
-
-.contact-header {
-    text-align: center;
-    margin-bottom: 4rem;
-}
-
-.contact-header .section-title {
-    color: var(--dark);
-    font-size: 2.8rem;
-    margin-bottom: 1rem;
-}
-
-.contact-header .section-subtitle {
-    color: var(--dark-light);
-    font-size: 1.2rem;
-    max-width: 700px;
-    margin: 0 auto;
 }
 
 .contact-content {
