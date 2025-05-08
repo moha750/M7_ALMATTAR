@@ -131,8 +131,56 @@ const siteData = {
     ],
 };
 
+// تأثير الكتابة المتحركة
+function initTypingEffect() {
+    const typingText = document.querySelector('.highlight');
+    if (!typingText) return;
+
+    const professions = [
+        "مُصمم جرافيك",
+        "مونتير فيديو",
+        "موشن جرافيكر",
+        "مُعلق صوتي",
+        "مطور ويب"
+    ];
+    
+    let currentProfessionIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let typingSpeed = 100;
+
+    function type() {
+        const currentText = professions[currentProfessionIndex];
+        
+        if (isDeleting) {
+            typingText.textContent = currentText.substring(0, charIndex - 1);
+            charIndex--;
+            typingSpeed = 50;
+        } else {
+            typingText.textContent = currentText.substring(0, charIndex + 1);
+            charIndex++;
+            typingSpeed = 100;
+        }
+
+        if (!isDeleting && charIndex === currentText.length) {
+            isDeleting = true;
+            typingSpeed = 1500;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            currentProfessionIndex = (currentProfessionIndex + 1) % professions.length;
+            typingSpeed = 500;
+        }
+
+        setTimeout(type, typingSpeed);
+    }
+
+    // بدء التأثير بعد تحميل الصفحة
+    setTimeout(type, 1000);
+}
+
 // تنفيذ الكود عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', function() {
+    initTypingEffect(); // استدعاء تأثير الكتابة
     initHeroAnimations();
     loadDynamicData();
     createParticles(document.getElementById('skillsParticles'), 30);
@@ -145,11 +193,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // تأثيرات Hero Section
 function initHeroAnimations() {
+    // تأثير الكتابة للعنوان
+    const titleLines = document.querySelectorAll('.title-line');
+    titleLines.forEach((line, index) => {
+        gsap.from(line, {
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            delay: index * 0.2,
+            ease: "back.out(1.2)"
+        });
+    });
+
+    // تأثير الصورة
     const heroImage = document.querySelector('.hero-image');
     if (heroImage) {
         heroImage.addEventListener('mouseenter', () => {
             gsap.to(heroImage.querySelector('img'), {
                 scale: 1.05,
+                duration: 0.5
+            });
+            gsap.to('.image-frame', {
+                borderColor: 'rgba(255, 255, 255, 0.3)',
                 duration: 0.5
             });
         });
@@ -159,8 +224,30 @@ function initHeroAnimations() {
                 scale: 1,
                 duration: 0.5
             });
+            gsap.to('.image-frame', {
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                duration: 0.5
+            });
         });
     }
+
+    // تأثير الأيقونات الاجتماعية
+    const socialIcons = document.querySelectorAll('.social-icon');
+    socialIcons.forEach(icon => {
+        icon.addEventListener('mouseenter', () => {
+            gsap.to(icon, {
+                y: -5,
+                duration: 0.3
+            });
+        });
+        
+        icon.addEventListener('mouseleave', () => {
+            gsap.to(icon, {
+                y: 0,
+                duration: 0.3
+            });
+        });
+    });
 }
 
 
@@ -1246,3 +1333,9 @@ function startCounter(card) {
     
     requestAnimationFrame(updateCounter);
 }
+
+
+
+
+
+
