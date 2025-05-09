@@ -3648,7 +3648,10 @@ img {
 }
 
 .highlight {
-    color: #dda853;
+    background: #DDA853;
+    background: linear-gradient(to left, #DDA853 0%, #F5EEDC 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-weight: 600;
     display: inline-block;
     min-width: 200px;
