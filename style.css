@@ -2252,7 +2252,7 @@ img {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 2.5rem;
     margin-top: 4rem;
 }
