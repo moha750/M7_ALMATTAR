@@ -3649,7 +3649,7 @@ img {
 
 .highlight {
     background: #DDA853;
-    background: linear-gradient(to left, #DDA853 0%, #F5EEDC 50%);
+    background: linear-gradient(to left, #DDA853 0%, #F5EEDC 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 600;
