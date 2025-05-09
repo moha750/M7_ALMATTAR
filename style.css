@@ -1181,7 +1181,7 @@ img {
 
 .portfolio-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
@@ -3698,14 +3698,6 @@ img {
 
 
 
-
-
-
-
-
-
-
-
 /* Loader Styles */
 .page-loader {
     position: fixed;
@@ -3734,7 +3726,7 @@ img {
 .loader-logo {
     width: 100px;
     margin: 0 auto 2rem;
-    animation: bounce 2s infinite;
+    animation: bounce1 2s infinite;
 }
 
 .loader-logo img {
@@ -3749,26 +3741,26 @@ img {
     border-top-color: #dda853;
     border-radius: 50%;
     margin: 0 auto 1.5rem;
-    animation: spin 1s linear infinite;
+    animation: spin1 1s linear infinite;
 }
 
 .loader-text {
     font-size: 1.2rem;
     font-weight: 500;
     color: #f5eedc;
-    animation: pulse 1.5s infinite;
+    animation: pulse1 1.5s infinite;
 }
 
-@keyframes spin {
+@keyframes spin1 {
     to { transform: rotate(360deg); }
 }
 
-@keyframes bounce {
+@keyframes bounce1 {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-15px); }
 }
 
-@keyframes pulse {
+@keyframes pulse1 {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
 }
