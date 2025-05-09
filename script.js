@@ -180,6 +180,7 @@ function initTypingEffect() {
 
 // تنفيذ الكود عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', function() {
+    initNavLinks();
     initTypingEffect(); // استدعاء تأثير الكتابة
     initHeroAnimations();
     loadDynamicData();
@@ -1004,6 +1005,7 @@ if (fileInput) {
 
 // تعديل الدالة loadDynamicData لتشمل تهيئة قسم الخدمات
 function loadDynamicData() {
+    initLoader(); // Add this line
     initHeaderScroll();
     loadSkillsSection();
     loadPortfolio();
@@ -1318,3 +1320,76 @@ function startCounter(card) {
 
 
 
+function initNavLinks() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section');
+    
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        },
+        { rootMargin: '-100px 0px -50% 0px' }
+    );
+    
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+    
+    // الانتقال السلس عند النقر
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                window.scrollTo({
+                    top: targetSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// Loader Functionality
+function initLoader() {
+    const loader = document.querySelector('.page-loader');
+    
+    // Hide loader when page is fully loaded after 5 seconds
+    setTimeout(function() {
+        loader.classList.add('fade-out');
+        
+        // Remove loader from DOM after animation completes
+        setTimeout(function() {
+            loader.style.display = 'none';
+        }, 500);
+    }, 5000); // Changed from 1000 to 5000 (5 seconds)
+}
+
+// Call the loader function when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initLoader();
+    // ... rest of your existing code
+});
