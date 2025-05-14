@@ -13,84 +13,84 @@ const siteData = {
     portfolio: [
         { 
             category: "graphic", 
-            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "تصميم شعار", 
-            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
-            client: "مطعم البحر الأحمر",
-            date: "يناير 2023",
-            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
+            image: "post1.jfif", 
+            title: "تصميم انفوجرافيك", 
+            description: "انفوجرافيك لجمعية البر بالأحساء",
+            client: "جمعية البر بالأحساء",
+            date: "يوليو 2024",
+            tags: [ "انفوجرافيك", "تصميم جرافيك"],
+            externalLink: "https://x.com/Takamol01/status/1810369796976029714/photo/1"
+
         },
         { 
             category: "graphic", 
-            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "تصميم شعار", 
-            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
-            client: "مطعم البحر الأحمر",
-            date: "يناير 2023",
-            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
+            image: "post2.jfif", 
+            title: "بوست جرافيك", 
+            description: "تصميم جرافيك بمناسبة يوم المعلم العالمي",
+            client: "نادي أدِيب الطُلابي",
+            date: "أكتوبر 2024",
+            tags: [ "تصميم جرافيك"],
+            externalLink: "https://x.com/AB_KFU/status/1842610108611563661/photo/1"
         },
         { 
             category: "graphic", 
-            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "تصميم شعار", 
-            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
-            client: "مطعم البحر الأحمر",
-            date: "يناير 2023",
-            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
-        },
-        { 
-            category: "graphic", 
-            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "تصميم شعار", 
-            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
-            client: "مطعم البحر الأحمر",
-            date: "يناير 2023",
-            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
-        },
-        { 
-            category: "graphic", 
-            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "تصميم شعار", 
-            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
-            client: "مطعم البحر الأحمر",
-            date: "يناير 2023",
-            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
-        },
-        { 
-            category: "graphic", 
-            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "تصميم شعار", 
-            description: "هوية بصرية لمطعم شهير متخصص في المأكولات البحرية",
-            client: "مطعم البحر الأحمر",
-            date: "يناير 2023",
-            tags: ["شعار", "هوية بصرية", "تصميم جرافيك"]
+            image: "post3.jfif", 
+            title: "بوست جرافيك", 
+            description: "تصميم جرافيك بمناسبة يوم العلم السعودي",
+            client: "نادي أدِيب الطُلابي",
+            date: "مارس 2025",
+            tags: ["تصميم جرافيك"],
+            externalLink: "https://x.com/AB_KFU/status/1899447393923596744/photo/1"
         },
         { 
             category: "motion", 
-            image: "https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "إعلان متحرك", 
-            description: "إعلان ترويجي لمنتج جديد لشركة تكنولوجيا",
-            client: "شركة تكنو",
-            date: "مارس 2023",
-            tags: ["موشن جرافيك", "إعلان", "رسوم متحركة"]
+            image: "motion1.png", 
+            title: "موشن جرافيك", 
+            description: "إعلان بمناسبة حلول عيد الفطر المبارك",
+            client: "نادي أدِيب الطُلابي",
+            date: "أبريل 2023",
+            tags: ["موشن جرافيك", "إعلان", "رسوم متحركة"],
+            externalLink: "https://x.com/AB_KFU/status/1649155161476980749/video/1"
         },
         { 
             category: "video", 
-            image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
+            image: "video1.png", 
             title: "فيديو ترويجي", 
-            description: "فيديو ترويجي لمنتج جديد مع تأثيرات بصرية متقدمة",
-            client: "شركة إنتاج",
-            date: "مايو 2023",
-            tags: ["مونتاج", "فيديو", "تأثيرات بصرية"]
+            description: "فيديو ترويجي لمهرجان ليالي كفو الرمضانية",
+            client: "نادي أدِيب الطُلابي",
+            date: "مارس 2025",
+            tags: ["مونتاج", "فيديو", "تأثيرات بصرية"],
+            externalLink: "https://x.com/AB_KFU/status/1903880080692330613"
+        },
+        { 
+            category: "video", 
+            image: "voice1.png", 
+            title: "فيديو ترويجي", 
+            description: "فيديو ترويجي لمؤسسة عمق الصورة",
+            client: "مؤسسة عمق الصورة",
+            date: "فبراير 2025",
+            tags: ["مونتاج", "فيديو", "تأثيرات بصرية"],
+            externalLink: "https://www.instagram.com/reel/DGVwzMTN9Tm/?igsh=MXF0dTl0a3VubTdiaw=="
         },
         { 
             category: "voice", 
-            image: "https://images.unsplash.com/photo-1558379850-823f103f866a?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
+            image: "voice1.png", 
             title: "إعلان صوتي", 
-            description: "تسجيل صوتي لإعلان إذاعي لشركة اتصالات",
-            client: "شركة اتصالات",
-            date: "أبريل 2023",
-            tags: ["تعليق صوتي", "إعلان إذاعي", "تسجيل صوتي"]
+            description: "تسجيل صوتي بمناسبة يوم التأسيس",
+            client: "مؤسسة عمق الصورة",
+            date: "فبراير 2025",
+            tags: ["تعليق صوتي", "إعلان", "تسجيل صوتي"],
+            externalLink: "https://www.instagram.com/reel/DGVwzMTN9Tm/?igsh=MXF0dTl0a3VubTdiaw=="
+        },
+        { 
+            category: "voice", 
+            image: "voice2.png", 
+            title: "إعلان صوتي", 
+            description: "تسجيل صوتي لفيلم قصير",
+            client: "نادي أدِيب الطُلابي",
+            date: "يونيو 2025",
+            tags: ["تعليق صوتي", "إعلان", "تسجيل صوتي"],
+            externalLink: "https://x.com/AB_KFU/status/1881395225622720931"
         },
         { 
             category: "web", 
@@ -99,35 +99,29 @@ const siteData = {
             description: "تصميم وتطوير موقع إلكتروني لنادي أدِيب الطُلابي بجامعة الملك فيصل",
             client: "نادي أدِيب الطُلابي",
             date: "مارس 2025",
-            tags: ["تطوير ويب", "تصميم موقع", "واجهة مستخدم"]
+            tags: ["تطوير ويب", "تصميم موقع", "واجهة مستخدم"],
+            externalLink: "https://www.adeeb.club/"
         },
         { 
-            category: "graphic", 
-            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "بروشور دعائي", 
-            description: "تصميم بروشور لمؤتمر تقني مع تصميمات جرافيكية مبدعة",
-            client: "مؤتمر تك",
-            date: "ديسمبر 2022",
-            tags: ["بروشور", "تصميم مطبوعات", "جرافيك"]
-        },
-        { 
-            category: "motion", 
-            image: "https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "عرض تقديمي", 
-            description: "عرض تقديمي متحرك لشركة استثمارية",
-            client: "شركة استثمار",
+            category: "web", 
+            image: "web2.png", 
+            title: "كٌتيب إلكتروني", 
+            description: "تصميم وتطوير كٌتيب إلكتروني لأستعراض التقرير السنوي لانجازات النادي",
+            client: "نادي أدِيب الطُلابي",
             date: "يونيو 2023",
-            tags: ["عرض تقديمي", "موشن جرافيك", "شرائح متحركة"]
+            tags: ["تطوير ويب", "تصميم موقع", "واجهة مستخدم"],
+            externalLink: "https://moha750.github.io/adeabBook/"
         },
         { 
-            category: "video", 
-            image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "فيديو تعليمي", 
-            description: "فيديو تعليمي مع رسوم متحركة وتأثيرات بصرية",
-            client: "منصة تعليمية",
-            date: "يوليو 2023",
-            tags: ["فيديو تعليمي", "مونتاج", "رسوم متحركة"]
-        }
+            category: "web", 
+            image: "web3.png", 
+            title: "تهنئة إلكترونية", 
+            description: "تصميم وتطوير تهنئة إلكترونية بمناسبة عيد الفطر المبارك لأعضاء النادي",
+            client: "نادي أدِيب الطُلابي",
+            date: "مارس 2025",
+            tags: ["تطوير ويب", "تصميم موقع", "واجهة مستخدم"],
+            externalLink: "https://moha750.github.io/eid_adeeb/"
+        },
     ],
 };
 
@@ -283,7 +277,7 @@ function loadPortfolio() {
                             <span><i class="fas fa-user"></i> ${item.client}</span>
                             <span><i class="fas fa-calendar"></i> ${item.date}</span>
                         </div>
-                        <a href="#" class="btn btn-view" data-project="${item.title}">
+                        <a href="#portfolio-item-${index}" class="btn btn-view" data-project="${index}">
                             <i class="fas fa-expand"></i> عرض المشروع
                         </a>
                     </div>
@@ -433,6 +427,9 @@ function initPortfolioLightbox() {
                     <p><i class="fas fa-tag"></i> <span class="info-category"></span></p>
                 </div>
                 <div class="project-tags"></div>
+                <a href="#" class="btn-contact" target="_blank">
+                    <i class="fas fa-eye"></i> عرض العمل بالكامل
+                </a>
             </div>
         </div>
     `;
@@ -498,12 +495,12 @@ function initPortfolioLightbox() {
         showProjectInLightbox(currentIndex);
     }
     
-    function showProjectInLightbox(index) {
+function showProjectInLightbox(index) {
         if (!filteredItems.length) return;
         
         const item = filteredItems[index];
-        const projectTitle = item.querySelector('h3').textContent;
-        const project = siteData.portfolio.find(p => p.title === projectTitle);
+        const projectIndex = item.dataset.index;
+        const project = siteData.portfolio[projectIndex];
         
         if (!project) return;
         
@@ -514,6 +511,16 @@ function initPortfolioLightbox() {
         const lightboxDate = lightbox.querySelector('.info-date');
         const lightboxCategory = lightbox.querySelector('.info-category');
         const tagsContainer = lightbox.querySelector('.project-tags');
+        const viewProjectBtn = lightbox.querySelector('.btn-contact');
+        
+        // تحديث زر "عرض العمل بالكامل" ليشير إلى رابط العمل
+        if (project.externalLink) {
+            viewProjectBtn.href = project.externalLink;
+            viewProjectBtn.target = '_blank';
+            viewProjectBtn.style.display = 'inline-flex';
+        } else {
+            viewProjectBtn.style.display = 'none';
+        }
         
         gsap.to(lightboxImg, { opacity: 0, duration: 0.3 });
         lightboxImg.src = project.image;
