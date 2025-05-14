@@ -258,7 +258,8 @@ function loadPortfolio() {
     totalCountElement.textContent = siteData.portfolio.length;
     
     let shownCount = 0;
-    const initialItemsToShow = 6;
+    // تغيير عدد العناصر المعروضة ابتدائياً بناءً على حجم الشاشة
+    const initialItemsToShow = window.innerWidth < 768 ? siteData.portfolio.length : 6;
     
     siteData.portfolio.forEach((item, index) => {
         const portfolioHTML = `
@@ -285,19 +286,17 @@ function loadPortfolio() {
             </div>
         `;
         
-        if (index < initialItemsToShow) {
-            portfolioContainer.insertAdjacentHTML('beforeend', portfolioHTML);
-            shownCount++;
-        } else {
-            portfolioContainer.insertAdjacentHTML('beforeend', 
-                portfolioHTML.replace('class="portfolio-item"', 'class="portfolio-item" style="display:none"'));
-        }
+        portfolioContainer.insertAdjacentHTML('beforeend', portfolioHTML);
+        shownCount++;
     });
     
     shownCountElement.textContent = shownCount;
     initPortfolioFilter();
     initPortfolioSearch();
-    initLoadMore();
+    // إخفاء زر "تحميل المزيد" على الجوال
+    if (window.innerWidth < 768) {
+        document.querySelector('.btn-load-more').style.display = 'none';
+    }
 }
 
 function initPortfolioFilter() {
@@ -365,9 +364,15 @@ function initLoadMore() {
     const loadMoreBtn = document.querySelector('.btn-load-more');
     if (!loadMoreBtn) return;
     
+    // إخفاء الزر إذا كان العرض أقل من 768px (الجوال)
+    if (window.innerWidth < 768) {
+        loadMoreBtn.style.display = 'none';
+        return;
+    }
+    
     const portfolioItems = document.querySelectorAll('.portfolio-item');
     let itemsPerLoad = 3;
-    let visibleItems = document.querySelectorAll('.portfolio-item[style*="display: block"], .portfolio-item:not([style])').length;
+    let visibleItems = 6; // البدء بعدد العناصر المعروضة ابتدائياً
     
     loadMoreBtn.addEventListener('click', () => {
         let loadedCount = 0;
@@ -376,10 +381,10 @@ function initLoadMore() {
             if (loadedCount >= itemsPerLoad) return;
             
             if (item.style.display === 'none') {
-                gsap.to(item, {
-                    display: 'block',
-                    opacity: 1,
-                    y: 0,
+                item.style.display = 'block';
+                gsap.from(item, {
+                    opacity: 0,
+                    y: 20,
                     duration: 0.5,
                     delay: index % itemsPerLoad * 0.1
                 });
@@ -1428,3 +1433,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+// إضافة هذا الكود في نهاية ملف script.js
+window.addEventListener('resize', function() {
+    if (window.innerWidth < 768) {
+        // على الجوال، عرض جميع العناصر وإخفاء زر "تحميل المزيد"
+        document.querySelectorAll('.portfolio-item').forEach(item => {
+            item.style.display = 'block';
+        });
+        document.querySelector('.btn-load-more').style.display = 'none';
+        document.querySelector('.shown-count').textContent = siteData.portfolio.length;
+    } else {
+        // على الأجهزة الكبيرة، عرض 6 عناصر ابتدائياً وإظهار الزر
+        let visibleCount = 0;
+        document.querySelectorAll('.portfolio-item').forEach((item, index) => {
+            if (index < 6) {
+                item.style.display = 'block';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        document.querySelector('.btn-load-more').style.display = 'flex';
+        document.querySelector('.shown-count').textContent = visibleCount;
+    }
+});

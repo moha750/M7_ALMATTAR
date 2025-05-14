@@ -4167,3 +4167,68 @@ img {
         flex: 1;
     }
 }
+
+@media (max-width: 768px) {
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .portfolio-item {
+    height: 200px;
+  }
+  
+  .portfolio-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .portfolio-filter {
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  
+  .portfolio-search {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  .portfolio-footer {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .btn-load-more {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .portfolio-stats {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-item {
+    height: 180px;
+  }
+  
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .portfolio-overlay h3 {
+    font-size: 1.3rem;
+  }
+  
+  .portfolio-overlay p {
+    font-size: 0.8rem;
+  }
+  
+  .btn-view {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
