@@ -741,7 +741,7 @@ img {
 
 .resume-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 2.5rem;
     margin-bottom: 3rem;
 }
@@ -3764,4 +3764,406 @@ img {
 @keyframes pulse1 {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* تحسينات نافذة تحميل السيرة الذاتية */
+.swal2-popup.download-cv-popup {
+    background: linear-gradient(135deg, #f5eedc 0%, #ffffff 100%);
+    border-radius: 20px;
+    border: 2px solid #dda853;
+    box-shadow: 0 15px 40px rgba(39, 84, 138, 0.3);
+    max-width: 650px;
+    width: 90%;
+    padding: 2.5rem;
+    overflow: hidden;
+}
+
+.download-cv-popup .swal2-title {
+    color: #27548a;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.download-cv-popup .swal2-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: #dda853;
+    border-radius: 2px;
+}
+
+.download-cv-popup .swal2-content {
+    color: #27548a;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.download-cv-popup .swal2-actions {
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.download-cv-popup .swal2-confirm {
+    background: #dda853 !important;
+    color: #f5eedc !important;
+    padding: 0.8rem 2.5rem !important;
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    border: none !important;
+    box-shadow: 0 5px 15px rgba(221, 168, 83, 0.4) !important;
+    transition: all 0.3s ease !important;
+}
+
+.download-cv-popup .swal2-confirm:hover {
+    background: #c5974a !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 25px rgba(221, 168, 83, 0.6) !important;
+}
+
+.download-cv-popup .swal2-cancel {
+    background: #27548a !important;
+    color: #f5eedc !important;
+    padding: 0.8rem 2rem !important;
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    border: none !important;
+    box-shadow: 0 5px 15px rgba(39, 84, 138, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.download-cv-popup .swal2-cancel:hover {
+    background: #1e426e !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 25px rgba(39, 84, 138, 0.5) !important;
+}
+
+.download-cv-popup .swal2-close {
+    color: #27548a !important;
+    font-size: 1.8rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.download-cv-popup .swal2-close:hover {
+    color: #dda853 !important;
+    transform: rotate(90deg) !important;
+}
+
+/* تأثيرات التحميل */
+.download-loading-popup {
+    background: linear-gradient(135deg, #093451 0%, #27548a 100%) !important;
+    color: #f5eedc !important;
+    border: 2px solid #dda853 !important;
+}
+
+.download-loading-popup .swal2-title {
+    color: #f5eedc !important;
+}
+
+.download-loading-popup .swal2-content {
+    color: rgba(245, 238, 220, 0.9) !important;
+}
+
+.download-loading-popup .swal2-spinner {
+    border-color: rgba(221, 168, 83, 0.3) !important;
+    border-top-color: #dda853 !important;
+}
+
+/* تأثيرات النجاح */
+.download-success-popup {
+    background: linear-gradient(135deg, #f5eedc 0%, #ffffff 100%) !important;
+    border: 2px solid #2ecc71 !important;
+}
+
+.download-success-popup .swal2-title {
+    color: #27548a !important;
+}
+
+.download-success-popup .swal2-content {
+    color: #27548a !important;
+}
+
+.download-success-popup .swal2-success-circular-line-left,
+.download-success-popup .swal2-success-circular-line-right,
+.download-success-popup .swal2-success-fix {
+    background-color: transparent !important;
+}
+
+.download-success-popup .swal2-success-line-tip,
+.download-success-popup .swal2-success-line-long {
+    background-color: #2ecc71 !important;
+}
+
+/* تأثيرات الرسوم المتحركة */
+@keyframes downloadPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.download-cv-popup {
+    animation: downloadPulse 3s infinite;
+}
+
+/* تصميم متعدد الخيارات */
+.download-options-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.download-option {
+    background: #27548a;
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    border: 2px solid rgba(245, 238, 220, 0.2);
+    cursor: pointer;
+}
+
+.download-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(39, 84, 138, 0.4);
+    border-color: #dda853;
+}
+
+.download-option i {
+    font-size: 2.5rem;
+    color: #dda853;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.download-option h4 {
+    color: #f5eedc;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.download-option p {
+    color: rgba(245, 238, 220, 0.8);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.download-option .btn-download {
+    background: #dda853;
+    color: #f5eedc;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.download-option .btn-download:hover {
+    background: #f5eedc;
+    color: #dda853;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(221, 168, 83, 0.4);
+}
+
+/* التكيف مع الشاشات الصغيرة */
+@media (max-width: 768px) {
+    .download-options-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .download-cv-popup .swal2-title {
+        font-size: 1.8rem;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* التأكد من أن الخبرات العملية تأخذ مساحة أكبر إذا لزم الأمر */
+.resume-column:first-child {
+    flex: 1.2;
+}
+
+.resume-column:last-child {
+    flex: 1;
+}
+
+/* التكيف مع الشاشات الصغيرة */
+@media (max-width: 992px) {
+    .resume-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .resume-column:first-child,
+    .resume-column:last-child {
+        flex: 1;
+    }
 }

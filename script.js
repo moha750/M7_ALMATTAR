@@ -94,11 +94,11 @@ const siteData = {
         },
         { 
             category: "web", 
-            image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80", 
-            title: "موقع تجاري", 
-            description: "تصميم وتطوير موقع إلكتروني لشركة ناشئة",
-            client: "شركة ناشئة",
-            date: "فبراير 2023",
+            image: "web1.png", 
+            title: "موقع رسمي", 
+            description: "تصميم وتطوير موقع إلكتروني لنادي أدِيب الطُلابي بجامعة الملك فيصل",
+            client: "نادي أدِيب الطُلابي",
+            date: "مارس 2025",
             tags: ["تطوير ويب", "تصميم موقع", "واجهة مستخدم"]
         },
         { 
@@ -1385,7 +1385,7 @@ function initLoader() {
         setTimeout(function() {
             loader.style.display = 'none';
         }, 500);
-    }, 5000); // Changed from 1000 to 5000 (5 seconds)
+    }, 2000); // Changed from 1000 to 5000 (5 seconds)
 }
 
 // Call the loader function when DOM is loaded
@@ -1393,3 +1393,31 @@ document.addEventListener('DOMContentLoaded', function() {
     initLoader();
     // ... rest of your existing code
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
