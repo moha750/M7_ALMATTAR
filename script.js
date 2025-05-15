@@ -1,129 +1,28 @@
+// بيانات المهارات الثابتة
 const siteData = {
-
-    // المهارات
     skills: [
         { name: "التصميم الجرافيكي", level: 95, icon: "fas fa-paint-brush" },
         { name: "الموشن جرافيك", level: 65, icon: "fas fa-film" },
         { name: "المونتاج المرئي", level: 85, icon: "fas fa-video" },
         { name: "التعليق الصوتي", level: 70, icon: "fas fa-microphone" },
         { name: "تطوير الويب", level: 75, icon: "fas fa-code" }
-    ],
-    
-    // معرض الأعمال
-    portfolio: [
-        { 
-            category: "graphic", 
-            image: "post1.jfif", 
-            title: "تصميم انفوجرافيك", 
-            description: "انفوجرافيك لجمعية البر بالأحساء",
-            client: "جمعية البر بالأحساء",
-            date: "يوليو 2024",
-            tags: [ "انفوجرافيك", "تصميم جرافيك"],
-            externalLink: "https://x.com/Takamol01/status/1810369796976029714/photo/1"
-
-        },
-        { 
-            category: "graphic", 
-            image: "post2.jfif", 
-            title: "بوست جرافيك", 
-            description: "تصميم جرافيك بمناسبة يوم المعلم العالمي",
-            client: "نادي أدِيب الطُلابي",
-            date: "أكتوبر 2024",
-            tags: [ "تصميم جرافيك"],
-            externalLink: "https://x.com/AB_KFU/status/1842610108611563661/photo/1"
-        },
-        { 
-            category: "graphic", 
-            image: "post3.jfif", 
-            title: "بوست جرافيك", 
-            description: "تصميم جرافيك بمناسبة يوم العلم السعودي",
-            client: "نادي أدِيب الطُلابي",
-            date: "مارس 2025",
-            tags: ["تصميم جرافيك"],
-            externalLink: "https://x.com/AB_KFU/status/1899447393923596744/photo/1"
-        },
-        { 
-            category: "motion", 
-            image: "motion1.png", 
-            title: "موشن جرافيك", 
-            description: "إعلان بمناسبة حلول عيد الفطر المبارك",
-            client: "نادي أدِيب الطُلابي",
-            date: "أبريل 2023",
-            tags: ["موشن جرافيك", "إعلان", "رسوم متحركة"],
-            externalLink: "https://x.com/AB_KFU/status/1649155161476980749/video/1"
-        },
-        { 
-            category: "video", 
-            image: "video1.png", 
-            title: "فيديو ترويجي", 
-            description: "فيديو ترويجي لمهرجان ليالي كفو الرمضانية",
-            client: "نادي أدِيب الطُلابي",
-            date: "مارس 2025",
-            tags: ["مونتاج", "فيديو", "تأثيرات بصرية"],
-            externalLink: "https://x.com/AB_KFU/status/1903880080692330613"
-        },
-        { 
-            category: "video", 
-            image: "voice1.png", 
-            title: "فيديو ترويجي", 
-            description: "فيديو ترويجي لمؤسسة عمق الصورة",
-            client: "مؤسسة عمق الصورة",
-            date: "فبراير 2025",
-            tags: ["مونتاج", "فيديو", "تأثيرات بصرية"],
-            externalLink: "https://www.instagram.com/reel/DGVwzMTN9Tm/?igsh=MXF0dTl0a3VubTdiaw=="
-        },
-        { 
-            category: "voice", 
-            image: "voice1.png", 
-            title: "إعلان صوتي", 
-            description: "تسجيل صوتي بمناسبة يوم التأسيس",
-            client: "مؤسسة عمق الصورة",
-            date: "فبراير 2025",
-            tags: ["تعليق صوتي", "إعلان", "تسجيل صوتي"],
-            externalLink: "https://www.instagram.com/reel/DGVwzMTN9Tm/?igsh=MXF0dTl0a3VubTdiaw=="
-        },
-        { 
-            category: "voice", 
-            image: "voice2.png", 
-            title: "إعلان صوتي", 
-            description: "تسجيل صوتي لفيلم قصير",
-            client: "نادي أدِيب الطُلابي",
-            date: "يونيو 2025",
-            tags: ["تعليق صوتي", "إعلان", "تسجيل صوتي"],
-            externalLink: "https://x.com/AB_KFU/status/1881395225622720931"
-        },
-        { 
-            category: "web", 
-            image: "web1.png", 
-            title: "موقع رسمي", 
-            description: "تصميم وتطوير موقع إلكتروني لنادي أدِيب الطُلابي بجامعة الملك فيصل",
-            client: "نادي أدِيب الطُلابي",
-            date: "مارس 2025",
-            tags: ["تطوير ويب", "تصميم موقع", "واجهة مستخدم"],
-            externalLink: "https://www.adeeb.club/"
-        },
-        { 
-            category: "web", 
-            image: "web2.png", 
-            title: "كٌتيب إلكتروني", 
-            description: "تصميم وتطوير كٌتيب إلكتروني لأستعراض التقرير السنوي لانجازات النادي",
-            client: "نادي أدِيب الطُلابي",
-            date: "يونيو 2023",
-            tags: ["تطوير ويب", "تصميم موقع", "واجهة مستخدم"],
-            externalLink: "https://moha750.github.io/adeabBook/"
-        },
-        { 
-            category: "web", 
-            image: "web3.png", 
-            title: "تهنئة إلكترونية", 
-            description: "تصميم وتطوير تهنئة إلكترونية بمناسبة عيد الفطر المبارك لأعضاء النادي",
-            client: "نادي أدِيب الطُلابي",
-            date: "مارس 2025",
-            tags: ["تطوير ويب", "تصميم موقع", "واجهة مستخدم"],
-            externalLink: "https://moha750.github.io/eid_adeeb/"
-        },
-    ],
+    ]
 };
+
+// تهيئة Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyAH2bBHklPLMCZF6ql-ntemsOkgLjk6-1o",
+  authDomain: "breast-cancer-93095.firebaseapp.com",
+  databaseURL: "https://breast-cancer-93095-default-rtdb.firebaseio.com",
+  projectId: "breast-cancer-93095",
+  storageBucket: "breast-cancer-93095.appspot.com",
+  messagingSenderId: "769036893418",
+  appId: "1:769036893418:web:a209b598b8c2356894eb93"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const portfolioCollection = db.collection('portfolio');
 
 // تأثير الكتابة المتحركة
 function initTypingEffect() {
@@ -168,134 +67,79 @@ function initTypingEffect() {
         setTimeout(type, typingSpeed);
     }
 
-    // بدء التأثير بعد تحميل الصفحة
     setTimeout(type, 1000);
 }
 
-// تنفيذ الكود عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
-    initNavLinks();
-    initTypingEffect(); // استدعاء تأثير الكتابة
-    initHeroAnimations();
-    loadDynamicData();
-    createParticles(document.getElementById('skillsParticles'), 30);
-});
+// ==================== قسم معرض الأعمال مع Firebase ====================
 
-
-
-// ==================== hero sec ====================
-
-
-// تأثيرات Hero Section
-function initHeroAnimations() {
-    // تأثير الكتابة للعنوان
-    const titleLines = document.querySelectorAll('.title-line');
-    titleLines.forEach((line, index) => {
-        gsap.from(line, {
-            y: 50,
-            opacity: 0,
-            duration: 0.8,
-            delay: index * 0.2,
-            ease: "back.out(1.2)"
-        });
-    });
-
-    // تأثير الصورة
-    const heroImage = document.querySelector('.hero-image');
-    if (heroImage) {
-        heroImage.addEventListener('mouseenter', () => {
-            gsap.to(heroImage.querySelector('img'), {
-                scale: 1.05,
-                duration: 0.5
-            });
-            gsap.to('.image-frame', {
-                borderColor: 'rgba(255, 255, 255, 0.3)',
-                duration: 0.5
-            });
-        });
-        
-        heroImage.addEventListener('mouseleave', () => {
-            gsap.to(heroImage.querySelector('img'), {
-                scale: 1,
-                duration: 0.5
-            });
-            gsap.to('.image-frame', {
-                borderColor: 'rgba(255, 255, 255, 0.1)',
-                duration: 0.5
-            });
-        });
-    }
-
-    // تأثير الأيقونات الاجتماعية
-    const socialIcons = document.querySelectorAll('.social-icon');
-    socialIcons.forEach(icon => {
-        icon.addEventListener('mouseenter', () => {
-            gsap.to(icon, {
-                y: -5,
-                duration: 0.3
-            });
-        });
-        
-        icon.addEventListener('mouseleave', () => {
-            gsap.to(icon, {
-                y: 0,
-                duration: 0.3
-            });
-        });
-    });
-}
-
-
-
-// ==================== معرض الأعمال المحسن ====================
-
-function loadPortfolio() {
+async function loadPortfolio() {
     const portfolioContainer = document.querySelector('.portfolio-grid');
     const shownCountElement = document.querySelector('.shown-count');
     const totalCountElement = document.querySelector('.total-count');
     
-    portfolioContainer.innerHTML = '';
-    totalCountElement.textContent = siteData.portfolio.length;
+    portfolioContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المشاريع...</div>';
     
-    let shownCount = 0;
-    // تغيير عدد العناصر المعروضة ابتدائياً بناءً على حجم الشاشة
-    const initialItemsToShow = window.innerWidth < 768 ? siteData.portfolio.length : 6;
-    
-    siteData.portfolio.forEach((item, index) => {
-        const portfolioHTML = `
-            <div class="portfolio-item" 
-                 data-category="${item.category}" 
-                 data-index="${index}"
-                 data-title="${item.title.toLowerCase()}"
-                 data-client="${item.client.toLowerCase()}"
-                 data-tags="${item.tags.join(',')}">
-                <img src="${item.image}" alt="${item.title}" class="portfolio-img" loading="lazy">
-                <div class="portfolio-overlay">
-                    <div class="overlay-content">
-                        <h3>${item.title}</h3>
-                        <p>${item.description}</p>
-                        <div class="portfolio-meta">
-                            <span><i class="fas fa-user"></i> ${item.client}</span>
-                            <span><i class="fas fa-calendar"></i> ${item.date}</span>
-                        </div>
-                        <a href="#portfolio-item-${index}" class="btn btn-view" data-project="${index}">
-                            <i class="fas fa-expand"></i> عرض المشروع
-                        </a>
-                    </div>
-                </div>
-            </div>
-        `;
+    try {
+        const snapshot = await portfolioCollection.orderBy('date', 'desc').get();
+        const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        portfolioContainer.insertAdjacentHTML('beforeend', portfolioHTML);
-        shownCount++;
-    });
-    
-    shownCountElement.textContent = shownCount;
-    initPortfolioFilter();
-    initPortfolioSearch();
-    // إخفاء زر "تحميل المزيد" على الجوال
-    if (window.innerWidth < 768) {
-        document.querySelector('.btn-load-more').style.display = 'none';
+        portfolioContainer.innerHTML = '';
+        totalCountElement.textContent = projects.length;
+        
+        if (projects.length === 0) {
+            portfolioContainer.innerHTML = '<div class="empty-portfolio"><i class="fas fa-folder-open"></i> لا توجد مشاريع حالياً</div>';
+            shownCountElement.textContent = '0';
+            return;
+        }
+
+        const initialItemsToShow = window.innerWidth < 768 ? projects.length : 6;
+        let shownCount = 0;
+
+        projects.forEach((project, index) => {
+            if (index < initialItemsToShow) {
+                const portfolioHTML = `
+                    <div class="portfolio-item" 
+                         data-category="${project.category}" 
+                         data-index="${index}"
+                         data-title="${project.title.toLowerCase()}"
+                         data-client="${project.client.toLowerCase()}"
+                         data-tags="${project.tags ? project.tags.join(',').toLowerCase() : ''}">
+                        <img src="${project.image}" alt="${project.title}" class="portfolio-img" loading="lazy">
+                        <div class="portfolio-overlay">
+                            <div class="overlay-content">
+                                <h3>${project.title}</h3>
+                                <p>${project.description}</p>
+                                <div class="portfolio-meta">
+                                    <span><i class="fas fa-user"></i> ${project.client}</span>
+                                    <span><i class="fas fa-calendar"></i> ${project.date}</span>
+                                </div>
+                                <a href="#portfolio-item-${index}" class="btn btn-view" data-project="${index}">
+                                    <i class="fas fa-expand"></i> عرض المشروع
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                portfolioContainer.insertAdjacentHTML('beforeend', portfolioHTML);
+                shownCount++;
+            }
+        });
+        
+        shownCountElement.textContent = shownCount;
+        initPortfolioFilter();
+        initPortfolioSearch();
+        
+        if (window.innerWidth < 768 || projects.length <= initialItemsToShow) {
+            document.querySelector('.btn-load-more').style.display = 'none';
+        } else {
+            document.querySelector('.btn-load-more').style.display = 'flex';
+        }
+        
+        initPortfolioLightbox(projects);
+    } catch (error) {
+        console.error('Error loading portfolio:', error);
+        portfolioContainer.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i> حدث خطأ أثناء تحميل المشاريع</div>';
     }
 }
 
@@ -323,7 +167,7 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
         const matchesSearch = searchTerm === '' || 
                              item.dataset.title.includes(searchTerm) || 
                              item.dataset.client.includes(searchTerm) ||
-                             item.dataset.tags.includes(searchTerm);
+                             (item.dataset.tags && item.dataset.tags.includes(searchTerm));
         
         if (matchesFilter && matchesSearch) {
             gsap.to(item, {
@@ -360,89 +204,43 @@ function initPortfolioSearch() {
     });
 }
 
-function initLoadMore() {
-    const loadMoreBtn = document.querySelector('.btn-load-more');
-    if (!loadMoreBtn) return;
-    
-    // إخفاء الزر إذا كان العرض أقل من 768px (الجوال)
-    if (window.innerWidth < 768) {
-        loadMoreBtn.style.display = 'none';
-        return;
-    }
-    
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-    let itemsPerLoad = 3;
-    let visibleItems = 6; // البدء بعدد العناصر المعروضة ابتدائياً
-    
-    loadMoreBtn.addEventListener('click', () => {
-        let loadedCount = 0;
-        
-        portfolioItems.forEach((item, index) => {
-            if (loadedCount >= itemsPerLoad) return;
-            
-            if (item.style.display === 'none') {
-                item.style.display = 'block';
-                gsap.from(item, {
-                    opacity: 0,
-                    y: 20,
-                    duration: 0.5,
-                    delay: index % itemsPerLoad * 0.1
-                });
-                loadedCount++;
-                visibleItems++;
-            }
-        });
-        
-        if (visibleItems >= portfolioItems.length) {
-            gsap.to(loadMoreBtn, {
-                opacity: 0,
-                y: 20,
-                duration: 0.3,
-                onComplete: () => loadMoreBtn.style.display = 'none'
-            });
-        }
-        
-        document.querySelector('.shown-count').textContent = visibleItems;
-    });
-    
-    if (visibleItems >= portfolioItems.length) {
-        loadMoreBtn.style.display = 'none';
-    }
-}
-
-function initPortfolioLightbox() {
-    const lightbox = document.createElement('div');
-    lightbox.className = 'portfolio-lightbox';
-    lightbox.innerHTML = `
-        <div class="lightbox-content">
-            <span class="close-lightbox"><i class="fas fa-times"></i></span>
-            <div class="lightbox-image-container">
-                <img src="" alt="" class="lightbox-image">
-                <div class="image-nav">
-                    <button class="nav-btn prev-btn"><i class="fas fa-chevron-right"></i></button>
-                    <button class="nav-btn next-btn"><i class="fas fa-chevron-left"></i></button>
-                </div>
-            </div>
-            <div class="lightbox-info">
-                <h3></h3>
-                <p class="info-description"></p>
-                <div class="info-meta">
-                    <p><i class="fas fa-user"></i> <span class="info-client"></span></p>
-                    <p><i class="fas fa-calendar"></i> <span class="info-date"></span></p>
-                    <p><i class="fas fa-tag"></i> <span class="info-category"></span></p>
-                </div>
-                <div class="project-tags"></div>
-                <a href="#" class="btn-contact" target="_blank">
-                    <i class="fas fa-eye"></i> عرض العمل بالكامل
-                </a>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(lightbox);
-    
+function initPortfolioLightbox(projectsData) {
+    const lightbox = document.querySelector('.portfolio-lightbox') || createLightbox();
     let currentIndex = 0;
     let filteredItems = [];
     
+    function createLightbox() {
+        const lb = document.createElement('div');
+        lb.className = 'portfolio-lightbox';
+        lb.innerHTML = `
+            <div class="lightbox-content">
+                <span class="close-lightbox"><i class="fas fa-times"></i></span>
+                <div class="lightbox-image-container">
+                    <img src="" alt="" class="lightbox-image">
+                    <div class="image-nav">
+                        <button class="nav-btn prev-btn"><i class="fas fa-chevron-right"></i></button>
+                        <button class="nav-btn next-btn"><i class="fas fa-chevron-left"></i></button>
+                    </div>
+                </div>
+                <div class="lightbox-info">
+                    <h3></h3>
+                    <p class="info-description"></p>
+                    <div class="info-meta">
+                        <p><i class="fas fa-user"></i> <span class="info-client"></span></p>
+                        <p><i class="fas fa-calendar"></i> <span class="info-date"></span></p>
+                        <p><i class="fas fa-tag"></i> <span class="info-category"></span></p>
+                    </div>
+                    <div class="project-tags"></div>
+                    <a href="#" class="btn-contact" target="_blank">
+                        <i class="fas fa-eye"></i> عرض العمل بالكامل
+                    </a>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(lb);
+        return lb;
+    }
+
     document.querySelectorAll('.portfolio-item').forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
@@ -455,12 +253,12 @@ function initPortfolioLightbox() {
                 const matchesSearch = searchTerm === '' || 
                                      item.dataset.title.includes(searchTerm) || 
                                      item.dataset.client.includes(searchTerm) ||
-                                     item.dataset.tags.includes(searchTerm);
+                                     (item.dataset.tags && item.dataset.tags.includes(searchTerm));
                 return matchesFilter && matchesSearch && window.getComputedStyle(item).display !== 'none';
             });
             
             currentIndex = filteredItems.findIndex(el => el === this);
-            showProjectInLightbox(currentIndex);
+            showProjectInLightbox(currentIndex, projectsData);
             
             lightbox.classList.add('active');
             document.body.classList.add('no-scroll');
@@ -474,38 +272,11 @@ function initPortfolioLightbox() {
         });
     });
     
-    lightbox.querySelector('.prev-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        navigateProject(-1);
-    });
-    
-    lightbox.querySelector('.next-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        navigateProject(1);
-    });
-    
-    lightbox.querySelector('.close-lightbox').addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', (e) => e.target === lightbox && closeLightbox());
-    
-    document.addEventListener('keydown', (e) => {
-        if (lightbox.classList.contains('active')) {
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowLeft') navigateProject(-1);
-            if (e.key === 'ArrowRight') navigateProject(1);
-        }
-    });
-    
-    function navigateProject(direction) {
-        currentIndex = (currentIndex + direction + filteredItems.length) % filteredItems.length;
-        showProjectInLightbox(currentIndex);
-    }
-    
-function showProjectInLightbox(index) {
-        if (!filteredItems.length) return;
+    function showProjectInLightbox(index, projects) {
+        if (!filteredItems.length || !projects) return;
         
-        const item = filteredItems[index];
-        const projectIndex = item.dataset.index;
-        const project = siteData.portfolio[projectIndex];
+        const projectIndex = filteredItems[index].dataset.index;
+        const project = projects[projectIndex];
         
         if (!project) return;
         
@@ -518,7 +289,6 @@ function showProjectInLightbox(index) {
         const tagsContainer = lightbox.querySelector('.project-tags');
         const viewProjectBtn = lightbox.querySelector('.btn-contact');
         
-        // تحديث زر "عرض العمل بالكامل" ليشير إلى رابط العمل
         if (project.externalLink) {
             viewProjectBtn.href = project.externalLink;
             viewProjectBtn.target = '_blank';
@@ -549,12 +319,14 @@ function showProjectInLightbox(index) {
         lightboxCategory.textContent = categoryNames[project.category] || project.category;
         
         tagsContainer.innerHTML = '';
-        project.tags.forEach(tag => {
-            const tagElement = document.createElement('span');
-            tagElement.className = 'tag';
-            tagElement.textContent = tag;
-            tagsContainer.appendChild(tagElement);
-        });
+        if (project.tags && project.tags.length > 0) {
+            project.tags.forEach(tag => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'tag';
+                tagElement.textContent = tag;
+                tagsContainer.appendChild(tagElement);
+            });
+        }
         
         gsap.from([lightboxTitle, lightboxDesc, lightbox.querySelector('.info-meta'), tagsContainer], {
             opacity: 0,
@@ -565,168 +337,207 @@ function showProjectInLightbox(index) {
         });
     }
     
+    lightbox.querySelector('.prev-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
+        showProjectInLightbox(currentIndex, projectsData);
+    });
+    
+    lightbox.querySelector('.next-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentIndex = (currentIndex + 1) % filteredItems.length;
+        showProjectInLightbox(currentIndex, projectsData);
+    });
+    
+    lightbox.querySelector('.close-lightbox').addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => e.target === lightbox && closeLightbox());
+    
+    document.addEventListener('keydown', (e) => {
+        if (lightbox.classList.contains('active')) {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') {
+                currentIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
+                showProjectInLightbox(currentIndex, projectsData);
+            }
+            if (e.key === 'ArrowRight') {
+                currentIndex = (currentIndex + 1) % filteredItems.length;
+                showProjectInLightbox(currentIndex, projectsData);
+            }
+        }
+    });
+    
     function closeLightbox() {
-        const lightbox = document.querySelector('.portfolio-lightbox');
         lightbox.classList.remove('active');
         document.body.classList.remove('no-scroll');
-        
-        // إعادة تعيين المحتوى
-        lightbox.querySelector('.lightbox-image').src = '';
-        lightbox.querySelector('.lightbox-title').textContent = '';
-        lightbox.querySelector('.info-description').textContent = '';
-        lightbox.querySelector('.project-tags').innerHTML = '';
     }
 }
 
-// ==================== قسم المهارات المتقدم ====================
+// ==================== قسم المهارات مع Firebase ====================
 
-function loadSkillsSection() {
+async function loadSkillsSection() {
     const skillsGrid = document.getElementById('skillsGrid');
+    skillsGrid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المهارات...</div>';
     
-    const enhancedSkills = siteData.skills.map(skill => {
-        const projects = siteData.portfolio.filter(p => p.category === 
-            (skill.name === 'التصميم الجرافيكي' ? 'graphic' :
-             skill.name === 'الموشن جرافيك' ? 'motion' :
-             skill.name === 'المونتاج' ? 'video' :
-             skill.name === 'التعليق الصوتي' ? 'voice' : 'web'));
+    try {
+        const snapshot = await portfolioCollection.get();
+        const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        return {
-            ...skill,
-            projects: projects.slice(0, 3),
-            allProjects: projects,
-            projectsCount: projects.length, // استخدام عدد المشاريع مباشرة من البورتفوليو
-            category: getSkillCategory(skill.name)
-        };
-    });
-    
-    function getSkillCategory(skillName) {
-        const designSkills = ['التصميم الجرافيكي', 'الموشن جرافيك'];
-        const mediaSkills = ['المونتاج', 'التعليق الصوتي'];
+        const enhancedSkills = siteData.skills.map(skill => {
+            const skillCategory = 
+                skill.name === 'التصميم الجرافيكي' ? 'graphic' :
+                skill.name === 'الموشن جرافيك' ? 'motion' :
+                skill.name === 'المونتاج المرئي' ? 'video' :
+                skill.name === 'التعليق الصوتي' ? 'voice' : 'web';
+            
+            const skillProjects = projects.filter(p => p.category === skillCategory);
+            
+            return {
+                ...skill,
+                projects: skillProjects.slice(0, 3),
+                allProjects: skillProjects,
+                projectsCount: skillProjects.length,
+                category: getSkillCategory(skill.name)
+            };
+        });
         
-        if (designSkills.includes(skillName)) return 'design';
-        if (mediaSkills.includes(skillName)) return 'media';
-        if (skillName === 'تطوير الويب') return 'development';
-        return 'other';
-    }
-    
-    enhancedSkills.forEach(skill => {
-        const skillCard = document.createElement('div');
-        skillCard.className = 'skill-card';
-        skillCard.dataset.skill = skill.name;
-        skillCard.dataset.category = skill.category;
-        skillCard.style.setProperty('--skill-percent', skill.level);
+        skillsGrid.innerHTML = '';
         
-        skillCard.innerHTML = `
-            <div class="skill-card-inner">
-                <div class="skill-card-header">
-                    <div class="skill-icon-container">
-                        <div class="skill-icon-bg"></div>
-                        <div class="skill-icon">
-                            <i class="${skill.icon}"></i>
+        enhancedSkills.forEach(skill => {
+            const skillCard = document.createElement('div');
+            skillCard.className = 'skill-card';
+            skillCard.dataset.skill = skill.name;
+            skillCard.dataset.category = skill.category;
+            skillCard.style.setProperty('--skill-percent', skill.level);
+            
+            skillCard.innerHTML = `
+                <div class="skill-card-inner">
+                    <div class="skill-card-header">
+                        <div class="skill-icon-container">
+                            <div class="skill-icon-bg"></div>
+                            <div class="skill-icon">
+                                <i class="${skill.icon}"></i>
+                            </div>
+                        </div>
+                        <div class="skill-title-container">
+                            <h3 class="skill-title">${skill.name}</h3>
                         </div>
                     </div>
-                    <div class="skill-title-container">
-                        <h3 class="skill-title">${skill.name}</h3>
+                    
+                    <div class="skill-level-text">
+                        <i class="fas fa-chart-line"></i>
+                        <span>مستوى الإتقان: <strong>${skill.level}%</strong></span>
                     </div>
-                </div>
-                
-                <div class="skill-level-text">
-                    <i class="fas fa-chart-line"></i>
-                    <span>مستوى الإتقان: <strong>${skill.level}%</strong></span>
-                </div>
-                
-                ${skill.projects.length > 0 ? `
-                <div class="skill-projects-container">
-                    <h4 class="skill-projects-title">
-                        <i class="fas fa-folder-open"></i> عدد مشاريعي (${skill.projectsCount})
-                    </h4>
-                        <div class="skill-projects-grid">
-                            ${skill.projects.map(project => `
-                                <div class="skill-project-thumb" 
-                                    data-title="${project.title}"
-                                    data-description="${project.description}"
-                                    data-client="${project.client}"
-                                    data-date="${project.date}"
-                                    data-category="${project.category}">
-                                    <img src="${project.image}" alt="${project.title}">
-                                    <div class="project-view-icon">
-                                        <i class="fas fa-eye"></i>
+                    
+                    ${skill.projectsCount > 0 ? `
+                    <div class="skill-projects-container">
+                        <h4 class="skill-projects-title">
+                            <i class="fas fa-folder-open"></i> عدد مشاريعي (${skill.projectsCount})
+                        </h4>
+                            <div class="skill-projects-grid">
+                                ${skill.projects.map(project => `
+                                    <div class="skill-project-thumb" 
+                                        data-title="${project.title}"
+                                        data-description="${project.description}"
+                                        data-client="${project.client}"
+                                        data-date="${project.date}"
+                                        data-category="${project.category}"
+                                        data-link="${project.externalLink || '#'}">
+                                        <img src="${project.image}" alt="${project.title}">
+                                        <div class="project-view-icon">
+                                            <i class="fas fa-eye"></i>
+                                        </div>
                                     </div>
-                                </div>
-                            `).join('')}
+                                `).join('')}
+                        </div>
                     </div>
+                    ` : '<p class="no-projects">لا توجد مشاريع لهذه المهارة بعد</p>'}
                 </div>
-                ` : ''}
-            </div>
-        `;
-        
-        skillsGrid.appendChild(skillCard);
-    });
-    
-    initProjectLightbox();
-    
-    const skillCards = document.querySelectorAll('.skill-card');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                gsap.to(entry.target, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    ease: "back.out(1.2)",
-                    delay: Array.from(skillCards).indexOf(entry.target) * 0.1
-                });
-                observer.unobserve(entry.target);
-            }
+            `;
+            
+            skillsGrid.appendChild(skillCard);
         });
-    }, { threshold: 0.1 });
-    
-    skillCards.forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        observer.observe(card);
-    });
+        
+        initProjectLightbox();
+        
+        const skillCards = document.querySelectorAll('.skill-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    gsap.to(entry.target, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        ease: "back.out(1.2)",
+                        delay: Array.from(skillCards).indexOf(entry.target) * 0.1
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        skillCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            observer.observe(card);
+        });
+    } catch (error) {
+        console.error('Error loading skills:', error);
+        skillsGrid.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i> حدث خطأ أثناء تحميل المهارات</div>';
+    }
 }
 
-function createParticles(container, count) {
-    container.innerHTML = '';
+function getSkillCategory(skillName) {
+    const designSkills = ['التصميم الجرافيكي', 'الموشن جرافيك'];
+    const mediaSkills = ['المونتاج المرئي', 'التعليق الصوتي'];
     
-    for (let i = 0; i < count; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'skill-particle';
-        
-        const size = Math.random() * 10 + 5;
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        
-        particle.style.left = `${Math.random() * 100}%`;
-        particle.style.top = `${Math.random() * 100}%`;
-        
-        const hue = 250;
-        const saturation = 70;
-        const lightness = Math.random() * 20 + 60;
-        particle.style.background = `hsla(${hue}, ${saturation}%, ${lightness}%, 0.2)`;
-        
-        particle.style.animationDelay = `${Math.random() * 15}s`;
-        particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
-        
-        container.appendChild(particle);
-    }
+    if (designSkills.includes(skillName)) return 'design';
+    if (mediaSkills.includes(skillName)) return 'media';
+    if (skillName === 'تطوير الويب') return 'development';
+    return 'other';
 }
 
 function initProjectLightbox() {
-    const lightbox = document.getElementById('projectLightbox');
+    const lightbox = document.getElementById('projectLightbox') || createProjectLightbox();
     const closeBtn = lightbox.querySelector('.close-lightbox');
-    const projectThumbs = document.querySelectorAll('.skill-project-thumb');
     
-    projectThumbs.forEach(thumb => {
-        thumb.addEventListener('click', function() {
-            const title = this.dataset.title;
-            const description = this.dataset.description;
-            const client = this.dataset.client;
-            const date = this.dataset.date;
-            const category = this.dataset.category;
-            const imageSrc = this.querySelector('img').src;
+    function createProjectLightbox() {
+        const lb = document.createElement('div');
+        lb.className = 'skill-project-lightbox';
+        lb.id = 'projectLightbox';
+        lb.innerHTML = `
+            <div class="lightbox-content">
+                <span class="close-lightbox"><i class="fas fa-times"></i></span>
+                <img src="" alt="" class="lightbox-image">
+                <div class="lightbox-info">
+                    <h3></h3>
+                    <p></p>
+                    <div class="lightbox-meta">
+                        <p><i class="fas fa-user"></i> <span class="lightbox-client"></span></p>
+                        <p><i class="fas fa-calendar"></i> <span class="lightbox-date"></span></p>
+                        <p><i class="fas fa-tag"></i> <span class="lightbox-category"></span></p>
+                    </div>
+                    <a href="#" class="btn-view-project" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> عرض المشروع
+                    </a>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(lb);
+        return lb;
+    }
+
+    document.addEventListener('click', function(e) {
+        const thumb = e.target.closest('.skill-project-thumb');
+        if (thumb) {
+            e.preventDefault();
+            
+            const title = thumb.dataset.title;
+            const description = thumb.dataset.description;
+            const client = thumb.dataset.client;
+            const date = thumb.dataset.date;
+            const category = thumb.dataset.category;
+            const link = thumb.dataset.link;
+            const imageSrc = thumb.querySelector('img').src;
             
             lightbox.querySelector('.lightbox-image').src = imageSrc;
             lightbox.querySelector('h3').textContent = title;
@@ -741,12 +552,19 @@ function initProjectLightbox() {
                 'voice': 'تعليق صوتي',
                 'web': 'تطوير ويب'
             };
-            lightbox.querySelector('.lightbox-category').textContent = 
-                categoryNames[category] || category;
+            lightbox.querySelector('.lightbox-category').textContent = categoryNames[category] || category;
+            
+            const viewBtn = lightbox.querySelector('.btn-view-project');
+            if (link && link !== '#') {
+                viewBtn.href = link;
+                viewBtn.style.display = 'inline-flex';
+            } else {
+                viewBtn.style.display = 'none';
+            }
             
             lightbox.classList.add('active');
             document.body.classList.add('no-scroll');
-        });
+        }
     });
     
     closeBtn.addEventListener('click', () => {
@@ -769,9 +587,9 @@ function initProjectLightbox() {
     });
 }
 
-// تأثيرات Hero Section المحسنة
+// ==================== تأثيرات Hero Section ====================
+
 function initHeroAnimations() {
-    // تأثير الكتابة للعنوان
     const titleLines = document.querySelectorAll('.title-line');
     titleLines.forEach((line, index) => {
         gsap.from(line, {
@@ -783,7 +601,6 @@ function initHeroAnimations() {
         });
     });
 
-    // تأثير الصورة
     const heroImage = document.querySelector('.hero-image');
     if (heroImage) {
         heroImage.addEventListener('mouseenter', () => {
@@ -809,7 +626,6 @@ function initHeroAnimations() {
         });
     }
 
-    // تأثير الأيقونات الاجتماعية
     const socialIcons = document.querySelectorAll('.social-icon');
     socialIcons.forEach(icon => {
         icon.addEventListener('mouseenter', () => {
@@ -826,54 +642,10 @@ function initHeroAnimations() {
             });
         });
     });
-
-    // تأثير الأشكال الخلفية
-    const shapes = document.querySelectorAll('.shape');
-    shapes.forEach(shape => {
-        gsap.to(shape, {
-            rotation: 360,
-            duration: shape.classList.contains('square') ? 20 : 40,
-            repeat: -1,
-            ease: "none"
-        });
-    });
 }
 
+// ==================== قسم التواصل ====================
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// إضافة هذه الدوال إلى ملف script.js
 function initContactForm() {
     const contactForm = document.getElementById('enhancedContactForm');
     
@@ -881,7 +653,10 @@ function initContactForm() {
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // إظهار حالة التحميل
+            if (!validateName() || !validateEmail() || !validateMessage()) {
+                return;
+            }
+            
             const submitBtn = contactForm.querySelector('.submit-btn');
             const submitLoader = submitBtn.querySelector('.submit-loader');
             const submitText = submitBtn.querySelector('span');
@@ -890,18 +665,16 @@ function initContactForm() {
             submitLoader.style.display = 'block';
             submitBtn.disabled = true;
             
-            // جمع بيانات النموذج
             const formData = {
                 "الاسم": document.getElementById('contactName').value.trim(),
                 "البريد الإلكتروني": document.getElementById('contactEmail').value.trim(),
                 "رقم الهاتف": document.getElementById('contactPhone').value.trim() || '',
                 "الموضوع": document.getElementById('contactSubject').value.trim() || '',
                 "الرسالة": document.getElementById('contactMessage').value.trim(),
-                "التاريخ": new Date().toLocaleString('ar-SA') // تاريخ الإرسال
+                "التاريخ": new Date().toLocaleString('ar-SA')
             };
             
             try {
-                // استبدل هذا الرابط برابط SheetDB API الخاص بك
                 const sheetDbUrl = 'https://sheetdb.io/api/v1/dnr96icde5zgz';
                 
                 const response = await fetch(sheetDbUrl, {
@@ -909,18 +682,15 @@ function initContactForm() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ data: [formData] }) // يجب أن تكون البيانات داخل مصفوفة data
+                    body: JSON.stringify({ data: [formData] })
                 });
                 
                 const result = await response.json();
                 
                 if (result.created > 0) {
-                    // إظهار رسالة النجاح
                     const successMessage = document.getElementById('formSuccess');
                     successMessage.textContent = 'شكراً لك! تم إرسال رسالتك بنجاح.';
                     successMessage.style.display = 'block';
-                    
-                    // إعادة تعيين النموذج
                     contactForm.reset();
                 } else {
                     throw new Error('فشل في حفظ البيانات');
@@ -933,12 +703,10 @@ function initContactForm() {
                 successMessage.style.color = '#e74c3c';
                 successMessage.style.display = 'block';
             } finally {
-                // إخفاء حالة التحميل
                 submitLoader.style.display = 'none';
                 submitText.textContent = 'إرسال الرسالة';
                 submitBtn.disabled = false;
                 
-                // إخفاء الرسالة بعد 5 ثوان
                 setTimeout(() => {
                     const successMessage = document.getElementById('formSuccess');
                     successMessage.style.display = 'none';
@@ -946,7 +714,6 @@ function initContactForm() {
             }
         });
 
-        // التحقق من الصحة أثناء الكتابة
         const nameInput = document.getElementById('contactName');
         const emailInput = document.getElementById('contactEmail');
         const messageInput = document.getElementById('contactMessage');
@@ -1000,104 +767,66 @@ function validateMessage() {
     }
 }
 
-if (fileInput) {
-    fileInput.addEventListener('change', handleFileUpload);
+// ==================== قسم الأرقام والإحصائيات ====================
+
+function initStatsCounter() {
+    const statCards = document.querySelectorAll('.stat-card');
+    
+    statCards.forEach((card, index) => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    gsap.from(card, {
+                        opacity: 0,
+                        y: 50,
+                        scale: 0.9,
+                        duration: 0.8,
+                        ease: "back.out(1.7)",
+                        delay: index * 0.1
+                    });
+                    
+                    startCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        
+        observer.observe(card);
+    });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// تعديل الدالة loadDynamicData لتشمل تهيئة قسم الخدمات
-function loadDynamicData() {
-    initLoader(); // Add this line
-    initHeaderScroll();
-    loadSkillsSection();
-    loadPortfolio();
-    initPortfolioLightbox();
-    initContactForm();
-    initStatsCounter(); // إضافة هذا السطر
-    // Update copyright year
-    document.getElementById('year').textContent = new Date().getFullYear();
+function startCounter(card) {
+    const numberElement = card.querySelector('.stat-number');
+    const targetNumber = parseInt(numberElement.dataset.count);
+    const duration = 2000;
+    const startTime = performance.now();
+    
+    function updateCounter(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        const currentNumber = Math.floor(progress * targetNumber);
+        
+        numberElement.textContent = currentNumber.toLocaleString();
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+        } else {
+            numberElement.textContent = targetNumber.toLocaleString();
+            
+            gsap.to(numberElement, {
+                scale: 1.1,
+                duration: 0.3,
+                yoyo: true,
+                repeat: 1
+            });
+        }
+    }
+    
+    requestAnimationFrame(updateCounter);
 }
 
-// Update copyright year
-document.getElementById('year').textContent = new Date().getFullYear();
+// ==================== تحسينات الهيدر ====================
 
-// Add animation to footer elements
-const footerElements = document.querySelectorAll('.footer-col, .footer-bottom');
-footerElements.forEach((el, index) => {
-    gsap.from(el, {
-        opacity: 0,
-        y: 30,
-        duration: 0.8,
-        delay: index * 0.2,
-        ease: "back.out(1.2)",
-        scrollTrigger: {
-            trigger: '.site-footer',
-            start: 'top 80%',
-            toggleActions: 'play none none none'
-        }
-    });
-});
-
-// Animate social icons
-const socialIcons = document.querySelectorAll('.social-icon');
-socialIcons.forEach((icon, i) => {
-    gsap.from(icon, {
-        opacity: 0,
-        scale: 0.5,
-        y: 20,
-        duration: 0.5,
-        delay: 0.1 * i,
-        ease: "back.out(1.7)",
-        scrollTrigger: {
-            trigger: '.footer-social',
-            start: 'top 80%',
-            toggleActions: 'play none none none'
-        }
-    });
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// تحسينات الهيدر
 function initHeaderScroll() {
     const header = document.querySelector('.site-header');
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
@@ -1105,16 +834,13 @@ function initHeaderScroll() {
     const scrollProgressBar = document.querySelector('.scroll-progress-bar');
     const downloadCVBtn = document.getElementById('downloadCV');
     
-    // تأثير التمرير
     window.addEventListener('scroll', () => {
-        // تأثير ظهور/اختفاء الهيدر عند التمرير
         if (window.scrollY > 100) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
         }
         
-        // شريط التقدم
         if (scrollProgressBar) {
             const windowHeight = window.innerHeight;
             const docHeight = document.documentElement.scrollHeight;
@@ -1124,11 +850,9 @@ function initHeaderScroll() {
         }
     });
     
-    // زر تحميل السيرة الذاتية
     if (downloadCVBtn) {
         downloadCVBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            // يمكنك هنا إضافة منطق تحميل الملف
             Swal.fire({
                 title: 'تحميل السيرة الذاتية',
                 text: 'سيتم تحميل ملف السيرة الذاتية بصيغة PDF',
@@ -1143,7 +867,6 @@ function initHeaderScroll() {
                 buttonsStyling: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // محاكاة عملية التحميل
                     Swal.fire({
                         title: 'جاري التحميل',
                         html: 'يتم تجهيز ملف السيرة الذاتية...',
@@ -1164,12 +887,10 @@ function initHeaderScroll() {
         });
     }
     
-    // قائمة الجوال
     mobileMenuBtn.addEventListener('click', () => {
         mobileMenuBtn.classList.toggle('active');
         navList.classList.toggle('active');
         
-        // إيقاف التمرير عند فتح القائمة
         if (navList.classList.contains('active')) {
             document.body.classList.add('no-scroll');
         } else {
@@ -1177,7 +898,6 @@ function initHeaderScroll() {
         }
     });
     
-    // إغلاق القائمة عند النقر على رابط
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             if (navList.classList.contains('active')) {
@@ -1188,7 +908,6 @@ function initHeaderScroll() {
         });
     });
     
-    // تأثيرات إضافية للروابط
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('mouseenter', () => {
             gsap.to(link, {
@@ -1204,133 +923,9 @@ function initHeaderScroll() {
             });
         });
     });
-    
-    // تأثيرات الشعار
-    const logo = document.querySelector('.logo');
-    if (logo) {
-        logo.addEventListener('mouseenter', () => {
-            gsap.to(logo, {
-                scale: 1.05,
-                duration: 0.3
-            });
-        });
-        
-        logo.addEventListener('mouseleave', () => {
-            gsap.to(logo, {
-                scale: 1,
-                duration: 0.3
-            });
-        });
-    }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// تحسين عداد الأرقام
-function initStatsCounter() {
-    const statCards = document.querySelectorAll('.stat-card');
-    
-    statCards.forEach((card, index) => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // تأثيرات الحركة للبطاقة
-                    gsap.from(card, {
-                        opacity: 0,
-                        y: 50,
-                        scale: 0.9,
-                        duration: 0.8,
-                        ease: "back.out(1.7)",
-                        delay: index * 0.1
-                    });
-                    
-                    // بدء العداد
-                    startCounter(entry.target);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.3 });
-        
-        observer.observe(card);
-    });
-}
-
-function startCounter(card) {
-    const numberElement = card.querySelector('.stat-number');
-    const targetNumber = parseInt(numberElement.dataset.count);
-    const duration = 2000; // مدة العد بالمللي ثانية
-    const startTime = performance.now();
-    
-    function updateCounter(currentTime) {
-        const elapsedTime = currentTime - startTime;
-        const progress = Math.min(elapsedTime / duration, 1);
-        const currentNumber = Math.floor(progress * targetNumber);
-        
-        numberElement.textContent = currentNumber.toLocaleString();
-        
-        if (progress < 1) {
-            requestAnimationFrame(updateCounter);
-        } else {
-            numberElement.textContent = targetNumber.toLocaleString();
-            
-            // تأثيرات عند اكتمال العداد
-            gsap.to(numberElement, {
-                scale: 1.1,
-                duration: 0.3,
-                yoyo: true,
-                repeat: 1
-            });
-        }
-    }
-    
-    requestAnimationFrame(updateCounter);
-}
-
-
-
-
+// ==================== تحسينات التنقل ====================
 
 function initNavLinks() {
     const navLinks = document.querySelectorAll('.nav-link');
@@ -1357,7 +952,6 @@ function initNavLinks() {
         observer.observe(section);
     });
     
-    // الانتقال السلس عند النقر
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -1374,76 +968,47 @@ function initNavLinks() {
     });
 }
 
+// ==================== Loader ====================
 
-
-
-
-
-
-
-
-
-
-
-// Loader Functionality
 function initLoader() {
     const loader = document.querySelector('.page-loader');
     
-    // Hide loader when page is fully loaded after 5 seconds
     setTimeout(function() {
         loader.classList.add('fade-out');
         
-        // Remove loader from DOM after animation completes
         setTimeout(function() {
             loader.style.display = 'none';
         }, 500);
-    }, 2000); // Changed from 1000 to 5000 (5 seconds)
+    }, 2000);
 }
 
-// Call the loader function when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+// ==================== تحميل البيانات عند بدء التشغيل ====================
+
+function loadDynamicData() {
     initLoader();
-    // ... rest of your existing code
-});
+    initHeaderScroll();
+    initNavLinks();
+    initTypingEffect();
+    initHeroAnimations();
+    loadSkillsSection();
+    loadPortfolio();
+    initContactForm();
+    initStatsCounter();
+    document.getElementById('year').textContent = new Date().getFullYear();
+}
 
+// تنفيذ الكود عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', loadDynamicData);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// إضافة هذا الكود في نهاية ملف script.js
+// تحديث عرض المشاريع عند تغيير حجم الشاشة
 window.addEventListener('resize', function() {
     if (window.innerWidth < 768) {
-        // على الجوال، عرض جميع العناصر وإخفاء زر "تحميل المزيد"
         document.querySelectorAll('.portfolio-item').forEach(item => {
             item.style.display = 'block';
         });
         document.querySelector('.btn-load-more').style.display = 'none';
-        document.querySelector('.shown-count').textContent = siteData.portfolio.length;
+        document.querySelector('.shown-count').textContent = document.querySelectorAll('.portfolio-item').length;
     } else {
-        // على الأجهزة الكبيرة، عرض 6 عناصر ابتدائياً وإظهار الزر
         let visibleCount = 0;
         document.querySelectorAll('.portfolio-item').forEach((item, index) => {
             if (index < 6) {

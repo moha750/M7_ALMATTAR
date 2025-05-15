@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>لوحة تحكم معرض الأعمال</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- إضافة مكتبة Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <h1><i class="fas fa-palette"></i> لوحة تحكم معرض الأعمال</h1>
+
+        <div class="form-container">
+            <div class="form-header">
+                <h2 id="formTitle"><i class="fas fa-plus-circle"></i> إضافة مشروع جديد</h2>
+                <p id="formSubtitle">املأ النموذج لإضافة مشروع جديد إلى المعرض</p>
+            </div>
+
+            <form id="projectForm">
+                <input type="hidden" id="editIndex" value="-1" />
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="category"><i class="fas fa-tag"></i> التصنيف</label>
+                        <select id="category" required>
+                            <option value="">اختر التصنيف</option>
+                            <option value="graphic">جرافيك</option>
+                            <option value="motion">موشن</option>
+                            <option value="video">فيديو</option>
+                            <option value="voice">صوت</option>
+                            <option value="web">ويب</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="imageUpload"><i class="fas fa-image"></i> رفع صورة المشروع</label>
+                        <input type="file" id="imageUpload" accept="image/*" required />
+                        <div id="imagePreview" style="margin-top: 10px; display: none;">
+                            <img id="previewImage" src="#" alt="معاينة الصورة"
+                                style="max-width: 200px; max-height: 150px; border-radius: 8px;" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="title"><i class="fas fa-heading"></i> عنوان المشروع</label>
+                        <input type="text" id="title" placeholder="عنوان المشروع" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="client"><i class="fas fa-user-tie"></i> اسم العميل</label>
+                        <input type="text" id="client" placeholder="العميل" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description"><i class="fas fa-align-right"></i> وصف المشروع</label>
+                    <textarea id="description" placeholder="وصف مختصر للمشروع وأهدافه" required></textarea>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="date"><i class="fas fa-calendar"></i> تاريخ المشروع</label>
+                        <div class="date-fields">
+                            <select id="month" required>
+                                <option value="">الشهر</option>
+                                <option value="يناير">يناير</option>
+                                <option value="فبراير">فبراير</option>
+                                <option value="مارس">مارس</option>
+                                <option value="أبريل">أبريل</option>
+                                <option value="مايو">مايو</option>
+                                <option value="يونيو">يونيو</option>
+                                <option value="يوليو">يوليو</option>
+                                <option value="أغسطس">أغسطس</option>
+                                <option value="سبتمبر">سبتمبر</option>
+                                <option value="أكتوبر">أكتوبر</option>
+                                <option value="نوفمبر">نوفمبر</option>
+                                <option value="ديسمبر">ديسمبر</option>
+                            </select>
+                            <select id="year" required>
+                                <option value="">السنة</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tags"><i class="fas fa-tags"></i> الكلمات المفتاحية</label>
+                    <div class="tags-input-container">
+                        <div class="tags-display" id="tagsDisplay"></div>
+                        <div class="tags-input-wrapper">
+                            <input type="text" id="tagsInput" placeholder="اكتب الكلمة ثم اضغط Enter أو زر الإضافة" />
+                            <button type="button" id="addTagBtn" class="add-tag-btn">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <input type="hidden" id="tags" name="tags" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="externalLink"><i class="fas fa-link"></i> رابط المشروع</label>
+                    <input type="text" id="externalLink" placeholder="رابط خارجي للمشروع إن وجد" required />
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="submitBtn" class="submit-btn">
+                        <i class="fas fa-plus"></i> إضافة مشروع
+                    </button>
+                    <button type="button" id="resetBtn" class="reset-btn">
+                        <i class="fas fa-redo"></i> إعادة تعيين
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="projects-table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th aria-label="تحديد المشروع">التحديد</th>
+                        <th>الصورة</th>
+                        <th>العنوان</th>
+                        <th>التصنيف</th>
+                        <th>العميل</th>
+                        <th>التاريخ</th>
+                        <th>الرابط</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="projectsTableBody">
+                    <!-- سيتم إضافة المشاريع هنا ديناميكياً -->
+                </tbody>
+            </table>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-folder-open"></i>
+                <h3>لا توجد مشاريع مضافة بعد</h3>
+                <p>ابدأ بإضافة مشروعك الأول باستخدام النموذج أعلاه</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-actions">
+        <button id="selectAllBtn" class="action-btn select-btn">
+            <i class="fas fa-check-square"></i> تحديد الكل
+        </button>
+        <button id="deleteSelectedBtn" class="action-btn delete-btn" disabled>
+            <i class="fas fa-trash"></i> حذف المحدد
+        </button>
+        <button id="deleteAllBtn" class="action-btn delete-all-btn">
+            <i class="fas fa-trash-alt"></i> حذف الكل
+        </button>
+    </div>
+
+
+    <!-- زر العودة للصفحة الرئيسية - تصميم مطوّر -->
+    <button class="home-float-btn" id="homeButton">
+        <i class="fas fa-home"></i>
+    </button>
+
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>
