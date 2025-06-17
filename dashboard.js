@@ -1,19 +1,12 @@
-// تهيئة Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyAH2bBHklPLMCZF6ql-ntemsOkgLjk6-1o",
-    authDomain: "breast-cancer-93095.firebaseapp.com",
-    databaseURL: "https://breast-cancer-93095-default-rtdb.firebaseio.com",
-    projectId: "breast-cancer-93095",
-    storageBucket: "breast-cancer-93095.appspot.com",
-    messagingSenderId: "769036893418",
-    appId: "1:769036893418:web:a209b598b8c2356894eb93"
-};
+// تهيئة Supabase
+const { createClient } = supabase;
+const supabaseUrl = 'https://txywqmxcynvofslqdlck.supabase.co'; // Ensure this URL is correct and accessible
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4eXdxbXhjeW52b2ZzbHFkbGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMzY3MjksImV4cCI6MjA2NTcxMjcyOX0.ONwEYLhtDwZffyNZTiSYy3ZX5lx1tBVpCQoODrqfrK8';
+const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const portfolioCollection = db.collection('portfolio');
-const storage = firebase.storage();
+// تعريف جداول Supabase
+const portfolioCollection = supabaseClient.from('portfolio');
+const storage = supabaseClient.storage.from('portfolio-images');
 
 // متغيرات عامة
 let selectedProjects = [];
@@ -44,11 +37,12 @@ document.addEventListener('DOMContentLoaded', function () {
         yearSelect.appendChild(option);
     }
 
-    // دوال Firebase
+    // دوال Supabase
     async function getPortfolioData() {
         try {
-            const snapshot = await portfolioCollection.orderBy('date', 'desc').get();
-            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const { data, error } = await portfolioCollection.select().order('date', { ascending: false });
+            if (error) throw error;
+            return data;
         } catch (error) {
             console.error("Error getting portfolio data:", error);
             return [];
@@ -58,9 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
     async function savePortfolioData(projectData, isEdit = false, docId = null) {
         try {
             if (isEdit && docId) {
-                await portfolioCollection.doc(docId).update(projectData);
+                const { error } = await portfolioCollection.update(projectData).eq('id', docId);
+                if (error) throw error;
             } else {
-                await portfolioCollection.add(projectData);
+                const { error } = await portfolioCollection.insert([projectData]);
+                if (error) throw error;
             }
             return true;
         } catch (error) {
@@ -71,7 +67,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function deletePortfolioItem(docId) {
         try {
-            await portfolioCollection.doc(docId).delete();
+            const { error } = await portfolioCollection.delete().eq('id', docId);
+            if (error) throw error;
             return true;
         } catch (error) {
             console.error("Error deleting portfolio item:", error);
@@ -313,14 +310,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // رفع الصورة
     async function uploadImage(file) {
         try {
-            const storageRef = storage.ref();
-            const fileRef = storageRef.child(`portfolio/${Date.now()}_${file.name}`);
-            const uploadTask = await fileRef.put(file);
-            const downloadURL = await uploadTask.ref.getDownloadURL();
-            return downloadURL;
+            const fileName = `${Date.now()}-${file.name}`;
+            const { data, error } = await storage.upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+            if (error) throw error;
+
+            const { data: urlData } = await storage.getPublicUrl(fileName);
+            return urlData.publicUrl;
         } catch (error) {
             console.error("Error uploading image:", error);
-            throw error;
+            showAlert('error', 'خطأ في الرفع', 'فشل رفع الصورة. تأكد من أن لديك الأذونات الصحيحة على Supabase Storage.');
+            return null;
         }
     }
 
@@ -353,9 +355,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 client: document.getElementById('client').value.trim(),
                 date: `${month} ${year}`,
                 tags: document.getElementById('tags').value.trim() ?
-                    document.getElementById('tags').value.trim().split(',').map(t => t.trim()) : [],
-                externalLink: document.getElementById('externalLink').value.trim(),
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    document.getElementById('tags').value.trim().split(',').map(t => t.trim()) : []
             };
 
             const editIndex = editIndexInput.value;
@@ -392,9 +392,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (editBtn) {
             const docId = editBtn.dataset.id;
             try {
-                const doc = await portfolioCollection.doc(docId).get();
-                if (doc.exists) {
-                    const project = doc.data();
+                const { data: project, error } = await portfolioCollection.select().eq('id', docId).single();
+                if (error) throw error;
+
+                if (project) {
 
                     document.getElementById('category').value = project.category;
                     document.getElementById('title').value = project.title;

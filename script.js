@@ -9,20 +9,14 @@ const siteData = {
     ]
 };
 
-// تهيئة Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyAH2bBHklPLMCZF6ql-ntemsOkgLjk6-1o",
-  authDomain: "breast-cancer-93095.firebaseapp.com",
-  databaseURL: "https://breast-cancer-93095-default-rtdb.firebaseio.com",
-  projectId: "breast-cancer-93095",
-  storageBucket: "breast-cancer-93095.appspot.com",
-  messagingSenderId: "769036893418",
-  appId: "1:769036893418:web:a209b598b8c2356894eb93"
-};
+// تهيئة Supabase
+const { createClient } = supabase;
+const supabaseUrl = 'https://txywqmxcynvofslqdlck.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4eXdxbXhjeW52b2ZzbHFkbGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMzY3MjksImV4cCI6MjA2NTcxMjcyOX0.ONwEYLhtDwZffyNZTiSYy3ZX5lx1tBVpCQoODrqfrK8';
+const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const portfolioCollection = db.collection('portfolio');
+// تعريف جداول Supabase
+const portfolioCollection = supabaseClient.from('portfolio');
 
 // تأثير الكتابة المتحركة
 function initTypingEffect() {
@@ -80,8 +74,11 @@ async function loadPortfolio() {
     portfolioContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المشاريع...</div>';
     
     try {
-        const snapshot = await portfolioCollection.orderBy('date', 'desc').get();
-        const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const { data: projects, error } = await portfolioCollection.select('*').order('date', { ascending: false });
+
+        if (error) {
+            throw error;
+        }
         
         portfolioContainer.innerHTML = '';
         totalCountElement.textContent = projects.length;
@@ -379,8 +376,11 @@ async function loadSkillsSection() {
     skillsGrid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المهارات...</div>';
     
     try {
-        const snapshot = await portfolioCollection.get();
-        const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const { data: projects, error } = await portfolioCollection.select('*');
+
+        if (error) {
+            throw error;
+        }
         
         const enhancedSkills = siteData.skills.map(skill => {
             const skillCategory = 
