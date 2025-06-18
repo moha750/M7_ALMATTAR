@@ -1,12 +1,15 @@
 // تهيئة Supabase
 const { createClient } = supabase;
-const supabaseUrl = 'https://txywqmxcynvofslqdlck.supabase.co'; // Ensure this URL is correct and accessible
+const supabaseUrl = 'https://txywqmxcynvofslqdlck.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4eXdxbXhjeW52b2ZzbHFkbGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMzY3MjksImV4cCI6MjA2NTcxMjcyOX0.ONwEYLhtDwZffyNZTiSYy3ZX5lx1tBVpCQoODrqfrK8';
 const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
 // تعريف جداول Supabase
 const portfolioCollection = supabaseClient.from('portfolio');
 const storage = supabaseClient.storage.from('portfolio-images');
+
+// تهيئة Supabase Storage
+const supabaseStorage = supabaseClient.storage;
 
 // متغيرات عامة
 let selectedProjects = [];
@@ -38,16 +41,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // دوال Supabase
-    async function getPortfolioData() {
-        try {
-            const { data, error } = await portfolioCollection.select().order('date', { ascending: false });
-            if (error) throw error;
-            return data;
-        } catch (error) {
-            console.error("Error getting portfolio data:", error);
-            return [];
-        }
+async function getPortfolioData() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('portfolio')
+            .select('id, category, image, title, description, client, date, tags, external_link') // تم إضافة id هنا
+            .order('date', { ascending: false });
+        if (error) throw error;
+        return data;
+    } catch (error) {
+        console.error("Error getting portfolio data:", error);
+        return [];
     }
+}
 
     async function savePortfolioData(projectData, isEdit = false, docId = null) {
         try {
@@ -60,22 +66,50 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             return true;
         } catch (error) {
-            console.error("Error saving portfolio data:", error);
-            return false;
+            console.error("خطأ في حفظ بيانات المعرض:", error);
+            showAlert('error', 'خطأ في الحفظ', `فشل حفظ بيانات المشروع. تأكد من:\n1. صحة البيانات المدخلة\n2. وجود الاتصال بالإنترنت\n3. أن المفتاح Supabase صحيح\n4. أن الـ bucket ${bucket} موجود`);
+            return null;
         }
     }
 
-    async function deletePortfolioItem(docId) {
-        try {
-            const { error } = await portfolioCollection.delete().eq('id', docId);
-            if (error) throw error;
-            return true;
-        } catch (error) {
-            console.error("Error deleting portfolio item:", error);
-            return false;
-        }
+async function deletePortfolioItem(docId) {
+    if (!docId) {
+        console.error("Invalid ID for deletion:", docId);
+        showAlert('error', 'خطأ في الحذف', 'معرّف المشروع غير صالح');
+        return false;
     }
 
+    try {
+        // حذف المشروع من قاعدة البيانات
+        const { error: dbError } = await supabaseClient
+            .from('portfolio')
+            .delete()
+            .eq('id', docId);
+        
+        if (dbError) throw dbError;
+        
+        // حذف الصورة المرتبطة بالمشروع من التخزين
+        const { data: storageData, error: storageError } = await supabaseClient
+            .storage
+            .from('portfolio-images')
+            .list(`${docId}/`);
+            
+        if (storageError) {
+            console.error("Error listing storage files:", storageError);
+        } else if (storageData && storageData.length > 0) {
+            await supabaseClient
+                .storage
+                .from('portfolio-images')
+                .remove(storageData.map(file => `${docId}/${file.name}`));
+        }
+        
+        return true;
+    } catch (error) {
+        console.error("Error deleting portfolio item:", error);
+        showAlert('error', 'خطأ في الحذف', `حدث خطأ أثناء محاولة حذف المشروع: ${error.message}`);
+        return false;
+    }
+}
     // دوال العرض
     function toggleEmptyState(portfolio) {
         if (portfolio.length === 0) {
@@ -87,43 +121,44 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    async function renderProjects() {
-        const portfolio = await getPortfolioData();
-        projectsTableBody.innerHTML = '';
+async function renderProjects() {
+    const portfolio = await getPortfolioData();
+    projectsTableBody.innerHTML = '';
 
-        portfolio.forEach((item) => {
-            const tr = document.createElement('tr');
-            tr.dataset.id = item.id;
-            tr.innerHTML = `
-    <td>
-        <input type="checkbox" class="select-checkbox" data-id="${item.id}" title="تحديد هذا المشروع">
-    </td>                <td><img src="${item.image}" alt="${item.title}" class="project-thumb" /></td>
-                <td>${item.title}</td>
-                <td><span class="category-badge category-${item.category}">${getCategoryName(item.category)}</span></td>
-                <td>${item.client}</td>
-                <td>${item.date}</td>
-                <td class="project-link">
-                    ${item.externalLink ?
-                    `<a href="${item.externalLink}" target="_blank" class="link-btn" title="فتح الرابط">
-                            <i class="fas fa-external-link-alt"></i>
-                        </a>` :
+    portfolio.forEach((item) => {
+        const tr = document.createElement('tr');
+        tr.dataset.id = item.id; // تم إصلاح هذا السطر
+        tr.innerHTML = `
+            <td>
+                <input type="checkbox" class="select-checkbox" data-id="${item.id}">
+            </td>
+            <td><img src="${item.image}" alt="${item.title}" class="project-thumb"></td>
+            <td>${item.title}</td>
+            <td><span class="category-badge category-${item.category}">${getCategoryName(item.category)}</span></td>
+            <td>${item.client}</td>
+            <td>${item.date}</td>
+            <td class="project-link">
+                ${item.external_link ? 
+                    `<a href="${item.external_link}" target="_blank" class="link-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>` : 
                     '<span class="no-link"><i class="fas fa-unlink"></i></span>'}
-                </td>
-                <td class="actions">
-                    <button class="action-btn edit-btn" data-id="${item.id}" title="تعديل">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="action-btn delete-btn" data-id="${item.id}" title="حذف">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            projectsTableBody.appendChild(tr);
-        });
+            </td>
+            <td class="actions">
+                <button class="action-btn edit-btn" data-id="${item.id}">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete-btn" data-id="${item.id}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        projectsTableBody.appendChild(tr);
+    });
 
-        toggleEmptyState(portfolio);
-        setupSelectionHandlers();
-    }
+    toggleEmptyState(portfolio);
+    setupSelectionHandlers();
+}
 
     function getCategoryName(category) {
         const categories = {
@@ -218,29 +253,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    async function deleteAllProjects() {
-        const portfolio = await getPortfolioData();
-        if (portfolio.length === 0) return;
+async function deleteAllProjects() {
+    const portfolio = await getPortfolioData();
+    if (portfolio.length === 0) return;
 
-        const result = await Swal.fire({
-            title: 'هل أنت متأكد؟',
-            text: `سيتم حذف جميع المشاريع (${portfolio.length})`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'نعم، احذف الكل',
-            cancelButtonText: 'إلغاء',
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#27548a'
-        });
+    const result = await Swal.fire({
+        title: 'هل أنت متأكد؟',
+        text: `سيتم حذف جميع المشاريع (${portfolio.length})`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'نعم، احذف الكل',
+        cancelButtonText: 'إلغاء',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#27548a'
+    });
 
-        if (result.isConfirmed) {
-            const deletePromises = portfolio.map(item => deletePortfolioItem(item.id));
-            await Promise.all(deletePromises);
+    if (result.isConfirmed) {
+        try {
+            // حذف جميع السجلات باستخدام شرط صحيح للUUID
+            const { error } = await portfolioCollection.delete().not('id', 'is', null);
+            
+            if (error) throw error;
+            
             selectedProjects = [];
             await renderProjects();
             showAlert('success', 'تم الحذف', 'تم حذف جميع المشاريع بنجاح');
+        } catch (error) {
+            console.error("خطأ في حذف جميع المشاريع:", error);
+            showAlert('error', 'خطأ في الحذف', 'حدث خطأ أثناء محاولة حذف جميع المشاريع');
         }
     }
+}
 
     // دوال مساعدة
     function resetForm() {
@@ -310,18 +353,38 @@ document.addEventListener('DOMContentLoaded', function () {
     // رفع الصورة
     async function uploadImage(file) {
         try {
-            const fileName = `${Date.now()}-${file.name}`;
-            const { data, error } = await storage.upload(fileName, file, {
-                cacheControl: '3600',
-                upsert: false
-            });
-            if (error) throw error;
+            // تهيئة متغيرات الثابتة
+            const BUCKET_NAME = 'portfolio-images';
+            const DATE_PREFIX = Date.now();
+            
+            // تنظيف اسم الملف وإزالة المسافات والأحرف الخاصة
+            const cleanName = file.name
+                .replace(/[^a-zA-Z0-9._-]/g, '-')
+                .replace(/\s+/g, '-');
+            
+            const fileName = `${DATE_PREFIX}-${cleanName}`;
+            
+            // رفع الملف
+            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                .from(BUCKET_NAME)
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
 
-            const { data: urlData } = await storage.getPublicUrl(fileName);
+            if (uploadError) throw uploadError;
+
+            // الحصول على رابط الصورة
+            const { data: urlData, error: urlError } = await supabaseClient.storage
+                .from(BUCKET_NAME)
+                .getPublicUrl(fileName);
+
+            if (urlError) throw urlError;
+
             return urlData.publicUrl;
         } catch (error) {
-            console.error("Error uploading image:", error);
-            showAlert('error', 'خطأ في الرفع', 'فشل رفع الصورة. تأكد من أن لديك الأذونات الصحيحة على Supabase Storage.');
+            console.error("خطأ في رفع الصورة:", error);
+            showAlert('error', 'خطأ في الرفع', `فشل رفع الصورة. تأكد من:\n1. وجود bucket باسم ${BUCKET_NAME}\n2. أن المفتاح Supabase صحيح\n3. أن لديك الأذونات المناسبة على Supabase\n4. تأكد من أن اسم الملف صحيح`);
             return null;
         }
     }
@@ -355,7 +418,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 client: document.getElementById('client').value.trim(),
                 date: `${month} ${year}`,
                 tags: document.getElementById('tags').value.trim() ?
-                    document.getElementById('tags').value.trim().split(',').map(t => t.trim()) : []
+                    document.getElementById('tags').value.trim().split(',').map(t => t.trim()) : [],
+                external_link: document.getElementById('externalLink').value.trim() || null
             };
 
             const editIndex = editIndexInput.value;

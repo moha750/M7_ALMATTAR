@@ -1471,12 +1471,6 @@ img {
     transform: scale(1);
 }
 
-.lightbox-image {
-    width: 100%;
-    max-height: 500px;
-    object-fit: cover;
-}
-
 .lightbox-info {
     padding: 2rem;
 }
@@ -1632,7 +1626,7 @@ img {
 
 .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
     gap: 2.5rem;
     perspective: 1000px;
 }
@@ -1748,17 +1742,24 @@ img {
 }
 
 .skill-projects-container {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
     border-top: 1px solid rgba(108, 92, 231, 0.1);
+    text-align: center;
 }
 
 .skill-projects-title {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #27548a;
-    margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.skill-projects-title strong {
+    font-size: 1.2rem;
+    color: #dda853;
 }
 
 .skill-projects-title i {
@@ -1767,20 +1768,11 @@ img {
 }
 
 .skill-projects-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.8rem;
+    display: none !important;
 }
 
 .skill-project-thumb {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
+    display: none !important;
 }
 
 .project-view-icon {
@@ -1898,13 +1890,6 @@ img {
     pointer-events: all;
 }
 
-
-.lightbox-image {
-    width: 100%;
-    max-height: 500px;
-    object-fit: cover;
-}
-
 .lightbox-info {
     padding: 2rem;
 }
@@ -1937,25 +1922,25 @@ img {
 
 /* التكيف مع الشاشات الصغيرة */
 @media (max-width: 992px) {
-    .skills-grid {
+    /* .skills-grid {
         grid-template-columns: repeat(1, 1fr);
-    }
+    } */
 }
 
 
 
 
 @media (max-width: 768px) {
-    .skills-grid {
+    /* .skills-grid {
         grid-template-columns: 1fr;
-    }
+    } */
     
     .skill-card {
         padding: 2rem;
     }
     
     .skill-projects-grid {
-        grid-template-columns: repeat(3, 1fr);
+    display: none !important;
     }
 }
 
@@ -1978,7 +1963,7 @@ img {
     }
     
     .skill-projects-grid {
-        grid-template-columns: repeat(3, 1fr);
+        display: none !important;
     }
 }
 
@@ -1999,6 +1984,8 @@ img {
 
 /* تحسينات متقدمة لشريط المهارات */
 .skill-level-text {
+    display: flex;
+    justify-content: center;
     position: relative;
     padding: 1rem;
     margin: 1.5rem 0;
@@ -3206,8 +3193,9 @@ img {
 }
 
 .lightbox-image {
+    display: block;
     width: 100%;
-    height: 100%;
+    max-height: 500px;
     object-fit: cover;
     transition: transform 0.5s ease;
 }
@@ -3281,7 +3269,6 @@ img {
 }
 
 .info-meta {
-    margin-top: auto;
     padding-top: 2rem;
     border-top: 2px solid #f5eedc;
     display: grid;
@@ -3918,3 +3905,38 @@ img {
     font-size: 0.9rem;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

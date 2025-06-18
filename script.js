@@ -5,7 +5,8 @@ const siteData = {
         { name: "الموشن جرافيك", level: 65, icon: "fas fa-film" },
         { name: "المونتاج المرئي", level: 85, icon: "fas fa-video" },
         { name: "التعليق الصوتي", level: 70, icon: "fas fa-microphone" },
-        { name: "تطوير الويب", level: 75, icon: "fas fa-code" }
+        { name: "تطوير الويب", level: 75, icon: "fas fa-code" },
+        { name: "كتابة المحتوى", level: 60, icon: "fa-solid fa-pencil" }
     ]
 };
 
@@ -286,8 +287,8 @@ function initPortfolioLightbox(projectsData) {
         const tagsContainer = lightbox.querySelector('.project-tags');
         const viewProjectBtn = lightbox.querySelector('.btn-contact');
         
-        if (project.externalLink) {
-            viewProjectBtn.href = project.externalLink;
+        if (project.external_link) {
+            viewProjectBtn.href = project.external_link;
             viewProjectBtn.target = '_blank';
             viewProjectBtn.style.display = 'inline-flex';
         } else {
@@ -349,19 +350,19 @@ function initPortfolioLightbox(projectsData) {
     lightbox.querySelector('.close-lightbox').addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => e.target === lightbox && closeLightbox());
     
-    document.addEventListener('keydown', (e) => {
-        if (lightbox.classList.contains('active')) {
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowLeft') {
-                currentIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
-                showProjectInLightbox(currentIndex, projectsData);
-            }
-            if (e.key === 'ArrowRight') {
-                currentIndex = (currentIndex + 1) % filteredItems.length;
-                showProjectInLightbox(currentIndex, projectsData);
-            }
+document.addEventListener('keydown', (e) => {
+    if (lightbox.classList.contains('active')) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') {
+            currentIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
+            showProjectInLightbox(currentIndex, projectsData);
         }
-    });
+        if (e.key === 'ArrowRight') {
+            currentIndex = (currentIndex + 1) % filteredItems.length;
+            showProjectInLightbox(currentIndex, projectsData);
+        }
+    }
+});
     
     function closeLightbox() {
         lightbox.classList.remove('active');
@@ -393,8 +394,6 @@ async function loadSkillsSection() {
             
             return {
                 ...skill,
-                projects: skillProjects.slice(0, 3),
-                allProjects: skillProjects,
                 projectsCount: skillProjects.length,
                 category: getSkillCategory(skill.name)
             };
@@ -428,36 +427,16 @@ async function loadSkillsSection() {
                         <span>مستوى الإتقان: <strong>${skill.level}%</strong></span>
                     </div>
                     
-                    ${skill.projectsCount > 0 ? `
                     <div class="skill-projects-container">
                         <h4 class="skill-projects-title">
-                            <i class="fas fa-folder-open"></i> عدد مشاريعي (${skill.projectsCount})
+                            <i class="fas fa-folder-open"></i> عدد مشاريعي: <strong>${skill.projectsCount}</strong>
                         </h4>
-                            <div class="skill-projects-grid">
-                                ${skill.projects.map(project => `
-                                    <div class="skill-project-thumb" 
-                                        data-title="${project.title}"
-                                        data-description="${project.description}"
-                                        data-client="${project.client}"
-                                        data-date="${project.date}"
-                                        data-category="${project.category}"
-                                        data-link="${project.externalLink || '#'}">
-                                        <img src="${project.image}" alt="${project.title}">
-                                        <div class="project-view-icon">
-                                            <i class="fas fa-eye"></i>
-                                        </div>
-                                    </div>
-                                `).join('')}
-                        </div>
                     </div>
-                    ` : '<p class="no-projects">لا توجد مشاريع لهذه المهارة بعد</p>'}
                 </div>
             `;
             
             skillsGrid.appendChild(skillCard);
         });
-        
-        initProjectLightbox();
         
         const skillCards = document.querySelectorAll('.skill-card');
         const observer = new IntersectionObserver((entries) => {
