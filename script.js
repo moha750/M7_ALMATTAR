@@ -267,6 +267,8 @@ function initPortfolioLightbox(projectsData) {
                 duration: 0.5,
                 ease: "back.out(1.7)"
             });
+                        lightbox.classList.add('active');
+            document.body.classList.add('no-scroll'); // منع التمرير
         });
     });
     
@@ -632,16 +634,19 @@ function initContactForm() {
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            if (!validateName() || !validateEmail() || !validateMessage()) {
+            // التحقق من جميع الحقول باستثناء nameError
+            const isEmailValid = validateEmail();
+            const isMessageValid = validateMessage();
+            const isPhoneValid = validatePhone();
+            
+            if (!isEmailValid || !isMessageValid || !isPhoneValid) {
                 return;
             }
             
             const submitBtn = contactForm.querySelector('.submit-btn');
-            const submitLoader = submitBtn.querySelector('.submit-loader');
             const submitText = submitBtn.querySelector('span');
             
             submitText.textContent = 'جاري الإرسال...';
-            submitLoader.style.display = 'block';
             submitBtn.disabled = true;
             
             const formData = {
@@ -667,9 +672,26 @@ function initContactForm() {
                 const result = await response.json();
                 
                 if (result.created > 0) {
-                    const successMessage = document.getElementById('formSuccess');
-                    successMessage.textContent = 'شكراً لك! تم إرسال رسالتك بنجاح.';
-                    successMessage.style.display = 'block';
+                    // استخدام SweetAlert2 مع تصميم مخصص
+                    Swal.fire({
+                        title: 'تم الإرسال بنجاح!',
+                        html: `
+                            <div class="success-alert">
+                                <i class="fas fa-check-circle"></i>
+                                <p>شكراً لك على رسالتك! سأتواصل معك قريباً</p>
+                            </div>
+                        `,
+                        showConfirmButton: true,
+                        confirmButtonText: 'حسناً',
+                        customClass: {
+                            popup: 'custom-swal-popup',
+                            title: 'custom-swal-title',
+                            content: 'custom-swal-content',
+                            actions: 'custom-swal-actions',
+                            confirmButton: 'custom-swal-confirm'
+                        },
+                        buttonsStyling: false
+                    });
                     contactForm.reset();
                 } else {
                     throw new Error('فشل في حفظ البيانات');
@@ -677,53 +699,49 @@ function initContactForm() {
                 
             } catch (error) {
                 console.error('Error:', error);
-                const successMessage = document.getElementById('formSuccess');
-                successMessage.textContent = '⚠ حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.';
-                successMessage.style.color = '#e74c3c';
-                successMessage.style.display = 'block';
+                // استخدام SweetAlert2 مع تصميم مخصص للخطأ
+                Swal.fire({
+                    title: 'حدث خطأ!',
+                    html: `
+                        <div class="error-alert">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى</p>
+                        </div>
+                    `,
+                    showConfirmButton: true,
+                    confirmButtonText: 'حاول مجدداً',
+                    customClass: {
+                        popup: 'custom-swal-popup',
+                        title: 'custom-swal-title',
+                        content: 'custom-swal-content',
+                        actions: 'custom-swal-actions',
+                        confirmButton: 'custom-swal-error'
+                    },
+                    buttonsStyling: false
+                });
             } finally {
-                submitLoader.style.display = 'none';
                 submitText.textContent = 'إرسال الرسالة';
                 submitBtn.disabled = false;
-                
-                setTimeout(() => {
-                    const successMessage = document.getElementById('formSuccess');
-                    successMessage.style.display = 'none';
-                }, 5000);
             }
         });
 
-        const nameInput = document.getElementById('contactName');
         const emailInput = document.getElementById('contactEmail');
         const messageInput = document.getElementById('contactMessage');
+        const phoneInput = document.getElementById('contactPhone');
         
-        nameInput.addEventListener('input', validateName);
         emailInput.addEventListener('input', validateEmail);
         messageInput.addEventListener('input', validateMessage);
-    }
-}
-
-function validateName() {
-    const name = document.getElementById('contactName').value.trim();
-    const errorElement = document.getElementById('nameError');
-    
-    if (name.length < 3) {
-        errorElement.textContent = 'الاسم يجب أن يكون على الأقل 3 أحرف';
-        errorElement.style.display = 'block';
-        return false;
-    } else {
-        errorElement.style.display = 'none';
-        return true;
+        phoneInput.addEventListener('input', validatePhone);
     }
 }
 
 function validateEmail() {
     const email = document.getElementById('contactEmail').value.trim();
-    const errorElement = document.getElementById('emailError');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const errorElement = document.getElementById('emailError');
     
     if (!emailRegex.test(email)) {
-        errorElement.textContent = 'البريد الإلكتروني غير صالح';
+        errorElement.textContent = 'صيغة البريد الإلكتروني غير صحيحة';
         errorElement.style.display = 'block';
         return false;
     } else {
@@ -738,6 +756,20 @@ function validateMessage() {
     
     if (message.length < 10) {
         errorElement.textContent = 'الرسالة يجب أن تكون على الأقل 10 أحرف';
+        errorElement.style.display = 'block';
+        return false;
+    } else {
+        errorElement.style.display = 'none';
+        return true;
+    }
+}
+
+function validatePhone() {
+    const phone = document.getElementById('contactPhone').value.trim();
+    const errorElement = document.getElementById('phoneError');
+    
+    if (phone && phone.length !== 10) {
+        errorElement.textContent = ' يجب أن يتكون رقم الهاتف من 10 أرقام ';
         errorElement.style.display = 'block';
         return false;
     } else {
@@ -952,11 +984,16 @@ function initNavLinks() {
 function initLoader() {
     const loader = document.querySelector('.page-loader');
     
+    // إضافة صنف no-scroll إلى body لمنع التمرير
+    document.body.classList.add('no-scroll');
+    
     setTimeout(function() {
         loader.classList.add('fade-out');
         
         setTimeout(function() {
             loader.style.display = 'none';
+            // إزالة صنف no-scroll من body للسماح بالتمرير
+            document.body.classList.remove('no-scroll');
         }, 500);
     }, 2000);
 }
