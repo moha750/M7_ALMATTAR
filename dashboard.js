@@ -43,65 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const applyCrop = document.getElementById('applyCrop');
     const cancelCrop = document.getElementById('cancelCrop');
 
-    // إضافة مستمعي الأحداث هنا
-    if (imageUpload) {
-imageUpload.addEventListener('change', function(e) {
-    if (this.files.length === 0) {
-        resetImageField();
-        return;
-    }
-
-     this.dataset.file = file;
-
-    const file = e.target.files[0];
-    if (file) {
-        currentImageFile = file;
-        updateFileInfo(file); // تحديث معلومات الملف
-        
-                
-                // عرض خيارات للمستخدم
-                Swal.fire({
-                    title: 'خيارات معالجة الصورة',
-                    text: 'كيف تريد معالجة الصورة؟',
-                    icon: 'question',
-                    showDenyButton: true,
-                    showCancelButton: true,
-                    confirmButtonText: 'اقتصاص الصورة',
-                    denyButtonText: 'رفع بدون اقتصاص',
-                    cancelButtonText: 'إلغاء الرفع',
-                    confirmButtonColor: '#dda853',
-                    denyButtonColor: '#4CAF50',
-                    cancelButtonColor: '#d33'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // اقتصاص الصورة
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            openCropModal(event.target.result);
-                            cropModalOpened = true;
-                        };
-                        reader.readAsDataURL(file);
-                    } else if (result.isDenied) {
-                        // رفع الصورة مباشرة بدون اقتصاص
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            const preview = document.getElementById('previewImage');
-                            preview.src = event.target.result;
-                            document.getElementById('imagePreview').style.display = 'block';
-                            
-                            const dataTransfer = new DataTransfer();
-                            dataTransfer.items.add(file);
-                            imageUpload.files = dataTransfer.files;
-                        };
-                        reader.readAsDataURL(file);
-                    } else {
-                        // إلغاء الرفع
-                        resetImageField();
-                    }
-                });
-            }
-        });
-    }
 
 if (applyCrop) {
 applyCrop.addEventListener('click', function() {
@@ -234,6 +175,68 @@ document.addEventListener('DOMContentLoaded', function() {
             closeCropModal(true);
         });
     }
+
+    imageUpload.addEventListener('change', function(e) {
+    if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        
+        // التحقق من نوع الملف
+        if (!file.type.match('image.*')) {
+            showAlert('error', 'خطأ في نوع الملف', 'الرجاء اختيار ملف صورة فقط (JPG, PNG)');
+            resetImageField();
+            return;
+        }
+        
+        // التحقق من حجم الملف
+        if (file.size > 10 * 1024 * 1024) {
+            showAlert('error', 'حجم الملف كبير', 'الحد الأقصى لحجم الصورة هو 10MB');
+            resetImageField();
+            return;
+        }
+        
+        currentImageFile = file;
+        updateFileInfo(file);
+        
+        // عرض خيارات للمستخدم
+        Swal.fire({
+            title: 'خيارات معالجة الصورة',
+            text: 'كيف تريد معالجة الصورة؟',
+            icon: 'question',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'اقتصاص الصورة',
+            denyButtonText: 'رفع بدون اقتصاص',
+            cancelButtonText: 'إلغاء الرفع',
+            confirmButtonColor: '#dda853',
+            denyButtonColor: '#4CAF50',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    openCropModal(event.target.result);
+                    cropModalOpened = true;
+                };
+                reader.readAsDataURL(file);
+            } else if (result.isDenied) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('previewImage');
+                    preview.src = event.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                    document.querySelector('.upload-area').style.display = 'none';
+                    
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    imageUpload.files = dataTransfer.files;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                resetImageField();
+            }
+        });
+    }
+});
 });
 
 function closeCropModal(resetImage = false) {
@@ -799,57 +802,6 @@ async function deleteAllProjects() {
 
     addTagBtn.addEventListener('click', addTag);
 
-document.getElementById('imageUpload').addEventListener('change', function(e) {
-    if (this.files.length === 0) return;
-
-    const file = e.target.files[0];
-    if (file) {
-        // التحقق من حجم الملف (10MB بالبايت)
-        if (file.size > 10 * 1024 * 1024) {
-            showAlert('error', 'حجم الملف كبير', 'الحد الأقصى لحجم الصورة هو 10MB');
-            resetImageField();
-            return;
-        }
-        
-        currentImageFile = file;
-        
-        // عرض خيارات للمستخدم: رفع مباشر أو اقتصاص
-        Swal.fire({
-            title: 'خيارات رفع الصورة',
-            icon: 'question',
-            showCancelButton: true,
-            showDenyButton: true,
-            confirmButtonText: 'اقتصاص الصورة',
-            denyButtonText: 'رفع بدون اقتصاص',
-            cancelButtonText: 'إلغاء الرفع',
-            confirmButtonColor: '#dda853',
-            denyButtonColor: '#27548a',
-            cancelButtonColor: '#fd79a8'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // فتح نافذة الاقتصاص
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    openCropModal(event.target.result);
-                };
-                reader.readAsDataURL(file);
-            } else if (result.isDenied) {
-                // رفع الصورة مباشرة بدون اقتصاص
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const preview = document.getElementById('previewImage');
-                    preview.src = event.target.result;
-                    document.getElementById('imagePreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                // إلغاء الرفع
-                resetImageField();
-            }
-        });
-    }
-});
-
     // تحميل SweetAlert2 إذا لم يكن محملاً
     if (typeof Swal === 'undefined') {
         const script = document.createElement('script');
@@ -1058,151 +1010,6 @@ document.getElementById('cropBtn').addEventListener('click', function() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// دالة لمعالجة الملف المسحوب
-function handleDroppedFile(file) {
-    if (!file.type.match('image.*')) {
-        showAlert('error', 'خطأ في نوع الملف', 'الرجاء اختيار ملف صورة فقط (JPG, PNG)');
-        return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-        showAlert('error', 'حجم الملف كبير', 'الحد الأقصى لحجم الصورة هو 10MB');
-        return;
-    }
-
-    currentImageFile = file;
-    updateFileInfo(file);
-
-    // عرض خيارات للمستخدم
-    Swal.fire({
-        title: 'خيارات معالجة الصورة',
-        text: 'كيف تريد معالجة الصورة؟',
-        icon: 'question',
-        showDenyButton: true,
-        showCancelButton: true,
-        confirmButtonText: 'اقتصاص الصورة',
-        denyButtonText: 'رفع بدون اقتصاص',
-        cancelButtonText: 'إلغاء الرفع',
-        confirmButtonColor: '#dda853',
-        denyButtonColor: '#4CAF50',
-        cancelButtonColor: '#d33'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                openCropModal(event.target.result);
-                cropModalOpened = true;
-            };
-            reader.readAsDataURL(file);
-        } else if (result.isDenied) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const preview = document.getElementById('previewImage');
-                preview.src = event.target.result;
-                document.getElementById('imagePreview').style.display = 'block';
-                
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                imageUpload.files = dataTransfer.files;
-            };
-            reader.readAsDataURL(file);
-        } else {
-            resetImageField();
-        }
-    });
-}
-
-// إضافة أحداث السحب والإفلات
-const uploadArea = document.querySelector('.upload-area');
-
-uploadArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadArea.classList.add('drag-over');
-});
-
-uploadArea.addEventListener('dragleave', () => {
-    uploadArea.classList.remove('drag-over');
-});
-
-uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('drag-over');
-    
-    if (e.dataTransfer.files.length) {
-        handleDroppedFile(e.dataTransfer.files[0]);
-    }
-});
-
-// جعل منطقة الرفع قابلة للنقر بالكامل
-uploadArea.addEventListener('click', () => {
-    imageUpload.click();
-});
 
 
 
