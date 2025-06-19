@@ -1,3 +1,8 @@
+// متغيرات عامة
+let cropper = null;
+let currentImageFile = null;
+let cropModalOpened = false;
+
 // تهيئة Supabase
 const { createClient } = supabase;
 const supabaseUrl = 'https://txywqmxcynvofslqdlck.supabase.co';
@@ -11,53 +16,204 @@ const storage = supabaseClient.storage.from('portfolio-images');
 // تهيئة Supabase Storage
 const supabaseStorage = supabaseClient.storage;
 
-// أضف في بداية الملف
-let cropper = null;
-let currentImageFile = null;
 
-// أحداث أدوات التحكم
-document.getElementById('cropFree').addEventListener('click', () => {
-    if (cropper) cropper.setAspectRatio(NaN);
-    setActiveRatio('cropFree');
-});
-
-document.getElementById('crop1x1').addEventListener('click', () => {
-    if (cropper) cropper.setAspectRatio(1);
-    setActiveRatio('crop1x1');
-});
-
-document.getElementById('crop16x9').addEventListener('click', () => {
-    if (cropper) cropper.setAspectRatio(16/9);
-    setActiveRatio('crop16x9');
-});
-
-document.getElementById('crop9x16').addEventListener('click', () => {
-    if (cropper) cropper.setAspectRatio(9/16);
-    setActiveRatio('crop9x16');
-});
-
-document.getElementById('rotateLeft').addEventListener('click', () => {
-    if (cropper) cropper.rotate(-90);
-});
-
-document.getElementById('rotateRight').addEventListener('click', () => {
-    if (cropper) cropper.rotate(90);
-});
-
-document.getElementById('removeImageBtn').addEventListener('click', function() {
-    resetImageField();
-});
-
-document.getElementById('closeCropBtn').addEventListener('click', function() {
-    closeCropModal(true);
-});
 
 // دالة لإعادة تعيين حقل الصورة
 function resetImageField() {
     document.getElementById('imagePreview').style.display = 'none';
     document.getElementById('imageUpload').value = '';
+    document.querySelector('.upload-area').style.display = 'flex';
     currentImageFile = null;
+    
+    if (cropModalOpened) {
+        closeCropModal(false);
+    }
 }
+
+function setActiveRatio(id) {
+    document.querySelectorAll('.crop-ratio-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+}
+
+// أحداث أدوات التحكم
+document.addEventListener('DOMContentLoaded', function() {
+    const imageUpload = document.getElementById('imageUpload');
+    const applyCrop = document.getElementById('applyCrop');
+    const cancelCrop = document.getElementById('cancelCrop');
+
+    // إضافة مستمعي الأحداث هنا
+    if (imageUpload) {
+imageUpload.addEventListener('change', function(e) {
+    if (this.files.length === 0) {
+        resetImageField();
+        return;
+    }
+
+     this.dataset.file = file;
+
+    const file = e.target.files[0];
+    if (file) {
+        currentImageFile = file;
+        updateFileInfo(file); // تحديث معلومات الملف
+        
+                
+                // عرض خيارات للمستخدم
+                Swal.fire({
+                    title: 'خيارات معالجة الصورة',
+                    text: 'كيف تريد معالجة الصورة؟',
+                    icon: 'question',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'اقتصاص الصورة',
+                    denyButtonText: 'رفع بدون اقتصاص',
+                    cancelButtonText: 'إلغاء الرفع',
+                    confirmButtonColor: '#dda853',
+                    denyButtonColor: '#4CAF50',
+                    cancelButtonColor: '#d33'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // اقتصاص الصورة
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            openCropModal(event.target.result);
+                            cropModalOpened = true;
+                        };
+                        reader.readAsDataURL(file);
+                    } else if (result.isDenied) {
+                        // رفع الصورة مباشرة بدون اقتصاص
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const preview = document.getElementById('previewImage');
+                            preview.src = event.target.result;
+                            document.getElementById('imagePreview').style.display = 'block';
+                            
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(file);
+                            imageUpload.files = dataTransfer.files;
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        // إلغاء الرفع
+                        resetImageField();
+                    }
+                });
+            }
+        });
+    }
+
+if (applyCrop) {
+applyCrop.addEventListener('click', function() {
+    if (cropper) {
+        const croppedCanvas = cropper.getCroppedCanvas({
+            width: 800,
+            height: 450,
+            fillColor: '#fff'
+        });
+        
+        croppedCanvas.toBlob(function(blob) {
+            // تحقق من وجود الملف
+            if (!currentImageFile) {
+                console.error('currentImageFile is not defined');
+                return;
+            }
+            
+            const croppedFile = new File([blob], currentImageFile.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+            });
+                    
+                    const preview = document.getElementById('previewImage');
+                    preview.src = URL.createObjectURL(blob);
+                    document.getElementById('imagePreview').style.display = 'block';
+                    
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(croppedFile);
+                    imageUpload.files = dataTransfer.files;
+                    
+                    closeCropModal();
+                });
+            }
+        });
+    }
+
+    if (cancelCrop) {
+        cancelCrop.addEventListener('click', function() {
+            closeCropModal(true);
+        });
+    }
+
+    // إضافة مستمعي الأحداث لأدوات الاقتصاص
+    document.getElementById('cropFree').addEventListener('click', () => {
+        if (cropper) cropper.setAspectRatio(NaN);
+        setActiveRatio('cropFree');
+    });
+
+    document.getElementById('crop1x1').addEventListener('click', () => {
+        if (cropper) cropper.setAspectRatio(1);
+        setActiveRatio('crop1x1');
+    });
+
+    document.getElementById('crop16x9').addEventListener('click', () => {
+        if (cropper) cropper.setAspectRatio(16/9);
+        setActiveRatio('crop16x9');
+    });
+
+    document.getElementById('crop9x16').addEventListener('click', () => {
+        if (cropper) cropper.setAspectRatio(9/16);
+        setActiveRatio('crop9x16');
+    });
+
+    document.getElementById('rotateLeft').addEventListener('click', () => {
+        if (cropper) cropper.rotate(-90);
+    });
+
+    document.getElementById('rotateRight').addEventListener('click', () => {
+        if (cropper) cropper.rotate(90);
+    });
+
+    document.getElementById('removeImageBtn').addEventListener('click', function() {
+        resetImageField();
+    });
+});
+    if (cancelCrop) {
+        cancelCrop.addEventListener('click', function() {
+            closeCropModal(true);
+        });
+    }
+
+    document.getElementById('cropFree').addEventListener('click', () => {
+        if (cropper) cropper.setAspectRatio(NaN);
+        setActiveRatio('cropFree');
+    });
+
+    document.getElementById('crop1x1').addEventListener('click', () => {
+        if (cropper) cropper.setAspectRatio(1);
+        setActiveRatio('crop1x1');
+    });
+
+    document.getElementById('crop16x9').addEventListener('click', () => {
+        if (cropper) cropper.setAspectRatio(16/9);
+        setActiveRatio('crop16x9');
+    });
+
+    document.getElementById('crop9x16').addEventListener('click', () => {
+        if (cropper) cropper.setAspectRatio(9/16);
+        setActiveRatio('crop9x16');
+    });
+
+    document.getElementById('rotateLeft').addEventListener('click', () => {
+        if (cropper) cropper.rotate(-90);
+    });
+
+    document.getElementById('rotateRight').addEventListener('click', () => {
+        if (cropper) cropper.rotate(90);
+    });
+
+    document.getElementById('removeImageBtn').addEventListener('click', function() {
+        resetImageField();
+    });
 
 function setActiveRatio(id) {
     document.querySelectorAll('.crop-ratio-btn').forEach(btn => {
@@ -68,26 +224,17 @@ function setActiveRatio(id) {
 
 
 
-// أحداث اقتصاص الصورة
-document.getElementById('imageUpload').addEventListener('change', function(e) {
-    if (this.files.length === 0) return;
+document.addEventListener('DOMContentLoaded', function() {
+    imageUpload = document.getElementById('imageUpload');
+    applyCrop = document.getElementById('applyCrop');
+    cancelCrop = document.getElementById('cancelCrop');
 
-    const file = e.target.files[0];
-    if (file) {
-        currentImageFile = file;
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            openCropModal(event.target.result);
-        };
-        reader.readAsDataURL(file);
+    if (cancelCrop) {
+        cancelCrop.addEventListener('click', function() {
+            closeCropModal(true);
+        });
     }
 });
-
-
-
-
-
-
 
 function closeCropModal(resetImage = false) {
     const cropModal = document.getElementById('cropModal');
@@ -103,39 +250,41 @@ function closeCropModal(resetImage = false) {
         if (resetImage) {
             resetImageField();
         }
+        
+        cropModalOpened = false; // إعادة تعيين العلامة
     }, 300);
 }
 
-document.getElementById('applyCrop').addEventListener('click', function() {
-    if (cropper) {
-        const croppedCanvas = cropper.getCroppedCanvas({
-            width: 800,
-            height: 450,
-            fillColor: '#fff'
+document.addEventListener('DOMContentLoaded', function() {
+    // إضافة مستمعي الأحداث هنا
+    const form = document.getElementById('projectForm');
+    const projectsTableBody = document.querySelector('.projects-table tbody');
+
+    if (form) {
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            // باقي الكود
         });
-        
-        croppedCanvas.toBlob(function(blob) {
-            const croppedFile = new File([blob], currentImageFile.name, {
-                type: 'image/jpeg',
-                lastModified: Date.now()
-            });
-            
-            const preview = document.getElementById('previewImage');
-            preview.src = URL.createObjectURL(blob);
-            document.getElementById('imagePreview').style.display = 'block';
-            
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(croppedFile);
-            document.getElementById('imageUpload').files = dataTransfer.files;
-            
-            closeCropModal(false);
-        }, 'image/jpeg', 0.9);
+    }
+
+    if (projectsTableBody) {
+        projectsTableBody.addEventListener('click', async function (e) {
+            const editBtn = e.target.closest('.edit-btn');
+            const deleteBtn = e.target.closest('.delete-btn');
+            // باقي الكود
+        });
     }
 });
 
-document.getElementById('cancelCrop').addEventListener('click', function() {
-    closeCropModal(true);
-});
+// تحميل SweetAlert2 إذا لم يكن محملاً
+if (typeof Swal === 'undefined') {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+    script.onload = function() {
+        // باقي الكود
+    };
+    document.head.appendChild(script);
+}
 
 // متغيرات عامة
 let selectedProjects = [];
@@ -650,18 +799,56 @@ async function deleteAllProjects() {
 
     addTagBtn.addEventListener('click', addTag);
 
-    document.getElementById('imageUpload').addEventListener('change', function (e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                const preview = document.getElementById('previewImage');
-                preview.src = event.target.result;
-                document.getElementById('imagePreview').style.display = 'block';
-            };
-            reader.readAsDataURL(file);
+document.getElementById('imageUpload').addEventListener('change', function(e) {
+    if (this.files.length === 0) return;
+
+    const file = e.target.files[0];
+    if (file) {
+        // التحقق من حجم الملف (10MB بالبايت)
+        if (file.size > 10 * 1024 * 1024) {
+            showAlert('error', 'حجم الملف كبير', 'الحد الأقصى لحجم الصورة هو 10MB');
+            resetImageField();
+            return;
         }
-    });
+        
+        currentImageFile = file;
+        
+        // عرض خيارات للمستخدم: رفع مباشر أو اقتصاص
+        Swal.fire({
+            title: 'خيارات رفع الصورة',
+            icon: 'question',
+            showCancelButton: true,
+            showDenyButton: true,
+            confirmButtonText: 'اقتصاص الصورة',
+            denyButtonText: 'رفع بدون اقتصاص',
+            cancelButtonText: 'إلغاء الرفع',
+            confirmButtonColor: '#dda853',
+            denyButtonColor: '#27548a',
+            cancelButtonColor: '#fd79a8'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // فتح نافذة الاقتصاص
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    openCropModal(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else if (result.isDenied) {
+                // رفع الصورة مباشرة بدون اقتصاص
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('previewImage');
+                    preview.src = event.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // إلغاء الرفع
+                resetImageField();
+            }
+        });
+    }
+});
 
     // تحميل SweetAlert2 إذا لم يكن محملاً
     if (typeof Swal === 'undefined') {
@@ -701,23 +888,29 @@ async function deleteAllProjects() {
 
 
 // أحداث قلب الصورة
-document.getElementById('flipHorizontal').addEventListener('click', () => {
-    if (cropper) {
-        const scaleX = cropper.getData().scaleX || 1;
-        cropper.scaleX(-scaleX);
-    }
-});
+if (document.getElementById('flipHorizontal')) {
+    document.getElementById('flipHorizontal').addEventListener('click', () => {
+        if (cropper) {
+            const scaleX = cropper.getData().scaleX || 1;
+            cropper.scaleX(-scaleX);
+        }
+    });
+}
 
-document.getElementById('flipVertical').addEventListener('click', () => {
-    if (cropper) {
-        const scaleY = cropper.getData().scaleY || 1;
-        cropper.scaleY(-scaleY);
-    }
-});
+if (document.getElementById('flipVertical')) {
+    document.getElementById('flipVertical').addEventListener('click', () => {
+        if (cropper) {
+            const scaleY = cropper.getData().scaleY || 1;
+            cropper.scaleY(-scaleY);
+        }
+    });
+}
 
 // تحديث دالة openCropModal لإضافة تحديث الحجم
 function openCropModal(imageSrc) {
     const cropModal = document.getElementById('cropModal');
+    if (!cropModal) return;
+
     cropModal.style.display = 'flex';
     
     setTimeout(() => {
@@ -729,8 +922,16 @@ function openCropModal(imageSrc) {
     image.src = imageSrc;
     image.style.maxWidth = '100%';
     
-    document.getElementById('cropPreview').innerHTML = '';
-    document.getElementById('cropPreview').appendChild(image);
+    const cropPreview = document.getElementById('cropPreview');
+    if (cropPreview) {
+        cropPreview.innerHTML = '';
+        cropPreview.appendChild(image);
+    }
+
+        if (!currentImageFile) {
+        console.error('Cannot open crop modal: currentImageFile is not defined');
+        return;
+    }
     
     if (cropper) cropper.destroy();
     
@@ -746,12 +947,13 @@ function openCropModal(imageSrc) {
         cropBoxResizable: true,
         toggleDragModeOnDblclick: false,
         aspectRatio: NaN,
-crop: function(event) {
-    // استدعاء دالة تحديث الحجم مع الأبعاد الجديدة
-    updateSizeIndicator(event.detail.width, event.detail.height);
-}
+        crop: function(event) {
+            updateSizeIndicator(event.detail.width, event.detail.height);
+        }
     });
+    cropper.imageFile = currentImageFile;
 }
+
 
 function updateSizeIndicator(width, height) {
     const sizeIndicator = document.getElementById('cropSize');
@@ -761,3 +963,287 @@ function updateSizeIndicator(width, height) {
 
     sizeIndicator.textContent = `${roundedWidth} × ${roundedHeight} بكسل`;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// أضف هذه الدوال في قسم المتغيرات العامة
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function updateFileInfo(file) {
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileSize').textContent = formatFileSize(file.size);
+}
+
+// في دالة معالجة الصورة بعد الرفع أو الاقتصاص:
+function handleImageAfterProcessing(blob, file) {
+    const preview = document.getElementById('previewImage');
+    preview.src = URL.createObjectURL(blob);
+    
+    document.getElementById('imagePreview').style.display = 'block';
+    document.querySelector('.upload-area').style.display = 'none';
+    
+    updateFileInfo(file); // تحديث معلومات الملف
+    
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    imageUpload.files = dataTransfer.files;
+}
+
+// إضافة مستمع لزر الاقتصاص من المعاينة
+document.getElementById('cropBtn').addEventListener('click', function() {
+    if (currentImageFile) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            openCropModal(event.target.result);
+            cropModalOpened = true;
+        };
+        reader.readAsDataURL(currentImageFile);
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// دالة لمعالجة الملف المسحوب
+function handleDroppedFile(file) {
+    if (!file.type.match('image.*')) {
+        showAlert('error', 'خطأ في نوع الملف', 'الرجاء اختيار ملف صورة فقط (JPG, PNG)');
+        return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+        showAlert('error', 'حجم الملف كبير', 'الحد الأقصى لحجم الصورة هو 10MB');
+        return;
+    }
+
+    currentImageFile = file;
+    updateFileInfo(file);
+
+    // عرض خيارات للمستخدم
+    Swal.fire({
+        title: 'خيارات معالجة الصورة',
+        text: 'كيف تريد معالجة الصورة؟',
+        icon: 'question',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'اقتصاص الصورة',
+        denyButtonText: 'رفع بدون اقتصاص',
+        cancelButtonText: 'إلغاء الرفع',
+        confirmButtonColor: '#dda853',
+        denyButtonColor: '#4CAF50',
+        cancelButtonColor: '#d33'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                openCropModal(event.target.result);
+                cropModalOpened = true;
+            };
+            reader.readAsDataURL(file);
+        } else if (result.isDenied) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const preview = document.getElementById('previewImage');
+                preview.src = event.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+                
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                imageUpload.files = dataTransfer.files;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            resetImageField();
+        }
+    });
+}
+
+// إضافة أحداث السحب والإفلات
+const uploadArea = document.querySelector('.upload-area');
+
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('drag-over');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('drag-over');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    
+    if (e.dataTransfer.files.length) {
+        handleDroppedFile(e.dataTransfer.files[0]);
+    }
+});
+
+// جعل منطقة الرفع قابلة للنقر بالكامل
+uploadArea.addEventListener('click', () => {
+    imageUpload.click();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
