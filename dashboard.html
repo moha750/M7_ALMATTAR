@@ -11,8 +11,8 @@
     <!-- مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- في قسم head -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 </head>
 
 <body>
@@ -44,9 +44,13 @@
                     <div class="form-group">
                         <label for="imageUpload"><i class="fas fa-image"></i> رفع صورة المشروع</label>
                         <input type="file" id="imageUpload" accept="image/*" required />
-                        <div id="imagePreview" style="margin-top: 10px; display: none;">
+                        <div id="imagePreview" style="margin-top: 10px; display: none; position: relative;">
                             <img id="previewImage" src="#" alt="معاينة الصورة"
                                 style="max-width: 200px; max-height: 150px; border-radius: 8px;" />
+                            <button id="removeImageBtn"
+                                style="position: absolute; top: -10px; right: -10px; background: #fd79a8; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer;">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -171,51 +175,66 @@
     </button>
 
 
-    
-<!-- تحديث نافذة الاقتصاص في HTML -->
-<!-- تحديث نافذة الاقتصاص في HTML -->
-<div id="cropModal" class="crop-modal">
-    <div class="crop-container">
-        <div class="close-crop-btn" id="closeCropBtn">
-            <i class="fas fa-times"></i>
-        </div>
-        
-        <div class="crop-controls">
+
+    <!-- تحديث نافذة الاقتصاص في HTML -->
+    <div id="cropModal" class="crop-modal">
+        <div class="crop-container">
+            <div class="close-crop-btn" id="closeCropBtn">
+                <i class="fas fa-times"></i>
+            </div>
+
+<!-- تحديث قسم crop-controls في dashboard.html -->
+<div class="crop-controls">
+    <div class="ratio-group">
+        <h4><i class="fas fa-crop"></i> نسب شائعة</h4>
+        <div class="ratio-buttons">
             <button id="cropFree" class="crop-ratio-btn active">
                 <i class="fas fa-vector-square"></i> حر
             </button>
             <button id="crop1x1" class="crop-ratio-btn">
                 <i class="fas fa-square"></i> 1:1
             </button>
-            <button id="crop4x3" class="crop-ratio-btn">
-                <i class="fas fa-rectangle-portrait"></i> 4:3
-            </button>
             <button id="crop16x9" class="crop-ratio-btn">
                 <i class="fas fa-desktop"></i> 16:9
             </button>
-            
-            <div class="crop-tools" style="margin-left: auto; display: flex; gap: 0.5rem;">
-                <button id="rotateLeft" class="crop-ratio-btn">
-                    <i class="fas fa-undo"></i> تدوير يسار
-                </button>
-                <button id="rotateRight" class="crop-ratio-btn">
-                    <i class="fas fa-redo"></i> تدوير يمين
-                </button>
-            </div>
-        </div>
-        
-        <div id="cropPreview" class="crop-preview"></div>
-        
-        <div class="crop-actions">
-            <button id="cancelCrop" class="reset-btn">
-                <i class="fas fa-times"></i> إلغاء
-            </button>
-            <button id="applyCrop" class="submit-btn">
-                <i class="fas fa-check"></i> تطبيق الاقتصاص
+            <button id="crop9x16" class="crop-ratio-btn">
+                <i class="fas fa-mobile-alt"></i> 9:16
             </button>
         </div>
     </div>
+    
+    <div class="crop-tools">
+        <button id="rotateLeft" class="crop-ratio-btn">
+            <i class="fas fa-undo"></i> تدوير يسار
+        </button>
+        <button id="rotateRight" class="crop-ratio-btn">
+            <i class="fas fa-redo"></i> تدوير يمين
+        </button>
+        <button id="flipHorizontal" class="crop-ratio-btn">
+            <i class="fas fa-arrows-alt-h"></i> قلب أفقي
+        </button>
+        <button id="flipVertical" class="crop-ratio-btn">
+            <i class="fas fa-arrows-alt-v"></i> قلب عمودي
+        </button>
+    </div>
 </div>
+
+<div class="size-indicator" id="sizeIndicator">
+    <i class="fas fa-ruler"></i> الحجم: <span id="cropSize">0×0 بكسل</span>
+</div>
+
+            <div id="cropPreview" class="crop-preview"></div>
+
+            <div class="crop-actions">
+                <button id="applyCrop" class="submit-btn">
+                    <i class="fas fa-check"></i> تطبيق الاقتصاص
+                </button>
+                <button id="cancelCrop" class="reset-btn">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
 
 
 

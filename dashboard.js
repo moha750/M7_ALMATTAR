@@ -26,14 +26,14 @@ document.getElementById('crop1x1').addEventListener('click', () => {
     setActiveRatio('crop1x1');
 });
 
-document.getElementById('crop4x3').addEventListener('click', () => {
-    if (cropper) cropper.setAspectRatio(4/3);
-    setActiveRatio('crop4x3');
-});
-
 document.getElementById('crop16x9').addEventListener('click', () => {
     if (cropper) cropper.setAspectRatio(16/9);
     setActiveRatio('crop16x9');
+});
+
+document.getElementById('crop9x16').addEventListener('click', () => {
+    if (cropper) cropper.setAspectRatio(9/16);
+    setActiveRatio('crop9x16');
 });
 
 document.getElementById('rotateLeft').addEventListener('click', () => {
@@ -44,7 +44,20 @@ document.getElementById('rotateRight').addEventListener('click', () => {
     if (cropper) cropper.rotate(90);
 });
 
-document.getElementById('closeCropBtn').addEventListener('click', closeCropModal);
+document.getElementById('removeImageBtn').addEventListener('click', function() {
+    resetImageField();
+});
+
+document.getElementById('closeCropBtn').addEventListener('click', function() {
+    closeCropModal(true);
+});
+
+// دالة لإعادة تعيين حقل الصورة
+function resetImageField() {
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('imageUpload').value = '';
+    currentImageFile = null;
+}
 
 function setActiveRatio(id) {
     document.querySelectorAll('.crop-ratio-btn').forEach(btn => {
@@ -53,8 +66,12 @@ function setActiveRatio(id) {
     document.getElementById(id).classList.add('active');
 }
 
+
+
 // أحداث اقتصاص الصورة
 document.getElementById('imageUpload').addEventListener('change', function(e) {
+    if (this.files.length === 0) return;
+
     const file = e.target.files[0];
     if (file) {
         currentImageFile = file;
@@ -66,41 +83,13 @@ document.getElementById('imageUpload').addEventListener('change', function(e) {
     }
 });
 
-function openCropModal(imageSrc) {
-    const cropModal = document.getElementById('cropModal');
-    cropModal.style.display = 'flex';
-    
-    // إضافة فئة active بعد تأخير بسيط للسماح بالتحميل
-    setTimeout(() => {
-        cropModal.classList.add('active');
-    }, 50);
-    
-    const image = document.createElement('img');
-    image.id = 'cropImage';
-    image.src = imageSrc;
-    image.style.maxWidth = '100%';
-    
-    document.getElementById('cropPreview').innerHTML = '';
-    document.getElementById('cropPreview').appendChild(image);
-    
-    if (cropper) cropper.destroy();
-    
-    cropper = new Cropper(image, {
-        viewMode: 1,
-        autoCropArea: 0.8,
-        responsive: true,
-        restore: false,
-        guides: true,
-        center: true,
-        highlight: true,
-        cropBoxMovable: true,
-        cropBoxResizable: true,
-        toggleDragModeOnDblclick: false,
-        aspectRatio: NaN // نسبة حرة
-    });
-}
 
-function closeCropModal() {
+
+
+
+
+
+function closeCropModal(resetImage = false) {
     const cropModal = document.getElementById('cropModal');
     cropModal.classList.remove('active');
     
@@ -110,7 +99,10 @@ function closeCropModal() {
             cropper.destroy();
             cropper = null;
         }
-        document.getElementById('imageUpload').value = '';
+        
+        if (resetImage) {
+            resetImageField();
+        }
     }, 300);
 }
 
@@ -123,82 +115,26 @@ document.getElementById('applyCrop').addEventListener('click', function() {
         });
         
         croppedCanvas.toBlob(function(blob) {
-            // إنشاء ملف جديد من Blob
             const croppedFile = new File([blob], currentImageFile.name, {
                 type: 'image/jpeg',
                 lastModified: Date.now()
             });
             
-            // تحديث معاينة الصورة
             const preview = document.getElementById('previewImage');
             preview.src = URL.createObjectURL(blob);
             document.getElementById('imagePreview').style.display = 'block';
             
-            // استبدال الملف الأصلي بالملف المقتطع
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(croppedFile);
             document.getElementById('imageUpload').files = dataTransfer.files;
             
-            // إغلاق النافذة
-            closeCropModal();
+            closeCropModal(false);
         }, 'image/jpeg', 0.9);
     }
 });
 
-document.getElementById('cancelCrop').addEventListener('click', closeCropModal);
-
-
-
-
-
-
-
-
-
-
-// أحداث الأزرار
 document.getElementById('cancelCrop').addEventListener('click', function() {
-    document.getElementById('cropModal').style.display = 'none';
-    if (cropper) {
-        cropper.destroy();
-        cropper = null;
-    }
-    document.getElementById('imageUpload').value = '';
-});
-
-document.getElementById('applyCrop').addEventListener('click', function() {
-    if (cropper) {
-        // الحصول على الصورة المقتطعة
-        const croppedCanvas = cropper.getCroppedCanvas({
-            width: 800,
-            height: 450,
-            fillColor: '#fff'
-        });
-        
-        // تحويل Canvas إلى Blob
-        croppedCanvas.toBlob(function(blob) {
-            // إنشاء ملف جديد من Blob
-            const croppedFile = new File([blob], currentImageFile.name, {
-                type: 'image/jpeg',
-                lastModified: Date.now()
-            });
-            
-            // تحديث معاينة الصورة
-            const preview = document.getElementById('previewImage');
-            preview.src = URL.createObjectURL(blob);
-            document.getElementById('imagePreview').style.display = 'block';
-            
-            // استبدال الملف الأصلي بالملف المقتطع
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(croppedFile);
-            document.getElementById('imageUpload').files = dataTransfer.files;
-            
-            // إغلاق النافذة
-            document.getElementById('cropModal').style.display = 'none';
-            cropper.destroy();
-            cropper = null;
-        }, 'image/jpeg', 0.9);
-    }
+    closeCropModal(true);
 });
 
 // متغيرات عامة
@@ -482,7 +418,7 @@ async function deleteAllProjects() {
         submitBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة مشروع';
         formTitle.textContent = 'إضافة مشروع جديد';
         formSubtitle.textContent = 'املأ النموذج لإضافة مشروع جديد إلى المعرض';
-        document.getElementById('imagePreview').style.display = 'none';
+        resetImageField(); // استدعاء دالة إعادة تعيين الصورة
         tags = [];
         renderTags();
     }
@@ -750,3 +686,68 @@ async function deleteAllProjects() {
         console.log('تم الانتقال إلى الصفحة الرئيسية');
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+// أحداث قلب الصورة
+document.getElementById('flipHorizontal').addEventListener('click', () => {
+    if (cropper) {
+        const scaleX = cropper.getData().scaleX || 1;
+        cropper.scaleX(-scaleX);
+    }
+});
+
+document.getElementById('flipVertical').addEventListener('click', () => {
+    if (cropper) {
+        const scaleY = cropper.getData().scaleY || 1;
+        cropper.scaleY(-scaleY);
+    }
+});
+
+// تحديث دالة openCropModal لإضافة تحديث الحجم
+function openCropModal(imageSrc) {
+    const cropModal = document.getElementById('cropModal');
+    cropModal.style.display = 'flex';
+    
+    setTimeout(() => {
+        cropModal.classList.add('active');
+    }, 50);
+    
+    const image = document.createElement('img');
+    image.id = 'cropImage';
+    image.src = imageSrc;
+    image.style.maxWidth = '100%';
+    
+    document.getElementById('cropPreview').innerHTML = '';
+    document.getElementById('cropPreview').appendChild(image);
+    
+    if (cropper) cropper.destroy();
+    
+    cropper = new Cropper(image, {
+        viewMode: 1,
+        autoCropArea: 0.8,
+        responsive: true,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: true,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        aspectRatio: NaN,
+        crop: function(event) {
+            // استدعاء دالة تحديث الحجم مع الأبعاد الجديدة
+            updateSizeIndicator(event.detail.width, event.detail.height);
+        }
+    });
+}
