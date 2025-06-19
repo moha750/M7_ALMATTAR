@@ -237,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
 });
 
 function closeCropModal(resetImage = false) {
@@ -1054,3 +1055,73 @@ document.getElementById('cropBtn').addEventListener('click', function() {
 
 
 
+// دالة لمعالجة سحب وإفلات الصور
+function setupDragAndDrop() {
+    const uploadArea = document.querySelector('.upload-area');
+    const imageUpload = document.getElementById('imageUpload');
+
+    // منع السلوك الافتراضي لسحب الملفات
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // إضافة تأثيرات عند السحب
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight() {
+        uploadArea.classList.add('drag-over');
+    }
+
+    function unhighlight() {
+        uploadArea.classList.remove('drag-over');
+    }
+
+    // معالجة الملفات المنسدلة
+    uploadArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files.length > 0) {
+            const file = files[0];
+            
+            // التحقق من نوع الملف
+            if (!file.type.match('image.*')) {
+                showAlert('error', 'خطأ في نوع الملف', 'الرجاء اختيار ملف صورة فقط (JPG, PNG)');
+                return;
+            }
+            
+            // التحقق من حجم الملف
+            if (file.size > 10 * 1024 * 1024) {
+                showAlert('error', 'حجم الملف كبير', 'الحد الأقصى لحجم الصورة هو 10MB');
+                return;
+            }
+            
+            // تحديث حقل الرفع اليدوي
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            imageUpload.files = dataTransfer.files;
+            
+            // تشغيل حدث التغيير يدويًا
+            const event = new Event('change');
+            imageUpload.dispatchEvent(event);
+        }
+    }
+}
+
+// استدعاء الدالة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    setupDragAndDrop();
+});
