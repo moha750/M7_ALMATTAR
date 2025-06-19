@@ -1127,3 +1127,51 @@ window.addEventListener('resize', function () {
         document.querySelector('.shown-count').textContent = visibleCount;
     }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const loadMoreButton = document.querySelector('.btn-load-more');
+    
+    loadMoreButton.addEventListener('click', function() {
+        loadMoreProjects(); // استدعاء دالة تحميل المزيد
+    });
+
+    function loadMoreProjects() {
+        // يمكنك استبدال هذا الجزء بكود لتحميل المزيد من البيانات من الخادم أو Supabase
+        console.log("جاري تحميل المزيد من المشاريع...");
+
+        // على سبيل المثال: يمكن تحميل مشاريع جديدة من Supabase هنا
+        getPortfolioData();  // هذه الدالة التي قمت بتعريفها سابقًا
+    }
+
+    async function getPortfolioData() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('portfolio')
+                .select('*')
+                .range(0, 10); // تحديد النطاق لتحميل 10 مشاريع جديدة
+
+            if (error) {
+                console.error('Error loading data:', error);
+            } else {
+                console.log('Data loaded:', data);
+                renderProjects(data);  // دالة لعرض المشاريع بعد تحميلها
+            }
+        } catch (error) {
+            console.error('Error in getPortfolioData:', error);
+        }
+    }
+
+    function renderProjects(data) {
+        // عرض البيانات في الجدول أو أي مكان آخر في الصفحة
+        const projectsTableBody = document.querySelector('#projectsTableBody');
+        data.forEach(project => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${project.title}</td>
+                <td>${project.client}</td>
+                <td>${project.date}</td>
+            `;
+            projectsTableBody.appendChild(tr);
+        });
+    }
+});

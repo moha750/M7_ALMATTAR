@@ -4,7 +4,9 @@ let currentImageFile = null;
 let cropModalOpened = false;
 
 // تهيئة Supabase
-const { createClient } = supabase;
+const {
+    createClient
+} = supabase;
 const supabaseUrl = 'https://txywqmxcynvofslqdlck.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4eXdxbXhjeW52b2ZzbHFkbGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMzY3MjksImV4cCI6MjA2NTcxMjcyOX0.ONwEYLhtDwZffyNZTiSYy3ZX5lx1tBVpCQoODrqfrK8';
 const supabaseClient = createClient(supabaseUrl, supabaseKey);
@@ -24,7 +26,7 @@ function resetImageField() {
     document.getElementById('imageUpload').value = '';
     document.querySelector('.upload-area').style.display = 'flex';
     currentImageFile = null;
-    
+
     if (cropModalOpened) {
         closeCropModal(false);
     }
@@ -38,41 +40,41 @@ function setActiveRatio(id) {
 }
 
 // أحداث أدوات التحكم
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const imageUpload = document.getElementById('imageUpload');
     const applyCrop = document.getElementById('applyCrop');
     const cancelCrop = document.getElementById('cancelCrop');
 
 
-if (applyCrop) {
-applyCrop.addEventListener('click', function() {
-    if (cropper) {
-        const croppedCanvas = cropper.getCroppedCanvas({
-            width: 800,
-            height: 450,
-            fillColor: '#fff'
-        });
-        
-        croppedCanvas.toBlob(function(blob) {
-            // تحقق من وجود الملف
-            if (!currentImageFile) {
-                console.error('currentImageFile is not defined');
-                return;
-            }
-            
-            const croppedFile = new File([blob], currentImageFile.name, {
-                type: 'image/jpeg',
-                lastModified: Date.now()
-            });
-                    
+    if (applyCrop) {
+        applyCrop.addEventListener('click', function () {
+            if (cropper) {
+                const croppedCanvas = cropper.getCroppedCanvas({
+                    width: 800,
+                    height: 450,
+                    fillColor: '#fff'
+                });
+
+                croppedCanvas.toBlob(function (blob) {
+                    // تحقق من وجود الملف
+                    if (!currentImageFile) {
+                        console.error('currentImageFile is not defined');
+                        return;
+                    }
+
+                    const croppedFile = new File([blob], currentImageFile.name, {
+                        type: 'image/jpeg',
+                        lastModified: Date.now()
+                    });
+
                     const preview = document.getElementById('previewImage');
                     preview.src = URL.createObjectURL(blob);
                     document.getElementById('imagePreview').style.display = 'block';
-                    
+
                     const dataTransfer = new DataTransfer();
                     dataTransfer.items.add(croppedFile);
                     imageUpload.files = dataTransfer.files;
-                    
+
                     closeCropModal();
                 });
             }
@@ -80,7 +82,7 @@ applyCrop.addEventListener('click', function() {
     }
 
     if (cancelCrop) {
-        cancelCrop.addEventListener('click', function() {
+        cancelCrop.addEventListener('click', function () {
             closeCropModal(true);
         });
     }
@@ -97,12 +99,12 @@ applyCrop.addEventListener('click', function() {
     });
 
     document.getElementById('crop16x9').addEventListener('click', () => {
-        if (cropper) cropper.setAspectRatio(16/9);
+        if (cropper) cropper.setAspectRatio(16 / 9);
         setActiveRatio('crop16x9');
     });
 
     document.getElementById('crop9x16').addEventListener('click', () => {
-        if (cropper) cropper.setAspectRatio(9/16);
+        if (cropper) cropper.setAspectRatio(9 / 16);
         setActiveRatio('crop9x16');
     });
 
@@ -114,47 +116,47 @@ applyCrop.addEventListener('click', function() {
         if (cropper) cropper.rotate(90);
     });
 
-    document.getElementById('removeImageBtn').addEventListener('click', function() {
+    document.getElementById('removeImageBtn').addEventListener('click', function () {
         resetImageField();
     });
 });
-    if (cancelCrop) {
-        cancelCrop.addEventListener('click', function() {
-            closeCropModal(true);
-        });
-    }
-
-    document.getElementById('cropFree').addEventListener('click', () => {
-        if (cropper) cropper.setAspectRatio(NaN);
-        setActiveRatio('cropFree');
+if (cancelCrop) {
+    cancelCrop.addEventListener('click', function () {
+        closeCropModal(true);
     });
+}
 
-    document.getElementById('crop1x1').addEventListener('click', () => {
-        if (cropper) cropper.setAspectRatio(1);
-        setActiveRatio('crop1x1');
-    });
+document.getElementById('cropFree').addEventListener('click', () => {
+    if (cropper) cropper.setAspectRatio(NaN);
+    setActiveRatio('cropFree');
+});
 
-    document.getElementById('crop16x9').addEventListener('click', () => {
-        if (cropper) cropper.setAspectRatio(16/9);
-        setActiveRatio('crop16x9');
-    });
+document.getElementById('crop1x1').addEventListener('click', () => {
+    if (cropper) cropper.setAspectRatio(1);
+    setActiveRatio('crop1x1');
+});
 
-    document.getElementById('crop9x16').addEventListener('click', () => {
-        if (cropper) cropper.setAspectRatio(9/16);
-        setActiveRatio('crop9x16');
-    });
+document.getElementById('crop16x9').addEventListener('click', () => {
+    if (cropper) cropper.setAspectRatio(16 / 9);
+    setActiveRatio('crop16x9');
+});
 
-    document.getElementById('rotateLeft').addEventListener('click', () => {
-        if (cropper) cropper.rotate(-90);
-    });
+document.getElementById('crop9x16').addEventListener('click', () => {
+    if (cropper) cropper.setAspectRatio(9 / 16);
+    setActiveRatio('crop9x16');
+});
 
-    document.getElementById('rotateRight').addEventListener('click', () => {
-        if (cropper) cropper.rotate(90);
-    });
+document.getElementById('rotateLeft').addEventListener('click', () => {
+    if (cropper) cropper.rotate(-90);
+});
 
-    document.getElementById('removeImageBtn').addEventListener('click', function() {
-        resetImageField();
-    });
+document.getElementById('rotateRight').addEventListener('click', () => {
+    if (cropper) cropper.rotate(90);
+});
+
+document.getElementById('removeImageBtn').addEventListener('click', function () {
+    resetImageField();
+});
 
 function setActiveRatio(id) {
     document.querySelectorAll('.crop-ratio-btn').forEach(btn => {
@@ -165,101 +167,104 @@ function setActiveRatio(id) {
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     imageUpload = document.getElementById('imageUpload');
     applyCrop = document.getElementById('applyCrop');
     cancelCrop = document.getElementById('cancelCrop');
 
     if (cancelCrop) {
-        cancelCrop.addEventListener('click', function() {
+        cancelCrop.addEventListener('click', function () {
             closeCropModal(true);
         });
     }
 
-    imageUpload.addEventListener('change', function(e) {
-    if (e.target.files && e.target.files[0]) {
-        const file = e.target.files[0];
-        
-        // التحقق من نوع الملف
-        if (!file.type.match('image.*')) {
-            showAlert('error', 'خطأ في نوع الملف', 'الرجاء اختيار ملف صورة فقط (JPG, PNG)');
-            resetImageField();
-            return;
-        }
-        
-        // التحقق من حجم الملف
-        if (file.size > 10 * 1024 * 1024) {
-            showAlert('error', 'حجم الملف كبير', 'الحد الأقصى لحجم الصورة هو 10MB');
-            resetImageField();
-            return;
-        }
-        
-        currentImageFile = file;
-        updateFileInfo(file);
-        
-        // عرض خيارات للمستخدم
-        Swal.fire({
-            title: 'خيارات معالجة الصورة',
-            text: 'كيف تريد معالجة الصورة؟',
-            icon: 'question',
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: 'اقتصاص الصورة',
-            denyButtonText: 'رفع بدون اقتصاص',
-            cancelButtonText: 'إلغاء الرفع',
-            confirmButtonColor: '#dda853',
-            denyButtonColor: '#4CAF50',
-            cancelButtonColor: '#d33'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    openCropModal(event.target.result);
-                    cropModalOpened = true;
-                };
-                reader.readAsDataURL(file);
-            } else if (result.isDenied) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const preview = document.getElementById('previewImage');
-                    preview.src = event.target.result;
-                    document.getElementById('imagePreview').style.display = 'block';
-                    document.querySelector('.upload-area').style.display = 'none';
-                    
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    imageUpload.files = dataTransfer.files;
-                };
-                reader.readAsDataURL(file);
-            } else {
+    imageUpload.addEventListener('change', function (e) {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+
+            // التحقق من نوع الملف
+            if (!file.type.match('image.*')) {
+                showAlert('error', 'خطأ في نوع الملف', 'الرجاء اختيار ملف صورة فقط (JPG, PNG)');
                 resetImageField();
+                return;
             }
-        });
-    }
-});
+
+            // التحقق من حجم الملف
+            if (file.size > 10 * 1024 * 1024) {
+                showAlert('error', 'حجم الملف كبير', 'الحد الأقصى لحجم الصورة هو 10MB');
+                resetImageField();
+                return;
+            }
+
+            currentImageFile = file;
+            updateFileInfo(file);
+
+            // عرض خيارات للمستخدم
+            Swal.fire({
+                title: 'كيف تريد رفع الصورة؟',
+                html: `
+                            <div class="crop-alert">
+                                <i class="fa-solid fa-crop-simple"></i>
+                            </div>
+                        `,
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'اقتصاص الصورة',
+                denyButtonText: 'رفع بدون اقتصاص',
+                cancelButtonText: 'إلغاء الرفع',
+                confirmButtonColor: '#dda853',
+                denyButtonColor: '#4CAF50',
+                cancelButtonColor: '#d33'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        openCropModal(event.target.result);
+                        cropModalOpened = true;
+                    };
+                    reader.readAsDataURL(file);
+                } else if (result.isDenied) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const preview = document.getElementById('previewImage');
+                        preview.src = event.target.result;
+                        document.getElementById('imagePreview').style.display = 'block';
+                        document.querySelector('.upload-area').style.display = 'none';
+
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        imageUpload.files = dataTransfer.files;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    resetImageField();
+                }
+            });
+        }
+    });
 
 });
 
 function closeCropModal(resetImage = false) {
     const cropModal = document.getElementById('cropModal');
     cropModal.classList.remove('active');
-    
+
     setTimeout(() => {
         cropModal.style.display = 'none';
         if (cropper) {
             cropper.destroy();
             cropper = null;
         }
-        
+
         if (resetImage) {
             resetImageField();
         }
-        
+
         cropModalOpened = false; // إعادة تعيين العلامة
     }, 300);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // إضافة مستمعي الأحداث هنا
     const form = document.getElementById('projectForm');
     const projectsTableBody = document.querySelector('.projects-table tbody');
@@ -284,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
 if (typeof Swal === 'undefined') {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
-    script.onload = function() {
+    script.onload = function () {
         // باقي الكود
     };
     document.head.appendChild(script);
@@ -320,27 +325,36 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // دوال Supabase
-async function getPortfolioData() {
-    try {
-        const { data, error } = await supabaseClient
-            .from('portfolio')
-            .select('id, category, image, title, description, client, date, tags, external_link') // تم إضافة id هنا
-            .order('date', { ascending: false });
-        if (error) throw error;
-        return data;
-    } catch (error) {
-        console.error("Error getting portfolio data:", error);
-        return [];
+    async function getPortfolioData() {
+        try {
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from('portfolio')
+                .select('id, category, image, title, description, client, date, tags, external_link') // تم إضافة id هنا
+                .order('date', {
+                    ascending: false
+                });
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error("Error getting portfolio data:", error);
+            return [];
+        }
     }
-}
 
     async function savePortfolioData(projectData, isEdit = false, docId = null) {
         try {
             if (isEdit && docId) {
-                const { error } = await portfolioCollection.update(projectData).eq('id', docId);
+                const {
+                    error
+                } = await portfolioCollection.update(projectData).eq('id', docId);
                 if (error) throw error;
             } else {
-                const { error } = await portfolioCollection.insert([projectData]);
+                const {
+                    error
+                } = await portfolioCollection.insert([projectData]);
                 if (error) throw error;
             }
             return true;
@@ -351,44 +365,49 @@ async function getPortfolioData() {
         }
     }
 
-async function deletePortfolioItem(docId) {
-    if (!docId) {
-        console.error("Invalid ID for deletion:", docId);
-        showAlert('error', 'خطأ في الحذف', 'معرّف المشروع غير صالح');
-        return false;
-    }
+    async function deletePortfolioItem(docId) {
+        if (!docId) {
+            console.error("Invalid ID for deletion:", docId);
+            showAlert('error', 'خطأ في الحذف', 'معرّف المشروع غير صالح');
+            return false;
+        }
 
-    try {
-        // حذف المشروع من قاعدة البيانات
-        const { error: dbError } = await supabaseClient
-            .from('portfolio')
-            .delete()
-            .eq('id', docId);
-        
-        if (dbError) throw dbError;
-        
-        // حذف الصورة المرتبطة بالمشروع من التخزين
-        const { data: storageData, error: storageError } = await supabaseClient
-            .storage
-            .from('portfolio-images')
-            .list(`${docId}/`);
-            
-        if (storageError) {
-            console.error("Error listing storage files:", storageError);
-        } else if (storageData && storageData.length > 0) {
-            await supabaseClient
+        try {
+            // حذف المشروع من قاعدة البيانات
+            const {
+                error: dbError
+            } = await supabaseClient
+                .from('portfolio')
+                .delete()
+                .eq('id', docId);
+
+            if (dbError) throw dbError;
+
+            // حذف الصورة المرتبطة بالمشروع من التخزين
+            const {
+                data: storageData,
+                error: storageError
+            } = await supabaseClient
                 .storage
                 .from('portfolio-images')
-                .remove(storageData.map(file => `${docId}/${file.name}`));
+                .list(`${docId}/`);
+
+            if (storageError) {
+                console.error("Error listing storage files:", storageError);
+            } else if (storageData && storageData.length > 0) {
+                await supabaseClient
+                    .storage
+                    .from('portfolio-images')
+                    .remove(storageData.map(file => `${docId}/${file.name}`));
+            }
+
+            return true;
+        } catch (error) {
+            console.error("Error deleting portfolio item:", error);
+            showAlert('error', 'خطأ في الحذف', `حدث خطأ أثناء محاولة حذف المشروع: ${error.message}`);
+            return false;
         }
-        
-        return true;
-    } catch (error) {
-        console.error("Error deleting portfolio item:", error);
-        showAlert('error', 'خطأ في الحذف', `حدث خطأ أثناء محاولة حذف المشروع: ${error.message}`);
-        return false;
     }
-}
     // دوال العرض
     function toggleEmptyState(portfolio) {
         if (portfolio.length === 0) {
@@ -400,14 +419,14 @@ async function deletePortfolioItem(docId) {
         }
     }
 
-async function renderProjects() {
-    const portfolio = await getPortfolioData();
-    projectsTableBody.innerHTML = '';
+    async function renderProjects() {
+        const portfolio = await getPortfolioData();
+        projectsTableBody.innerHTML = '';
 
-    portfolio.forEach((item) => {
-        const tr = document.createElement('tr');
-        tr.dataset.id = item.id; // تم إصلاح هذا السطر
-        tr.innerHTML = `
+        portfolio.forEach((item) => {
+            const tr = document.createElement('tr');
+            tr.dataset.id = item.id; // تم إصلاح هذا السطر
+            tr.innerHTML = `
             <td>
                 <input type="checkbox" class="select-checkbox" data-id="${item.id}">
             </td>
@@ -432,12 +451,12 @@ async function renderProjects() {
                 </button>
             </td>
         `;
-        projectsTableBody.appendChild(tr);
-    });
+            projectsTableBody.appendChild(tr);
+        });
 
-    toggleEmptyState(portfolio);
-    setupSelectionHandlers();
-}
+        toggleEmptyState(portfolio);
+        setupSelectionHandlers();
+    }
 
     function getCategoryName(category) {
         const categories = {
@@ -514,11 +533,15 @@ async function renderProjects() {
 
         const result = await Swal.fire({
             title: 'هل أنت متأكد؟',
-            text: `سيتم حذف ${selectedProjects.length} مشروعاً`,
-            icon: 'warning',
+            html: `
+                <div class="choos-alert">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <p>حددت  ${selectedProjects.length} مشروعًا للحذف </p>
+                </div>
+            `,
             showCancelButton: true,
-            confirmButtonText: 'نعم، احذف',
-            cancelButtonText: 'إلغاء',
+            confirmButtonText: ' نعم، احذف كلووووووو',
+            cancelButtonText: 'لا كنسلت',
             confirmButtonColor: '#dda853',
             cancelButtonColor: '#27548a'
         });
@@ -532,37 +555,43 @@ async function renderProjects() {
         }
     }
 
-async function deleteAllProjects() {
-    const portfolio = await getPortfolioData();
-    if (portfolio.length === 0) return;
+    async function deleteAllProjects() {
+        const portfolio = await getPortfolioData();
+        if (portfolio.length === 0) return;
 
-    const result = await Swal.fire({
-        title: 'هل أنت متأكد؟',
-        text: `سيتم حذف جميع المشاريع (${portfolio.length})`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'نعم، احذف الكل',
-        cancelButtonText: 'إلغاء',
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#27548a'
-    });
+        const result = await Swal.fire({
+            title: 'هل أنت متأكد؟',
+            showCancelButton: true,
+            confirmButtonText: 'نعم، احذف كلوووو',
+            cancelButtonText: 'لا كنسل خلاص',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#27548a',
+            html: `
+                <div class="choos-alert">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <p>سيتم حذف جميع المشاريع والتي يبلغ عددها (${portfolio.length}) مشاريع </p>
+                </div>
+            `,
+        });
 
-    if (result.isConfirmed) {
-        try {
-            // حذف جميع السجلات باستخدام شرط صحيح للUUID
-            const { error } = await portfolioCollection.delete().not('id', 'is', null);
-            
-            if (error) throw error;
-            
-            selectedProjects = [];
-            await renderProjects();
-            showAlert('success', 'تم الحذف', 'تم حذف جميع المشاريع بنجاح');
-        } catch (error) {
-            console.error("خطأ في حذف جميع المشاريع:", error);
-            showAlert('error', 'خطأ في الحذف', 'حدث خطأ أثناء محاولة حذف جميع المشاريع');
+        if (result.isConfirmed) {
+            try {
+                // حذف جميع السجلات باستخدام شرط صحيح للUUID
+                const {
+                    error
+                } = await portfolioCollection.delete().not('id', 'is', null);
+
+                if (error) throw error;
+
+                selectedProjects = [];
+                await renderProjects();
+                showAlert('success', 'تم الحذف', 'تم حذف جميع المشاريع بنجاح');
+            } catch (error) {
+                console.error("خطأ في حذف جميع المشاريع:", error);
+                showAlert('error', 'خطأ في الحذف', 'حدث خطأ أثناء محاولة حذف جميع المشاريع');
+            }
         }
     }
-}
 
     // دوال مساعدة
     function resetForm() {
@@ -635,16 +664,19 @@ async function deleteAllProjects() {
             // تهيئة متغيرات الثابتة
             const BUCKET_NAME = 'portfolio-images';
             const DATE_PREFIX = Date.now();
-            
+
             // تنظيف اسم الملف وإزالة المسافات والأحرف الخاصة
             const cleanName = file.name
                 .replace(/[^a-zA-Z0-9._-]/g, '-')
                 .replace(/\s+/g, '-');
-            
+
             const fileName = `${DATE_PREFIX}-${cleanName}`;
-            
+
             // رفع الملف
-            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            const {
+                data: uploadData,
+                error: uploadError
+            } = await supabaseClient.storage
                 .from(BUCKET_NAME)
                 .upload(fileName, file, {
                     cacheControl: '3600',
@@ -654,7 +686,10 @@ async function deleteAllProjects() {
             if (uploadError) throw uploadError;
 
             // الحصول على رابط الصورة
-            const { data: urlData, error: urlError } = await supabaseClient.storage
+            const {
+                data: urlData,
+                error: urlError
+            } = await supabaseClient.storage
                 .from(BUCKET_NAME)
                 .getPublicUrl(fileName);
 
@@ -669,6 +704,7 @@ async function deleteAllProjects() {
     }
 
     // مستمعين الأحداث
+    // في دالة معالجة إرسال النموذج
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
 
@@ -686,7 +722,37 @@ async function deleteAllProjects() {
         }
 
         try {
-            showAlert('info', 'جاري الرفع', 'جاري رفع صورة المشروع، الرجاء الانتظار...');
+            // التعديل هنا: تغيير نص الرسالة لتعكس رفع المشروع كاملاً
+            Swal.fire({
+                title: 'جاري رفع المشروع للموقع',
+                html: `
+        <div class="progress-container" style="margin-top: 20px; background: #f1f1f1; border-radius: 10px; height: 20px;">
+            <div id="uploadProgressBar" style="width: 0%; height: 100%; background: #dda853; border-radius: 10px; transition: width 0.3s;"></div>
+        </div>
+        <p id="progressText" style="margin-top: 10px; font-size: 1.1rem; color: #27548a;">0% مكتمل</p>
+    `,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                willOpen: () => {
+                    // دالة محاكاة للتقدم (يمكن استبدالها بالتقدم الفعلي)
+                    let progress = 0;
+                    const progressBar = document.getElementById('uploadProgressBar');
+                    const progressText = document.getElementById('progressText');
+
+                    const progressInterval = setInterval(() => {
+                        progress += Math.random() * 10;
+                        if (progress > 100) progress = 100;
+
+                        progressBar.style.width = `${progress}%`;
+                        progressText.textContent = `${Math.round(progress)}% مكتمل`;
+
+                        if (progress === 100) {
+                            clearInterval(progressInterval);
+                        }
+                    }, 300);
+                }
+            });
+
             const imageUrl = await uploadImage(imageFile);
 
             const newProject = {
@@ -707,7 +773,23 @@ async function deleteAllProjects() {
             if (editIndex === "-1") {
                 success = await savePortfolioData(newProject);
                 if (success) {
-                    showAlert('success', 'تمت الإضافة', 'تم إضافة المشروع بنجاح إلى المعرض');
+                    Swal.fire({
+                        title: 'تمّ رفع المشروع',
+                        html: `
+            <div class="success-alert">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        `,
+                        showDenyButton: true,
+                        confirmButtonText: 'شُكرًا',
+                        denyButtonText: 'رؤية المشروع',
+                        confirmButtonColor: '#4caf50',
+                        denyButtonColor: '#dda853',
+                    }).then((result) => {
+                        if (result.isDenied) {
+                            window.location.href = 'index.html#stats';
+                        }
+                    });
                 }
             } else {
                 success = await savePortfolioData(newProject, true, editIndex);
@@ -722,7 +804,7 @@ async function deleteAllProjects() {
             }
         } catch (error) {
             console.error("Error in form submission:", error);
-            showAlert('error', 'خطأ', 'حدث خطأ أثناء رفع الصورة أو حفظ البيانات');
+            showAlert('error', 'خطأ', 'حدث خطأ أثناء حفظ بيانات المشروع');
         }
     });
 
@@ -735,7 +817,10 @@ async function deleteAllProjects() {
         if (editBtn) {
             const docId = editBtn.dataset.id;
             try {
-                const { data: project, error } = await portfolioCollection.select().eq('id', docId).single();
+                const {
+                    data: project,
+                    error
+                } = await portfolioCollection.select().eq('id', docId).single();
                 if (error) throw error;
 
                 if (project) {
@@ -865,29 +950,29 @@ function openCropModal(imageSrc) {
     if (!cropModal) return;
 
     cropModal.style.display = 'flex';
-    
+
     setTimeout(() => {
         cropModal.classList.add('active');
     }, 50);
-    
+
     const image = document.createElement('img');
     image.id = 'cropImage';
     image.src = imageSrc;
     image.style.maxWidth = '100%';
-    
+
     const cropPreview = document.getElementById('cropPreview');
     if (cropPreview) {
         cropPreview.innerHTML = '';
         cropPreview.appendChild(image);
     }
 
-        if (!currentImageFile) {
+    if (!currentImageFile) {
         console.error('Cannot open crop modal: currentImageFile is not defined');
         return;
     }
-    
+
     if (cropper) cropper.destroy();
-    
+
     cropper = new Cropper(image, {
         viewMode: 1,
         autoCropArea: 0.8,
@@ -900,7 +985,7 @@ function openCropModal(imageSrc) {
         cropBoxResizable: true,
         toggleDragModeOnDblclick: false,
         aspectRatio: NaN,
-        crop: function(event) {
+        crop: function (event) {
             updateSizeIndicator(event.detail.width, event.detail.height);
         }
     });
@@ -984,22 +1069,22 @@ function updateFileInfo(file) {
 function handleImageAfterProcessing(blob, file) {
     const preview = document.getElementById('previewImage');
     preview.src = URL.createObjectURL(blob);
-    
+
     document.getElementById('imagePreview').style.display = 'block';
     document.querySelector('.upload-area').style.display = 'none';
-    
+
     updateFileInfo(file); // تحديث معلومات الملف
-    
+
     const dataTransfer = new DataTransfer();
     dataTransfer.items.add(file);
     imageUpload.files = dataTransfer.files;
 }
 
 // إضافة مستمع لزر الاقتصاص من المعاينة
-document.getElementById('cropBtn').addEventListener('click', function() {
+document.getElementById('cropBtn').addEventListener('click', function () {
     if (currentImageFile) {
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             openCropModal(event.target.result);
             cropModalOpened = true;
         };
@@ -1093,27 +1178,27 @@ function setupDragAndDrop() {
     function handleDrop(e) {
         const dt = e.dataTransfer;
         const files = dt.files;
-        
+
         if (files.length > 0) {
             const file = files[0];
-            
+
             // التحقق من نوع الملف
             if (!file.type.match('image.*')) {
                 showAlert('error', 'خطأ في نوع الملف', 'الرجاء اختيار ملف صورة فقط (JPG, PNG)');
                 return;
             }
-            
+
             // التحقق من حجم الملف
             if (file.size > 10 * 1024 * 1024) {
                 showAlert('error', 'حجم الملف كبير', 'الحد الأقصى لحجم الصورة هو 10MB');
                 return;
             }
-            
+
             // تحديث حقل الرفع اليدوي
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             imageUpload.files = dataTransfer.files;
-            
+
             // تشغيل حدث التغيير يدويًا
             const event = new Event('change');
             imageUpload.dispatchEvent(event);
@@ -1122,6 +1207,6 @@ function setupDragAndDrop() {
 }
 
 // استدعاء الدالة عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     setupDragAndDrop();
 });

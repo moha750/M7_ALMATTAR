@@ -1016,12 +1016,12 @@ button:disabled {
 
 .upload-area i {
     font-size: 3rem;
-    color: var(--secondary);
+    color: #27548a;
     margin-bottom: 0.5rem;
 }
 
 .upload-area span {
-    color: var(--primary);
+    color: #27548a;
     font-weight: 500;
 }
 
@@ -1468,7 +1468,6 @@ div:where(.swal2-container).swal2-center > .swal2-popup {
     color: var(--primary) !important;
     font-size: 1.8rem !important;
     font-weight: 700 !important;
-    margin-bottom: 1rem !important;
     position: relative !important;
     padding-bottom: 0.5rem !important;
 }
@@ -1479,7 +1478,7 @@ div:where(.swal2-container).swal2-center > .swal2-popup {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 120px;
+    width: 100px;
     height: 3px;
     background: var(--accent);
     border-radius: 2px;
@@ -1488,7 +1487,6 @@ div:where(.swal2-container).swal2-center > .swal2-popup {
 .swal2-html-container {
     color: var(--primary-dark) !important;
     font-size: 1.1rem !important;
-    margin-bottom: 1.5rem !important;
 }
 
 .swal2-actions {
@@ -1530,20 +1528,20 @@ div:where(.swal2-container).swal2-center > .swal2-popup {
 }
 
 .swal2-styled.swal2-cancel {
-    background: #fd79a8 !important;
+    background: #e74c3c !important;
     color: var(--white) !important;
     border: none !important;
     border-radius: 50px !important;
-    padding: 0.6rem 8.4rem !important;
+    padding: 0.7rem 1.3rem !important;
     font-weight: 600 !important;
     transition: var(--transition) !important;
-    box-shadow: 0 5px 15px rgba(253, 121, 168, 0.3) !important;
+    box-shadow: 0 5px 15px rgba(253, 121, 167, 0.3)important;
 }
 
 .swal2-styled.swal2-cancel:hover {
-    background: #e84393 !important;
+    background: #c0392b !important;
     transform: translateY(-3px) !important;
-    box-shadow: 0 8px 25px rgba(253, 121, 168, 0.5) !important;
+    box-shadow: 0 8px 25px hsla(6, 63%, 46%, 0.5) important;
 }
 
 div:where(.swal2-icon) {
@@ -1574,4 +1572,105 @@ div:where(.swal2-icon) {
         width: 100% !important;
         margin: 0 !important;
     }
+}
+
+@keyframes uploading {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+.crop-alert i {
+    font-size: 5rem;
+    color: #dda853;
+    animation: spin 15s infinite;
+    margin: 1.5rem 0rem 1rem;
+}
+
+.choos-alert i {
+    font-size: 4.5rem;
+    color: #e74c3c;
+    animation: shake 10s infinite;
+    margin: 1rem 0rem 1.5rem;
+}
+
+.choos-alert p {
+    font-size: 1.1rem;
+    color: #27548a;
+    line-height: 1.6;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.success-alert i {
+    font-size: 5rem;
+    color: #2ecc71;
+    margin: 1.5rem 0rem 1rem;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-10px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* أنماط شريط التقدم */
+.progress-container {
+    width: 100%;
+    background: #f1f1f1 !important;
+    border-radius: 10px;
+    height: 20px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+#uploadProgressBar {
+    height: 100%;
+    background: linear-gradient(90deg, #dda853, #c5974a) !important;
+    border-radius: 10px;
+    transition: width 0.4s ease;
+    position: relative;
+}
+
+#uploadProgressBar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    animation: progressShine 2s infinite;
+}
+
+@keyframes progressShine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes uploading {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
 }
