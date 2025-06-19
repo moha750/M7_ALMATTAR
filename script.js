@@ -1,17 +1,42 @@
 // بيانات المهارات الثابتة
 const siteData = {
-    skills: [
-        { name: "التصميم الجرافيكي", level: 95, icon: "fas fa-paint-brush" },
-        { name: "الموشن جرافيك", level: 65, icon: "fas fa-film" },
-        { name: "المونتاج المرئي", level: 85, icon: "fas fa-video" },
-        { name: "التعليق الصوتي", level: 70, icon: "fas fa-microphone" },
-        { name: "تطوير الويب", level: 75, icon: "fas fa-code" },
-        { name: "كتابة المحتوى", level: 60, icon: "fa-solid fa-pencil" }
+    skills: [{
+            name: "التصميم الجرافيكي",
+            level: 95,
+            icon: "fas fa-paint-brush"
+        },
+        {
+            name: "الموشن جرافيك",
+            level: 65,
+            icon: "fas fa-film"
+        },
+        {
+            name: "المونتاج المرئي",
+            level: 85,
+            icon: "fas fa-video"
+        },
+        {
+            name: "التعليق الصوتي",
+            level: 70,
+            icon: "fas fa-microphone"
+        },
+        {
+            name: "تطوير الويب",
+            level: 75,
+            icon: "fas fa-code"
+        },
+        {
+            name: "كتابة المحتوى",
+            level: 60,
+            icon: "fa-solid fa-pencil"
+        }
     ]
 };
 
 // تهيئة Supabase
-const { createClient } = supabase;
+const {
+    createClient
+} = supabase;
 const supabaseUrl = 'https://txywqmxcynvofslqdlck.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4eXdxbXhjeW52b2ZzbHFkbGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMzY3MjksImV4cCI6MjA2NTcxMjcyOX0.ONwEYLhtDwZffyNZTiSYy3ZX5lx1tBVpCQoODrqfrK8';
 const supabaseClient = createClient(supabaseUrl, supabaseKey);
@@ -31,7 +56,7 @@ function initTypingEffect() {
         "مُعلق صوتي",
         "مطور ويب"
     ];
-    
+
     let currentProfessionIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
@@ -39,7 +64,7 @@ function initTypingEffect() {
 
     function type() {
         const currentText = professions[currentProfessionIndex];
-        
+
         if (isDeleting) {
             typingText.textContent = currentText.substring(0, charIndex - 1);
             charIndex--;
@@ -71,19 +96,24 @@ async function loadPortfolio() {
     const portfolioContainer = document.querySelector('.portfolio-grid');
     const shownCountElement = document.querySelector('.shown-count');
     const totalCountElement = document.querySelector('.total-count');
-    
+
     portfolioContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المشاريع...</div>';
-    
+
     try {
-        const { data: projects, error } = await portfolioCollection.select('*').order('date', { ascending: false });
+        const {
+            data: projects,
+            error
+        } = await portfolioCollection.select('*').order('date', {
+            ascending: false
+        });
 
         if (error) {
             throw error;
         }
-        
+
         portfolioContainer.innerHTML = '';
         totalCountElement.textContent = projects.length;
-        
+
         if (projects.length === 0) {
             portfolioContainer.innerHTML = '<div class="empty-portfolio"><i class="fas fa-folder-open"></i> لا توجد مشاريع حالياً</div>';
             shownCountElement.textContent = '0';
@@ -118,22 +148,22 @@ async function loadPortfolio() {
                         </div>
                     </div>
                 `;
-                
+
                 portfolioContainer.insertAdjacentHTML('beforeend', portfolioHTML);
                 shownCount++;
             }
         });
-        
+
         shownCountElement.textContent = shownCount;
         initPortfolioFilter();
         initPortfolioSearch();
-        
+
         if (window.innerWidth < 768 || projects.length <= initialItemsToShow) {
             document.querySelector('.btn-load-more').style.display = 'none';
         } else {
             document.querySelector('.btn-load-more').style.display = 'flex';
         }
-        
+
         initPortfolioLightbox(projects);
     } catch (error) {
         console.error('Error loading portfolio:', error);
@@ -143,12 +173,12 @@ async function loadPortfolio() {
 
 function initPortfolioFilter() {
     const filterButtons = document.querySelectorAll('.filter-btn');
-    
+
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            
+
             const filterValue = button.dataset.filter;
             filterPortfolioItems(filterValue);
         });
@@ -159,14 +189,14 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
     const portfolioItems = document.querySelectorAll('.portfolio-item');
     const shownCountElement = document.querySelector('.shown-count');
     let shownCount = 0;
-    
+
     portfolioItems.forEach(item => {
         const matchesFilter = filterValue === 'all' || item.dataset.category === filterValue;
-        const matchesSearch = searchTerm === '' || 
-                             item.dataset.title.includes(searchTerm) || 
-                             item.dataset.client.includes(searchTerm) ||
-                             (item.dataset.tags && item.dataset.tags.includes(searchTerm));
-        
+        const matchesSearch = searchTerm === '' ||
+            item.dataset.title.includes(searchTerm) ||
+            item.dataset.client.includes(searchTerm) ||
+            (item.dataset.tags && item.dataset.tags.includes(searchTerm));
+
         if (matchesFilter && matchesSearch) {
             gsap.to(item, {
                 display: 'block',
@@ -186,7 +216,7 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
             });
         }
     });
-    
+
     setTimeout(() => {
         shownCountElement.textContent = document.querySelectorAll('.portfolio-item[style*="display: block"], .portfolio-item:not([style])').length;
     }, 500);
@@ -194,7 +224,7 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
 
 function initPortfolioSearch() {
     const searchInput = document.querySelector('.search-input');
-    
+
     searchInput.addEventListener('input', () => {
         const searchTerm = searchInput.value.trim().toLowerCase();
         const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
@@ -206,7 +236,7 @@ function initPortfolioLightbox(projectsData) {
     const lightbox = document.querySelector('.portfolio-lightbox') || createLightbox();
     let currentIndex = 0;
     let filteredItems = [];
-    
+
     function createLightbox() {
         const lb = document.createElement('div');
         lb.className = 'portfolio-lightbox';
@@ -240,46 +270,46 @@ function initPortfolioLightbox(projectsData) {
     }
 
     document.querySelectorAll('.portfolio-item').forEach(item => {
-        item.addEventListener('click', function(e) {
+        item.addEventListener('click', function (e) {
             e.preventDefault();
-            
+
             const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
             const searchTerm = document.querySelector('.search-input').value.trim().toLowerCase();
-            
+
             filteredItems = Array.from(document.querySelectorAll('.portfolio-item')).filter(item => {
                 const matchesFilter = activeFilter === 'all' || item.dataset.category === activeFilter;
-                const matchesSearch = searchTerm === '' || 
-                                     item.dataset.title.includes(searchTerm) || 
-                                     item.dataset.client.includes(searchTerm) ||
-                                     (item.dataset.tags && item.dataset.tags.includes(searchTerm));
+                const matchesSearch = searchTerm === '' ||
+                    item.dataset.title.includes(searchTerm) ||
+                    item.dataset.client.includes(searchTerm) ||
+                    (item.dataset.tags && item.dataset.tags.includes(searchTerm));
                 return matchesFilter && matchesSearch && window.getComputedStyle(item).display !== 'none';
             });
-            
+
             currentIndex = filteredItems.findIndex(el => el === this);
             showProjectInLightbox(currentIndex, projectsData);
-            
+
             lightbox.classList.add('active');
             document.body.classList.add('no-scroll');
-            
+
             gsap.from(lightbox.querySelector('.lightbox-content'), {
                 opacity: 0,
                 y: 50,
                 duration: 0.5,
                 ease: "back.out(1.7)"
             });
-                        lightbox.classList.add('active');
+            lightbox.classList.add('active');
             document.body.classList.add('no-scroll'); // منع التمرير
         });
     });
-    
+
     function showProjectInLightbox(index, projects) {
         if (!filteredItems.length || !projects) return;
-        
+
         const projectIndex = filteredItems[index].dataset.index;
         const project = projects[projectIndex];
-        
+
         if (!project) return;
-        
+
         const lightboxImg = lightbox.querySelector('.lightbox-image');
         const lightboxTitle = lightbox.querySelector('h3');
         const lightboxDesc = lightbox.querySelector('.info-description');
@@ -288,7 +318,7 @@ function initPortfolioLightbox(projectsData) {
         const lightboxCategory = lightbox.querySelector('.info-category');
         const tagsContainer = lightbox.querySelector('.project-tags');
         const viewProjectBtn = lightbox.querySelector('.btn-contact');
-        
+
         if (project.external_link) {
             viewProjectBtn.href = project.external_link;
             viewProjectBtn.target = '_blank';
@@ -296,19 +326,25 @@ function initPortfolioLightbox(projectsData) {
         } else {
             viewProjectBtn.style.display = 'none';
         }
-        
-        gsap.to(lightboxImg, { opacity: 0, duration: 0.3 });
+
+        gsap.to(lightboxImg, {
+            opacity: 0,
+            duration: 0.3
+        });
         lightboxImg.src = project.image;
         lightboxImg.alt = project.title;
         lightboxImg.onload = () => {
-            gsap.to(lightboxImg, { opacity: 1, duration: 0.5 });
+            gsap.to(lightboxImg, {
+                opacity: 1,
+                duration: 0.5
+            });
         };
-        
+
         lightboxTitle.textContent = project.title;
         lightboxDesc.textContent = project.description;
         lightboxClient.textContent = project.client;
         lightboxDate.textContent = project.date;
-        
+
         const categoryNames = {
             'graphic': 'تصميم جرافيك',
             'motion': 'موشن جرافيك',
@@ -317,7 +353,7 @@ function initPortfolioLightbox(projectsData) {
             'web': 'تطوير ويب'
         };
         lightboxCategory.textContent = categoryNames[project.category] || project.category;
-        
+
         tagsContainer.innerHTML = '';
         if (project.tags && project.tags.length > 0) {
             project.tags.forEach(tag => {
@@ -327,7 +363,7 @@ function initPortfolioLightbox(projectsData) {
                 tagsContainer.appendChild(tagElement);
             });
         }
-        
+
         gsap.from([lightboxTitle, lightboxDesc, lightbox.querySelector('.info-meta'), tagsContainer], {
             opacity: 0,
             y: 20,
@@ -336,36 +372,36 @@ function initPortfolioLightbox(projectsData) {
             delay: 0.3
         });
     }
-    
+
     lightbox.querySelector('.prev-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         currentIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
         showProjectInLightbox(currentIndex, projectsData);
     });
-    
+
     lightbox.querySelector('.next-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         currentIndex = (currentIndex + 1) % filteredItems.length;
         showProjectInLightbox(currentIndex, projectsData);
     });
-    
+
     lightbox.querySelector('.close-lightbox').addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => e.target === lightbox && closeLightbox());
-    
-document.addEventListener('keydown', (e) => {
-    if (lightbox.classList.contains('active')) {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowLeft') {
-            currentIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
-            showProjectInLightbox(currentIndex, projectsData);
+
+    document.addEventListener('keydown', (e) => {
+        if (lightbox.classList.contains('active')) {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') {
+                currentIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
+                showProjectInLightbox(currentIndex, projectsData);
+            }
+            if (e.key === 'ArrowRight') {
+                currentIndex = (currentIndex + 1) % filteredItems.length;
+                showProjectInLightbox(currentIndex, projectsData);
+            }
         }
-        if (e.key === 'ArrowRight') {
-            currentIndex = (currentIndex + 1) % filteredItems.length;
-            showProjectInLightbox(currentIndex, projectsData);
-        }
-    }
-});
-    
+    });
+
     function closeLightbox() {
         lightbox.classList.remove('active');
         document.body.classList.remove('no-scroll');
@@ -377,39 +413,61 @@ document.addEventListener('keydown', (e) => {
 async function loadSkillsSection() {
     const skillsGrid = document.getElementById('skillsGrid');
     skillsGrid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المهارات...</div>';
-    
+
     try {
-        const { data: projects, error } = await portfolioCollection.select('*');
+        const {
+            data: projects,
+            error
+        } = await portfolioCollection.select('*');
 
         if (error) {
             throw error;
         }
-        
+
         const enhancedSkills = siteData.skills.map(skill => {
-            const skillCategory = 
-                skill.name === 'التصميم الجرافيكي' ? 'graphic' :
-                skill.name === 'الموشن جرافيك' ? 'motion' :
-                skill.name === 'المونتاج المرئي' ? 'video' :
-                skill.name === 'التعليق الصوتي' ? 'voice' : 'web';
-            
+            // تحديد الفئة الصحيحة لكل مهارة
+            let skillCategory;
+            switch (skill.name) {
+                case "التصميم الجرافيكي":
+                    skillCategory = 'graphic';
+                    break;
+                case "الموشن جرافيك":
+                    skillCategory = 'motion';
+                    break;
+                case "المونتاج المرئي":
+                    skillCategory = 'video';
+                    break;
+                case "التعليق الصوتي":
+                    skillCategory = 'voice';
+                    break;
+                case "تطوير الويب":
+                    skillCategory = 'web';
+                    break;
+                case "كتابة المحتوى":
+                    skillCategory = 'content'; // فئة جديدة
+                    break;
+                default:
+                    skillCategory = 'other';
+            }
+
             const skillProjects = projects.filter(p => p.category === skillCategory);
-            
+
             return {
                 ...skill,
                 projectsCount: skillProjects.length,
                 category: getSkillCategory(skill.name)
             };
         });
-        
+
         skillsGrid.innerHTML = '';
-        
+
         enhancedSkills.forEach(skill => {
             const skillCard = document.createElement('div');
             skillCard.className = 'skill-card';
             skillCard.dataset.skill = skill.name;
             skillCard.dataset.category = skill.category;
             skillCard.style.setProperty('--skill-percent', skill.level);
-            
+
             skillCard.innerHTML = `
                 <div class="skill-card-inner">
                     <div class="skill-card-header">
@@ -436,10 +494,10 @@ async function loadSkillsSection() {
                     </div>
                 </div>
             `;
-            
+
             skillsGrid.appendChild(skillCard);
         });
-        
+
         const skillCards = document.querySelectorAll('.skill-card');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -454,8 +512,10 @@ async function loadSkillsSection() {
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1 });
-        
+        }, {
+            threshold: 0.1
+        });
+
         skillCards.forEach(card => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(30px)';
@@ -470,17 +530,18 @@ async function loadSkillsSection() {
 function getSkillCategory(skillName) {
     const designSkills = ['التصميم الجرافيكي', 'الموشن جرافيك'];
     const mediaSkills = ['المونتاج المرئي', 'التعليق الصوتي'];
-    
+
     if (designSkills.includes(skillName)) return 'design';
     if (mediaSkills.includes(skillName)) return 'media';
     if (skillName === 'تطوير الويب') return 'development';
+    if (skillName === "كتابة المحتوى") return 'content';
     return 'other';
 }
 
 function initProjectLightbox() {
     const lightbox = document.getElementById('projectLightbox') || createProjectLightbox();
     const closeBtn = lightbox.querySelector('.close-lightbox');
-    
+
     function createProjectLightbox() {
         const lb = document.createElement('div');
         lb.className = 'skill-project-lightbox';
@@ -507,11 +568,11 @@ function initProjectLightbox() {
         return lb;
     }
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         const thumb = e.target.closest('.skill-project-thumb');
         if (thumb) {
             e.preventDefault();
-            
+
             const title = thumb.dataset.title;
             const description = thumb.dataset.description;
             const client = thumb.dataset.client;
@@ -519,13 +580,13 @@ function initProjectLightbox() {
             const category = thumb.dataset.category;
             const link = thumb.dataset.link;
             const imageSrc = thumb.querySelector('img').src;
-            
+
             lightbox.querySelector('.lightbox-image').src = imageSrc;
             lightbox.querySelector('h3').textContent = title;
             lightbox.querySelector('p').textContent = description;
             lightbox.querySelector('.lightbox-client').textContent = client;
             lightbox.querySelector('.lightbox-date').textContent = date;
-            
+
             const categoryNames = {
                 'graphic': 'تصميم جرافيك',
                 'motion': 'موشن جرافيك',
@@ -534,7 +595,7 @@ function initProjectLightbox() {
                 'web': 'تطوير ويب'
             };
             lightbox.querySelector('.lightbox-category').textContent = categoryNames[category] || category;
-            
+
             const viewBtn = lightbox.querySelector('.btn-view-project');
             if (link && link !== '#') {
                 viewBtn.href = link;
@@ -542,24 +603,24 @@ function initProjectLightbox() {
             } else {
                 viewBtn.style.display = 'none';
             }
-            
+
             lightbox.classList.add('active');
             document.body.classList.add('no-scroll');
         }
     });
-    
+
     closeBtn.addEventListener('click', () => {
         lightbox.classList.remove('active');
         document.body.classList.remove('no-scroll');
     });
-    
+
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) {
             lightbox.classList.remove('active');
             document.body.classList.remove('no-scroll');
         }
     });
-    
+
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && lightbox.classList.contains('active')) {
             lightbox.classList.remove('active');
@@ -594,7 +655,7 @@ function initHeroAnimations() {
                 duration: 0.5
             });
         });
-        
+
         heroImage.addEventListener('mouseleave', () => {
             gsap.to(heroImage.querySelector('img'), {
                 scale: 1,
@@ -615,7 +676,7 @@ function initHeroAnimations() {
                 duration: 0.3
             });
         });
-        
+
         icon.addEventListener('mouseleave', () => {
             gsap.to(icon, {
                 y: 0,
@@ -629,26 +690,26 @@ function initHeroAnimations() {
 
 function initContactForm() {
     const contactForm = document.getElementById('enhancedContactForm');
-    
+
     if (contactForm) {
-        contactForm.addEventListener('submit', async function(e) {
+        contactForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             // التحقق من جميع الحقول باستثناء nameError
             const isEmailValid = validateEmail();
             const isMessageValid = validateMessage();
             const isPhoneValid = validatePhone();
-            
+
             if (!isEmailValid || !isMessageValid || !isPhoneValid) {
                 return;
             }
-            
+
             const submitBtn = contactForm.querySelector('.submit-btn');
             const submitText = submitBtn.querySelector('span');
-            
+
             submitText.textContent = 'جاري الإرسال...';
             submitBtn.disabled = true;
-            
+
             const formData = {
                 "الاسم": document.getElementById('contactName').value.trim(),
                 "البريد الإلكتروني": document.getElementById('contactEmail').value.trim(),
@@ -657,20 +718,22 @@ function initContactForm() {
                 "الرسالة": document.getElementById('contactMessage').value.trim(),
                 "التاريخ": new Date().toLocaleString('ar-SA')
             };
-            
+
             try {
                 const sheetDbUrl = 'https://sheetdb.io/api/v1/dnr96icde5zgz';
-                
+
                 const response = await fetch(sheetDbUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ data: [formData] })
+                    body: JSON.stringify({
+                        data: [formData]
+                    })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.created > 0) {
                     // استخدام SweetAlert2 مع تصميم مخصص
                     Swal.fire({
@@ -696,7 +759,7 @@ function initContactForm() {
                 } else {
                     throw new Error('فشل في حفظ البيانات');
                 }
-                
+
             } catch (error) {
                 console.error('Error:', error);
                 // استخدام SweetAlert2 مع تصميم مخصص للخطأ
@@ -728,7 +791,7 @@ function initContactForm() {
         const emailInput = document.getElementById('contactEmail');
         const messageInput = document.getElementById('contactMessage');
         const phoneInput = document.getElementById('contactPhone');
-        
+
         emailInput.addEventListener('input', validateEmail);
         messageInput.addEventListener('input', validateMessage);
         phoneInput.addEventListener('input', validatePhone);
@@ -739,7 +802,7 @@ function validateEmail() {
     const email = document.getElementById('contactEmail').value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const errorElement = document.getElementById('emailError');
-    
+
     if (!emailRegex.test(email)) {
         errorElement.textContent = 'صيغة البريد الإلكتروني غير صحيحة';
         errorElement.style.display = 'block';
@@ -753,7 +816,7 @@ function validateEmail() {
 function validateMessage() {
     const message = document.getElementById('contactMessage').value.trim();
     const errorElement = document.getElementById('messageError');
-    
+
     if (message.length < 10) {
         errorElement.textContent = 'الرسالة يجب أن تكون على الأقل 10 أحرف';
         errorElement.style.display = 'block';
@@ -767,7 +830,7 @@ function validateMessage() {
 function validatePhone() {
     const phone = document.getElementById('contactPhone').value.trim();
     const errorElement = document.getElementById('phoneError');
-    
+
     if (phone && phone.length !== 10) {
         errorElement.textContent = ' يجب أن يتكون رقم الهاتف من 10 أرقام ';
         errorElement.style.display = 'block';
@@ -783,46 +846,71 @@ function validatePhone() {
 function initStatsCounter() {
     const statCards = document.querySelectorAll('.stat-card');
     
-    statCards.forEach((card, index) => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    gsap.from(card, {
-                        opacity: 0,
-                        y: 50,
-                        scale: 0.9,
-                        duration: 0.8,
-                        ease: "back.out(1.7)",
-                        delay: index * 0.1
-                    });
-                    
-                    startCounter(entry.target);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.3 });
-        
-        observer.observe(card);
+    // إزالة المراقبين السابقين إذا وجدوا
+    if (window.statsObserver) {
+        statCards.forEach(card => {
+            if (window.statsObserver) {
+                window.statsObserver.unobserve(card);
+            }
+        });
+        window.statsObserver.disconnect();
+    }
+    
+    // إنشاء مراقب جديد
+    window.statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const card = entry.target;
+                
+                // إعادة تعيين حالة التحريك
+                card.dataset.animated = 'false';
+                
+                // إعادة تعيين العداد إلى 0
+                const numberElement = card.querySelector('.stat-number');
+                numberElement.textContent = '0';
+                
+                // تشغيل تأثير التحريك
+                gsap.from(card, {
+                    opacity: 0,
+                    y: 50,
+                    scale: 0.9,
+                    duration: 0.8,
+                    ease: "back.out(1.7)",
+                    onComplete: () => startCounter(card)
+                });
+            }
+        });
+    }, {
+        threshold: 0.3
+    });
+
+    // إضافة المراقب لكل بطاقة
+    statCards.forEach(card => {
+        window.statsObserver.observe(card);
     });
 }
 
 function startCounter(card) {
+    // التأكد من عدم تشغيل العداد بالفعل
+    if (card.dataset.animated === 'true') return;
+    
     const numberElement = card.querySelector('.stat-number');
     const targetNumber = parseInt(numberElement.dataset.count);
     const duration = 2000;
     const startTime = performance.now();
-    
+
     function updateCounter(currentTime) {
         const elapsedTime = currentTime - startTime;
         const progress = Math.min(elapsedTime / duration, 1);
         const currentNumber = Math.floor(progress * targetNumber);
-        
+
         numberElement.textContent = currentNumber.toLocaleString();
-        
+
         if (progress < 1) {
             requestAnimationFrame(updateCounter);
         } else {
             numberElement.textContent = targetNumber.toLocaleString();
+            card.dataset.animated = 'true';
             
             gsap.to(numberElement, {
                 scale: 1.1,
@@ -832,7 +920,7 @@ function startCounter(card) {
             });
         }
     }
-    
+
     requestAnimationFrame(updateCounter);
 }
 
@@ -844,14 +932,14 @@ function initHeaderScroll() {
     const navList = document.querySelector('.nav-list');
     const scrollProgressBar = document.querySelector('.scroll-progress-bar');
     const downloadCVBtn = document.getElementById('downloadCV');
-    
+
     window.addEventListener('scroll', () => {
         if (window.scrollY > 100) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
         }
-        
+
         if (scrollProgressBar) {
             const windowHeight = window.innerHeight;
             const docHeight = document.documentElement.scrollHeight;
@@ -860,7 +948,7 @@ function initHeaderScroll() {
             scrollProgressBar.style.width = progress + '%';
         }
     });
-    
+
     if (downloadCVBtn) {
         downloadCVBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -897,18 +985,18 @@ function initHeaderScroll() {
             });
         });
     }
-    
+
     mobileMenuBtn.addEventListener('click', () => {
         mobileMenuBtn.classList.toggle('active');
         navList.classList.toggle('active');
-        
+
         if (navList.classList.contains('active')) {
             document.body.classList.add('no-scroll');
         } else {
             document.body.classList.remove('no-scroll');
         }
     });
-    
+
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             if (navList.classList.contains('active')) {
@@ -918,7 +1006,7 @@ function initHeaderScroll() {
             }
         });
     });
-    
+
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('mouseenter', () => {
             gsap.to(link, {
@@ -926,7 +1014,7 @@ function initHeaderScroll() {
                 duration: 0.3
             });
         });
-        
+
         link.addEventListener('mouseleave', () => {
             gsap.to(link, {
                 scale: 1,
@@ -941,7 +1029,7 @@ function initHeaderScroll() {
 function initNavLinks() {
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('section');
-    
+
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach(entry => {
@@ -955,20 +1043,21 @@ function initNavLinks() {
                     });
                 }
             });
-        },
-        { rootMargin: '-100px 0px -50% 0px' }
+        }, {
+            rootMargin: '-100px 0px -50% 0px'
+        }
     );
-    
+
     sections.forEach(section => {
         observer.observe(section);
     });
-    
+
     navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
             const targetSection = document.querySelector(targetId);
-            
+
             if (targetSection) {
                 window.scrollTo({
                     top: targetSection.offsetTop - 100,
@@ -983,14 +1072,14 @@ function initNavLinks() {
 
 function initLoader() {
     const loader = document.querySelector('.page-loader');
-    
+
     // إضافة صنف no-scroll إلى body لمنع التمرير
     document.body.classList.add('no-scroll');
-    
-    setTimeout(function() {
+
+    setTimeout(function () {
         loader.classList.add('fade-out');
-        
-        setTimeout(function() {
+
+        setTimeout(function () {
             loader.style.display = 'none';
             // إزالة صنف no-scroll من body للسماح بالتمرير
             document.body.classList.remove('no-scroll');
@@ -1017,7 +1106,7 @@ function loadDynamicData() {
 document.addEventListener('DOMContentLoaded', loadDynamicData);
 
 // تحديث عرض المشاريع عند تغيير حجم الشاشة
-window.addEventListener('resize', function() {
+window.addEventListener('resize', function () {
     if (window.innerWidth < 768) {
         document.querySelectorAll('.portfolio-item').forEach(item => {
             item.style.display = 'block';

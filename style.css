@@ -2437,6 +2437,8 @@ img {
 }
 
 .stat-number {
+    display: inline-block;
+    min-width: 60px;
     font-size: 3rem;
     font-weight: 800;
     color: #f5eedc;
@@ -2818,24 +2820,6 @@ img {
     top: 50%;
     right: 0.8rem;
     transform: translateY(-50%);
-}
-
-@keyframes shake {
-
-    0%,
-    100% {
-        transform: translateX(0);
-    }
-
-    20%,
-    60% {
-        transform: translateX(-5px);
-    }
-
-    40%,
-    80% {
-        transform: translateX(5px);
-    }
 }
 
 /* تحسينات لحقول الإدخال عند وجود خطأ */
@@ -3620,6 +3604,8 @@ img {
     overflow: hidden;
 }
 
+
+
 .badge-content {
     display: flex;
     flex-direction: column;
@@ -3637,6 +3623,7 @@ img {
     width: 100%;
     height: 100%;
     z-index: 1;
+    
 }
 
 .badge-number {
@@ -3716,7 +3703,7 @@ img {
 }
 
 .hero-image:hover .hero-badge {
-    animation: pulse 1.5s infinite, shake 0.5s ease;
+    animation: pulse 1.5s infinite,  0.5s ease;
 }
 
 .highlight {

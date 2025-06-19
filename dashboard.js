@@ -11,6 +11,196 @@ const storage = supabaseClient.storage.from('portfolio-images');
 // تهيئة Supabase Storage
 const supabaseStorage = supabaseClient.storage;
 
+// أضف في بداية الملف
+let cropper = null;
+let currentImageFile = null;
+
+// أحداث أدوات التحكم
+document.getElementById('cropFree').addEventListener('click', () => {
+    if (cropper) cropper.setAspectRatio(NaN);
+    setActiveRatio('cropFree');
+});
+
+document.getElementById('crop1x1').addEventListener('click', () => {
+    if (cropper) cropper.setAspectRatio(1);
+    setActiveRatio('crop1x1');
+});
+
+document.getElementById('crop4x3').addEventListener('click', () => {
+    if (cropper) cropper.setAspectRatio(4/3);
+    setActiveRatio('crop4x3');
+});
+
+document.getElementById('crop16x9').addEventListener('click', () => {
+    if (cropper) cropper.setAspectRatio(16/9);
+    setActiveRatio('crop16x9');
+});
+
+document.getElementById('rotateLeft').addEventListener('click', () => {
+    if (cropper) cropper.rotate(-90);
+});
+
+document.getElementById('rotateRight').addEventListener('click', () => {
+    if (cropper) cropper.rotate(90);
+});
+
+document.getElementById('closeCropBtn').addEventListener('click', closeCropModal);
+
+function setActiveRatio(id) {
+    document.querySelectorAll('.crop-ratio-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+}
+
+// أحداث اقتصاص الصورة
+document.getElementById('imageUpload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        currentImageFile = file;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            openCropModal(event.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function openCropModal(imageSrc) {
+    const cropModal = document.getElementById('cropModal');
+    cropModal.style.display = 'flex';
+    
+    // إضافة فئة active بعد تأخير بسيط للسماح بالتحميل
+    setTimeout(() => {
+        cropModal.classList.add('active');
+    }, 50);
+    
+    const image = document.createElement('img');
+    image.id = 'cropImage';
+    image.src = imageSrc;
+    image.style.maxWidth = '100%';
+    
+    document.getElementById('cropPreview').innerHTML = '';
+    document.getElementById('cropPreview').appendChild(image);
+    
+    if (cropper) cropper.destroy();
+    
+    cropper = new Cropper(image, {
+        viewMode: 1,
+        autoCropArea: 0.8,
+        responsive: true,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: true,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        aspectRatio: NaN // نسبة حرة
+    });
+}
+
+function closeCropModal() {
+    const cropModal = document.getElementById('cropModal');
+    cropModal.classList.remove('active');
+    
+    setTimeout(() => {
+        cropModal.style.display = 'none';
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+        document.getElementById('imageUpload').value = '';
+    }, 300);
+}
+
+document.getElementById('applyCrop').addEventListener('click', function() {
+    if (cropper) {
+        const croppedCanvas = cropper.getCroppedCanvas({
+            width: 800,
+            height: 450,
+            fillColor: '#fff'
+        });
+        
+        croppedCanvas.toBlob(function(blob) {
+            // إنشاء ملف جديد من Blob
+            const croppedFile = new File([blob], currentImageFile.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+            });
+            
+            // تحديث معاينة الصورة
+            const preview = document.getElementById('previewImage');
+            preview.src = URL.createObjectURL(blob);
+            document.getElementById('imagePreview').style.display = 'block';
+            
+            // استبدال الملف الأصلي بالملف المقتطع
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(croppedFile);
+            document.getElementById('imageUpload').files = dataTransfer.files;
+            
+            // إغلاق النافذة
+            closeCropModal();
+        }, 'image/jpeg', 0.9);
+    }
+});
+
+document.getElementById('cancelCrop').addEventListener('click', closeCropModal);
+
+
+
+
+
+
+
+
+
+
+// أحداث الأزرار
+document.getElementById('cancelCrop').addEventListener('click', function() {
+    document.getElementById('cropModal').style.display = 'none';
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+    document.getElementById('imageUpload').value = '';
+});
+
+document.getElementById('applyCrop').addEventListener('click', function() {
+    if (cropper) {
+        // الحصول على الصورة المقتطعة
+        const croppedCanvas = cropper.getCroppedCanvas({
+            width: 800,
+            height: 450,
+            fillColor: '#fff'
+        });
+        
+        // تحويل Canvas إلى Blob
+        croppedCanvas.toBlob(function(blob) {
+            // إنشاء ملف جديد من Blob
+            const croppedFile = new File([blob], currentImageFile.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+            });
+            
+            // تحديث معاينة الصورة
+            const preview = document.getElementById('previewImage');
+            preview.src = URL.createObjectURL(blob);
+            document.getElementById('imagePreview').style.display = 'block';
+            
+            // استبدال الملف الأصلي بالملف المقتطع
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(croppedFile);
+            document.getElementById('imageUpload').files = dataTransfer.files;
+            
+            // إغلاق النافذة
+            document.getElementById('cropModal').style.display = 'none';
+            cropper.destroy();
+            cropper = null;
+        }, 'image/jpeg', 0.9);
+    }
+});
+
 // متغيرات عامة
 let selectedProjects = [];
 let tags = [];
