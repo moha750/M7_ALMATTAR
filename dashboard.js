@@ -699,6 +699,7 @@ async function deleteAllProjects() {
 
 
 
+
 // أحداث قلب الصورة
 document.getElementById('flipHorizontal').addEventListener('click', () => {
     if (cropper) {
@@ -745,9 +746,18 @@ function openCropModal(imageSrc) {
         cropBoxResizable: true,
         toggleDragModeOnDblclick: false,
         aspectRatio: NaN,
-        crop: function(event) {
-            // استدعاء دالة تحديث الحجم مع الأبعاد الجديدة
-            updateSizeIndicator(event.detail.width, event.detail.height);
-        }
+crop: function(event) {
+    // استدعاء دالة تحديث الحجم مع الأبعاد الجديدة
+    updateSizeIndicator(event.detail.width, event.detail.height);
+}
     });
+}
+
+function updateSizeIndicator(width, height) {
+    const sizeIndicator = document.getElementById('cropSize');
+    // تقريب الأرقام إلى أقرب عدد صحيح باستخدام Math.round
+    const roundedWidth = Math.round(width);
+    const roundedHeight = Math.round(height);
+
+    sizeIndicator.textContent = `${roundedWidth} × ${roundedHeight} بكسل`;
 }
