@@ -236,6 +236,7 @@ function initPortfolioLightbox(projectsData) {
     const lightbox = document.querySelector('.portfolio-lightbox') || createLightbox();
     let currentIndex = 0;
     let filteredItems = [];
+    let isLoading = false;
 
     function createLightbox() {
         const lb = document.createElement('div');
@@ -244,10 +245,11 @@ function initPortfolioLightbox(projectsData) {
             <div class="lightbox-content">
                 <span class="close-lightbox"><i class="fas fa-times"></i></span>
                 <div class="lightbox-image-container">
+                    <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div>
                     <img src="" alt="" class="lightbox-image">
                     <div class="image-nav">
-                        <button class="nav-btn prev-btn"><i class="fas fa-chevron-right"></i></button>
-                        <button class="nav-btn next-btn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="nav-btn prev-btn" disabled><i class="fas fa-chevron-right"></i></button>
+                        <button class="nav-btn next-btn" disabled><i class="fas fa-chevron-left"></i></button>
                     </div>
                 </div>
                 <div class="lightbox-info">
@@ -272,6 +274,7 @@ function initPortfolioLightbox(projectsData) {
     document.querySelectorAll('.portfolio-item').forEach(item => {
         item.addEventListener('click', function (e) {
             e.preventDefault();
+            if (isLoading) return;
 
             const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
             const searchTerm = document.querySelector('.search-input').value.trim().toLowerCase();
@@ -291,14 +294,16 @@ function initPortfolioLightbox(projectsData) {
             lightbox.classList.add('active');
             document.body.classList.add('no-scroll');
 
+            // إضافة مؤشر تحميل
+            const loadingSpinner = lightbox.querySelector('.loading-spinner');
+            loadingSpinner.style.display = 'flex';
+            
             gsap.from(lightbox.querySelector('.lightbox-content'), {
                 opacity: 0,
                 y: 50,
                 duration: 0.5,
                 ease: "back.out(1.7)"
             });
-            lightbox.classList.add('active');
-            document.body.classList.add('no-scroll'); // منع التمرير
         });
     });
 
@@ -318,6 +323,14 @@ function initPortfolioLightbox(projectsData) {
         const lightboxCategory = lightbox.querySelector('.info-category');
         const tagsContainer = lightbox.querySelector('.project-tags');
         const viewProjectBtn = lightbox.querySelector('.btn-contact');
+        const loadingSpinner = lightbox.querySelector('.loading-spinner');
+        const prevBtn = lightbox.querySelector('.prev-btn');
+        const nextBtn = lightbox.querySelector('.next-btn');
+
+        // تعطيل أزرار التنقل أثناء التحميل
+        isLoading = true;
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
 
         if (project.external_link) {
             viewProjectBtn.href = project.external_link;
@@ -327,19 +340,7 @@ function initPortfolioLightbox(projectsData) {
             viewProjectBtn.style.display = 'none';
         }
 
-        gsap.to(lightboxImg, {
-            opacity: 0,
-            duration: 0.3
-        });
-        lightboxImg.src = project.image;
-        lightboxImg.alt = project.title;
-        lightboxImg.onload = () => {
-            gsap.to(lightboxImg, {
-                opacity: 1,
-                duration: 0.5
-            });
-        };
-
+        // تحديث معلومات المشروع أولاً
         lightboxTitle.textContent = project.title;
         lightboxDesc.textContent = project.description;
         lightboxClient.textContent = project.client;
@@ -364,32 +365,93 @@ function initPortfolioLightbox(projectsData) {
             });
         }
 
-        gsap.from([lightboxTitle, lightboxDesc, lightbox.querySelector('.info-meta'), tagsContainer], {
+        // تحميل الصورة مع مؤشر تحميل
+        gsap.to(lightboxImg, {
             opacity: 0,
-            y: 20,
-            duration: 0.3,
-            stagger: 0.1,
-            delay: 0.3
+            duration: 0.3
         });
+
+        // إنشاء صورة مؤقتة لتحميل الصورة أولاً
+        const tempImg = new Image();
+        tempImg.src = project.image;
+        
+        tempImg.onload = () => {
+            // تحديث معلومات الصورة
+            lightboxImg.src = project.image;
+            lightboxImg.alt = project.title;
+            
+            // إزالة مؤشر التحميل وتفعيل أزرار التنقل
+            loadingSpinner.style.display = 'none';
+            isLoading = false;
+            prevBtn.disabled = false;
+            nextBtn.disabled = false;
+
+            // إظهار الصورة مع تأثيرات GSAP
+            gsap.to(lightboxImg, {
+                opacity: 1,
+                duration: 0.5
+            });
+
+            // إظهار المعلومات مع تأثيرات GSAP
+            gsap.from([lightboxTitle, lightboxDesc, lightbox.querySelector('.info-meta'), tagsContainer], {
+                opacity: 0,
+                y: 20,
+                duration: 0.3,
+                stagger: 0.1,
+                delay: 0.3
+            });
+        };
+
+        // معالجة الخطأ في حالة فشل تحميل الصورة
+        tempImg.onerror = () => {
+            loadingSpinner.style.display = 'none';
+            isLoading = false;
+            prevBtn.disabled = false;
+            nextBtn.disabled = false;
+            
+            // استخدام صورة افتراضية
+            lightboxImg.src = 'assets/images/default-project.jpg';
+            lightboxImg.alt = 'صورة افتراضية';
+            
+            // إظهار الصورة مع تأثيرات GSAP
+            gsap.to(lightboxImg, {
+                opacity: 1,
+                duration: 0.5
+            });
+        };
+
+        // إخفاء الصورة القديمة فوراً
+        lightboxImg.src = ''; // تفريغ مصدر الصورة القديم
+        lightboxImg.alt = '';
+
+        // إظهار مؤشر التحميل
+        loadingSpinner.style.display = 'flex';
+        
+        // تحميل الصورة باستخدام الصورة المؤقتة
+        tempImg.src = project.image;
     }
 
     lightbox.querySelector('.prev-btn').addEventListener('click', (e) => {
         e.stopPropagation();
-        currentIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
-        showProjectInLightbox(currentIndex, projectsData);
+        if (!isLoading) {
+            currentIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
+            showProjectInLightbox(currentIndex, projectsData);
+        }
     });
 
     lightbox.querySelector('.next-btn').addEventListener('click', (e) => {
         e.stopPropagation();
-        currentIndex = (currentIndex + 1) % filteredItems.length;
-        showProjectInLightbox(currentIndex, projectsData);
+        if (!isLoading) {
+            currentIndex = (currentIndex + 1) % filteredItems.length;
+            showProjectInLightbox(currentIndex, projectsData);
+        }
     });
 
     lightbox.querySelector('.close-lightbox').addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => e.target === lightbox && closeLightbox());
 
     document.addEventListener('keydown', (e) => {
-        if (lightbox.classList.contains('active')) {
+        if (lightbox.classList.contains('active') && !isLoading) {
             if (e.key === 'Escape') closeLightbox();
             if (e.key === 'ArrowLeft') {
                 currentIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
@@ -405,6 +467,12 @@ function initPortfolioLightbox(projectsData) {
     function closeLightbox() {
         lightbox.classList.remove('active');
         document.body.classList.remove('no-scroll');
+        // إعادة تعيين الحالة
+        isLoading = false;
+        const prevBtn = lightbox.querySelector('.prev-btn');
+        const nextBtn = lightbox.querySelector('.next-btn');
+        prevBtn.disabled = false;
+        nextBtn.disabled = false;
     }
 }
 
@@ -869,15 +937,10 @@ function initStatsCounter() {
                 const numberElement = card.querySelector('.stat-number');
                 numberElement.textContent = '0';
                 
-                // تشغيل تأثير التحريك
-                gsap.from(card, {
-                    opacity: 0,
-                    y: 50,
-                    scale: 0.9,
-                    duration: 0.8,
-                    ease: "back.out(1.7)",
-                    onComplete: () => startCounter(card)
-                });
+                // إضافة فئة التحريك
+                card.classList.add('stat-card-animate');
+                // تشغيل العداد بعد التحريك
+                setTimeout(() => startCounter(card), 500);
             }
         });
     }, {
@@ -1105,6 +1168,69 @@ function loadDynamicData() {
 // تنفيذ الكود عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', loadDynamicData);
 
+// تعريف دالة تحميل المزيد
+async function loadMoreProjects() {
+    console.log("جاري تحميل المزيد من المشاريع...");
+    const portfolioContainer = document.querySelector('.portfolio-grid');
+    const shownCountElement = document.querySelector('.shown-count');
+    const totalCountElement = document.querySelector('.total-count');
+
+    try {
+        const { data: projects, error } = await portfolioCollection.select('*').order('date', { ascending: false });
+
+        if (error) {
+            throw error;
+        }
+
+        const currentProjects = document.querySelectorAll('.portfolio-item');
+        const startIndex = currentProjects.length;
+        const endIndex = Math.min(startIndex + 6, projects.length);
+        
+        for (let i = startIndex; i < endIndex; i++) {
+            const project = projects[i];
+            const portfolioHTML = `
+                <div class="portfolio-item" 
+                     data-category="${project.category}" 
+                     data-index="${i}"
+                     data-title="${project.title.toLowerCase()}"
+                     data-client="${project.client.toLowerCase()}"
+                     data-tags="${project.tags ? project.tags.join(',').toLowerCase() : ''}">
+                    <img src="${project.image}" alt="${project.title}" class="portfolio-img" loading="lazy">
+                    <div class="portfolio-overlay">
+                        <div class="overlay-content">
+                            <h3>${project.title}</h3>
+                            <p>${project.description}</p>
+                            <div class="portfolio-meta">
+                                <span><i class="fas fa-user"></i> ${project.client}</span>
+                                <span><i class="fas fa-calendar"></i> ${project.date}</span>
+                            </div>
+                            <a href="#portfolio-item-${i}" class="btn btn-view" data-project="${i}">
+                                <i class="fas fa-expand"></i> عرض المشروع
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            portfolioContainer.insertAdjacentHTML('beforeend', portfolioHTML);
+        }
+
+        // إعادة تهيئة lightbox للأعمال الجديدة
+        initPortfolioLightbox(projects);
+
+        shownCountElement.textContent = portfolioContainer.querySelectorAll('.portfolio-item').length;
+        
+        if (portfolioContainer.querySelectorAll('.portfolio-item').length >= projects.length) {
+            document.querySelector('.btn-load-more').style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error loading more projects:', error);
+    }
+}
+
+// إضافة مستمع حدث للزر "تحميل المزيد"
+document.querySelector('.btn-load-more').addEventListener('click', loadMoreProjects);
+
 // تحديث عرض المشاريع عند تغيير حجم الشاشة
 window.addEventListener('resize', function () {
     if (window.innerWidth < 768) {
@@ -1128,50 +1254,4 @@ window.addEventListener('resize', function () {
     }
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const loadMoreButton = document.querySelector('.btn-load-more');
-    
-    loadMoreButton.addEventListener('click', function() {
-        loadMoreProjects(); // استدعاء دالة تحميل المزيد
-    });
 
-    function loadMoreProjects() {
-        // يمكنك استبدال هذا الجزء بكود لتحميل المزيد من البيانات من الخادم أو Supabase
-        console.log("جاري تحميل المزيد من المشاريع...");
-
-        // على سبيل المثال: يمكن تحميل مشاريع جديدة من Supabase هنا
-        getPortfolioData();  // هذه الدالة التي قمت بتعريفها سابقًا
-    }
-
-    async function getPortfolioData() {
-        try {
-            const { data, error } = await supabaseClient
-                .from('portfolio')
-                .select('*')
-                .range(0, 10); // تحديد النطاق لتحميل 10 مشاريع جديدة
-
-            if (error) {
-                console.error('Error loading data:', error);
-            } else {
-                console.log('Data loaded:', data);
-                renderProjects(data);  // دالة لعرض المشاريع بعد تحميلها
-            }
-        } catch (error) {
-            console.error('Error in getPortfolioData:', error);
-        }
-    }
-
-    function renderProjects(data) {
-        // عرض البيانات في الجدول أو أي مكان آخر في الصفحة
-        const projectsTableBody = document.querySelector('#projectsTableBody');
-        data.forEach(project => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${project.title}</td>
-                <td>${project.client}</td>
-                <td>${project.date}</td>
-            `;
-            projectsTableBody.appendChild(tr);
-        });
-    }
-});
