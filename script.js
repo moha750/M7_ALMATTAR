@@ -103,7 +103,21 @@ async function loadPortfolio() {
     const shownCountElement = document.querySelector('.shown-count');
     const totalCountElement = document.querySelector('.total-count');
 
-    portfolioContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المشاريع...</div>';
+    portfolioContainer.innerHTML = `
+  <div class="portfolio-loading">
+    <div class="loading-content">
+      <div class="loading-spinner">
+        <div class="spinner-circle"></div>
+        <div class="spinner-circle"></div>
+        <div class="spinner-circle"></div>
+      </div>
+      <div class="loading-text">
+        <h3>جاري تحميل المشاريع</h3>
+        <p>يرجى الانتظار بينما نقوم بجمع أعمالي الإبداعية</p>
+      </div>
+    </div>
+  </div>
+`;
 
     try {
         const { data: projects, error } = await portfolioCollection.select('*').order('date', { ascending: false });
@@ -215,40 +229,22 @@ function initPortfolioFilter() {
 }
 
 function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
-    const portfolioContainer = document.querySelector('.portfolio-grid');
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
     const shownCountElement = document.querySelector('.shown-count');
     const totalCountElement = document.querySelector('.total-count');
-    const loadMoreBtn = document.querySelector('.btn-load-more');
-    
-    let matchingItems = 0;
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-
-    // حساب عدد المشاريع المطابقة للفلتر والبحث
-    portfolioItems.forEach(item => {
-        const matchesFilter = filterValue === 'all' || item.dataset.category === filterValue;
-        const matchesSearch = searchTerm === '' ||
-            item.dataset.title.includes(searchTerm) ||
-            item.dataset.client.includes(searchTerm) ||
-            item.dataset.tags.includes(searchTerm);
-        
-        if (matchesFilter && matchesSearch) {
-            matchingItems++;
-        }
-    });
-
-    // تحديث العداد الإجمالي
-    totalCountElement.textContent = matchingItems;
-
-    // تحديد عدد المشاريع الأولية المعروضة حسب حجم الشاشة
-    const initialItemsToShow = Math.min(matchingItems, window.innerWidth < 768 ? 4 : 6);
     let shownCount = 0;
 
-    // عرض/إخفاء المشاريع حسب الفلتر والبحث
+    // تحسين عملية البحث باستخدام تعبيرات منتظمة
+    const searchRegex = new RegExp(searchTerm, 'i');
+    
     portfolioItems.forEach(item => {
-        const matchesFilter = filterValue === 'all' || item.dataset.category === filterValue;
-        const matchesSearch = searchTerm === '' ||
-            item.dataset.title.includes(searchTerm) ||
-            item.dataset.client.includes(searchTerm) ||
+        const category = item.dataset.category;
+        const title = item.dataset.title;
+        const client = item.dataset.client;
+        const tags = item.dataset.tags;
+
+        // تطبيق الفلتر
+        const matchesFilter = filterValue === 'all' || category === filterValue;
             item.dataset.tags.includes(searchTerm);
         
         if (matchesFilter && matchesSearch) {
@@ -289,41 +285,49 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
 }
 
 function initPortfolioSearch() {
-    const searchInput = document.querySelector('.search-input');
+    const searchInput = document.querySelector('.portfolio-search');
+    if (!searchInput) return;
 
-    searchInput.addEventListener('input', () => {
-        const searchTerm = searchInput.value.trim().toLowerCase();
-        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+    // إضافة تأخير في البحث لتحسين الأداء
+    let searchTimeout;
+    const searchDelay = 300; // 300 مللي ثانية
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const searchTerm = this.value.trim().toLowerCase();
         
-        if (searchTerm === '') {
-            // عند حذف البحث، نعيد عرض العدد الافتراضي من المشاريع حسب حجم الشاشة
-            const portfolioItems = document.querySelectorAll('.portfolio-item');
-            const initialItemsToShow = Math.min(portfolioItems.length, window.innerWidth < 768 ? 4 : 6);
-            
-            portfolioItems.forEach((item, index) => {
-                if (index < initialItemsToShow) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            
-            // تحديث العداد
-            const shownCountElement = document.querySelector('.shown-count');
-            if (shownCountElement) {
-                shownCountElement.textContent = initialItemsToShow;
-            }
-            
-            // التحكم في ظهور زر تحميل المزيد
-            const loadMoreBtn = document.querySelector('.btn-load-more');
-            if (portfolioItems.length <= initialItemsToShow) {
-                loadMoreBtn.style.display = 'none';
-            } else {
-                loadMoreBtn.style.display = 'flex';
-                loadMoreBtn.textContent = 'تحميل المزيد';
-                loadMoreBtn.classList.remove('show-less');
-            }
+        searchTimeout = setTimeout(() => {
+            filterPortfolioItems('all', searchTerm);
+        }, searchDelay);
+    });
+
+    // إضافة دعم للبحث باستخدام مفتاح Enter
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const searchTerm = this.value.trim().toLowerCase();
+            filterPortfolioItems('all', searchTerm);
+        }
+    });
+
+    // إضافة دعم للبحث باستخدام مفتاح Esc
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            this.value = '';
+            filterPortfolioItems('all', '');
+            this.blur();
+        }
+    });
+
+    // تحسين تجربة المستخدم
+    searchInput.addEventListener('focus', function() {
+        this.placeholder = 'ابحث عن مشاريع...';
+    });
+
+    searchInput.addEventListener('blur', function() {
+        if (!this.value) {
+            this.placeholder = 'البحث...';
         } else {
+            // تطبيق الفلتر والبحث
             filterPortfolioItems(activeFilter, searchTerm);
         }
     });
@@ -1367,3 +1371,119 @@ window.addEventListener('resize', function() {
 
     
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
