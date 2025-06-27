@@ -28,72 +28,64 @@
             <form id="projectForm">
                 <input type="hidden" id="editIndex" value="-1" />
 
-<div class="form-grid">
-    <!-- خانة التصنيف (منفصلة الآن) -->
-    <div class="form-group">
-        <label for="category"><i class="fas fa-tag"></i> التصنيف</label>
-        <select id="category" required>
-            <option value="">اختر التصنيف</option>
-            <option value="graphic">جرافيك</option>
-            <option value="motion">موشن</option>
-            <option value="video">فيديو</option>
-            <option value="voice">صوت</option>
-            <option value="web">ويب</option>
-        </select>
-    </div>
-
-    <!-- خانة عنوان المشروع (انتقلت إلى الصف الأول) -->
-    <div class="form-group">
-        <label for="title"><i class="fas fa-heading"></i> عنوان المشروع</label>
-        <input type="text" id="title" placeholder="عنوان المشروع" required />
-    </div>
-</div>
-
-<!-- خانة رفع الصورة (منفصلة تماماً) -->
-<div class="form-group">
-    <label for="imageUpload">
-        <i class="fas fa-image"></i> رفع صورة المشروع
-        <span class="upload-hint">(الحد الأقصى 10MB، الصيغ المقبولة: JPG, PNG)</span>
-    </label>
-    
-    <div class="upload-container">
-        <label for="imageUpload" class="upload-area">
-            <i class="fas fa-cloud-upload-alt"></i>
-            <span>انقر لاختيار صورة أو اسحبها هنا</span>
-        </label>
-        <input type="file" id="imageUpload" accept="image/*" required hidden />
-        
-        <div id="imagePreview" class="preview-container">
-            <div class="preview-wrapper">
-                <img id="previewImage" src="#" alt="معاينة الصورة" />
-                <div class="preview-actions">
-                    <button id="cropBtn" class="preview-action-btn">
-                        <i class="fas fa-crop"></i>
-                    </button>
-                    <button id="removeImageBtn" class="preview-action-btn">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                <div class="form-group">
+                    <label for="category"><i class="fas fa-tag"></i> التصنيف</label>
+                    <select id="category" required>
+                        <option value="">اختر التصنيف</option>
+                        <option value="graphic">جرافيك</option>
+                        <option value="motion">موشن</option>
+                        <option value="video">فيديو</option>
+                        <option value="voice">صوت</option>
+                        <option value="web">ويب</option>
+                    </select>
                 </div>
-            </div>
-            <div class="preview-info">
-                <span id="fileName"></span>
-                <span id="fileSize"></span>
-            </div>
-        </div>
-    </div>
-</div>
+
+                <!-- خانة رفع الصورة (منفصلة تماماً) -->
+                <div class="form-group">
+                    <label for="imageUpload">
+                        <i class="fas fa-image"></i> رفع صورة المشروع
+                        <span class="upload-hint">(الحد الأقصى 10MB، الصيغ المقبولة: JPG, PNG)</span>
+                    </label>
+
+                    <div class="upload-container">
+                        <label for="imageUpload" class="upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>انقر لاختيار صورة أو اسحبها هنا</span>
+                        </label>
+                        <input type="file" id="imageUpload" accept="image/*" hidden />
+
+                        <div id="imagePreview" class="preview-container">
+                            <div class="preview-wrapper">
+                                <img id="previewImage" src="#" alt="معاينة الصورة" />
+                                <div class="preview-actions">
+                                    <button id="cropBtn" class="preview-action-btn">
+                                        <i class="fas fa-crop"></i>
+                                    </button>
+                                    <button id="removeImageBtn" class="preview-action-btn">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="preview-info">
+                                <span id="fileName"></span>
+                                <span id="fileSize"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="title"><i class="fas fa-heading"></i> عنوان المشروع</label>
                         <input type="text" id="title" placeholder="عنوان المشروع" required />
                     </div>
-
                     <div class="form-group">
                         <label for="client"><i class="fas fa-user-tie"></i> اسم العميل</label>
                         <input type="text" id="client" placeholder="العميل" required />
                     </div>
                 </div>
+
+
 
                 <div class="form-group">
                     <label for="description"><i class="fas fa-align-right"></i> وصف المشروع</label>
@@ -142,7 +134,14 @@
 
                 <div class="form-group">
                     <label for="externalLink"><i class="fas fa-link"></i> رابط المشروع</label>
-                    <input type="text" id="externalLink" placeholder="رابط خارجي للمشروع إن وجد" required />
+                    <div class="url-input-container">
+                        <input type="url" id="externalLink" placeholder="https://example.com" pattern="https?://.+"
+                            required />
+                        <button type="button" id="testLinkBtn" class="test-link-btn" title="اختبار الرابط">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
+                    </div>
+                    <small class="url-hint">يجب أن يبدأ الرابط بـ http:// أو https://</small>
                 </div>
 
                 <div class="form-actions">

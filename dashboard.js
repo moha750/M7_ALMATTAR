@@ -594,16 +594,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // دوال مساعدة
-    function resetForm() {
-        form.reset();
-        editIndexInput.value = -1;
-        submitBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة مشروع';
-        formTitle.textContent = 'إضافة مشروع جديد';
-        formSubtitle.textContent = 'املأ النموذج لإضافة مشروع جديد إلى المعرض';
-        resetImageField(); // استدعاء دالة إعادة تعيين الصورة
-        tags = [];
-        renderTags();
-    }
+function resetForm() {
+    form.reset();
+    editIndexInput.value = -1;
+    submitBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة مشروع';
+    formTitle.textContent = 'إضافة مشروع جديد';
+    formSubtitle.textContent = 'املأ النموذج لإضافة مشروع جديد إلى المعرض';
+    resetImageField();
+    tags = [];
+    renderTags();
+    document.getElementById('imagePreview').style.display = 'none';
+    document.querySelector('.upload-area').style.display = 'flex';
+}
 
     function showAlert(icon, title, text) {
         Swal.fire({
@@ -659,154 +661,109 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // رفع الصورة
-    async function uploadImage(file) {
-        try {
-            // تهيئة متغيرات الثابتة
-            const BUCKET_NAME = 'portfolio-images';
-            const DATE_PREFIX = Date.now();
-
-            // تنظيف اسم الملف وإزالة المسافات والأحرف الخاصة
-            const cleanName = file.name
-                .replace(/[^a-zA-Z0-9._-]/g, '-')
-                .replace(/\s+/g, '-');
-
-            const fileName = `${DATE_PREFIX}-${cleanName}`;
-
-            // رفع الملف
-            const {
-                data: uploadData,
-                error: uploadError
-            } = await supabaseClient.storage
-                .from(BUCKET_NAME)
-                .upload(fileName, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
-
-            if (uploadError) throw uploadError;
-
-            // الحصول على رابط الصورة
-            const {
-                data: urlData,
-                error: urlError
-            } = await supabaseClient.storage
-                .from(BUCKET_NAME)
-                .getPublicUrl(fileName);
-
-            if (urlError) throw urlError;
-
-            return urlData.publicUrl;
-        } catch (error) {
-            console.error("خطأ في رفع الصورة:", error);
-            showAlert('error', 'خطأ في الرفع', `فشل رفع الصورة. تأكد من:\n1. وجود bucket باسم ${BUCKET_NAME}\n2. أن المفتاح Supabase صحيح\n3. أن لديك الأذونات المناسبة على Supabase\n4. تأكد من أن اسم الملف صحيح`);
-            return null;
-        }
+async function uploadImage(file, currentImageUrl = null) {
+    if (!file && currentImageUrl) {
+        return currentImageUrl;
     }
+
+    try {
+        const BUCKET_NAME = 'portfolio-images';
+        const DATE_PREFIX = Date.now();
+
+        const cleanName = file.name
+            .replace(/[^a-zA-Z0-9._-]/g, '-')
+            .replace(/\s+/g, '-');
+
+        const fileName = `${DATE_PREFIX}-${cleanName}`;
+
+        const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            .from(BUCKET_NAME)
+            .upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+
+        if (uploadError) throw uploadError;
+
+        const { data: urlData, error: urlError } = await supabaseClient.storage
+            .from(BUCKET_NAME)
+            .getPublicUrl(fileName);
+
+        if (urlError) throw urlError;
+
+        return urlData.publicUrl;
+    } catch (error) {
+        console.error("خطأ في رفع الصورة:", error);
+        showAlert('error', 'خطأ في الرفع', `فشل رفع الصورة. تأكد من:\n1. وجود bucket باسم ${BUCKET_NAME}\n2. أن المفتاح Supabase صحيح\n3. أن لديك الأذونات المناسبة على Supabase\n4. تأكد من أن اسم الملف صحيح`);
+        return null;
+    }
+}
 
     // مستمعين الأحداث
     // في دالة معالجة إرسال النموذج
-    form.addEventListener('submit', async function (e) {
-        e.preventDefault();
+form.addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-        const month = document.getElementById('month').value;
-        const year = document.getElementById('year').value;
-        const imageFile = document.getElementById('imageUpload').files[0];
+    const imageFile = document.getElementById('imageUpload').files[0];
+    const editIndex = editIndexInput.value;
+    const isEditMode = editIndex !== "-1";
 
-        if (!imageFile || !document.getElementById('category').value ||
-            !document.getElementById('title').value.trim() ||
-            !document.getElementById('description').value.trim() ||
-            !document.getElementById('client').value.trim() ||
-            !month || !year) {
-            showAlert('error', 'خطأ', 'الرجاء ملء جميع الحقول المطلوبة');
+    let currentImageUrl = null;
+    if (isEditMode && !imageFile) {
+        try {
+            const { data: project, error } = await portfolioCollection.select().eq('id', editIndex).single();
+            if (error) throw error;
+            currentImageUrl = project.image;
+        } catch (error) {
+            console.error("Error getting current image:", error);
+            showAlert('error', 'خطأ', 'حدث خطأ أثناء جلب بيانات الصورة الحالية');
             return;
         }
+    }
 
-        try {
-            // التعديل هنا: تغيير نص الرسالة لتعكس رفع المشروع كاملاً
-            Swal.fire({
-                title: 'جاري رفع المشروع للموقع',
-                html: `
-        <div class="progress-container" style="margin-top: 20px; background: #f1f1f1; border-radius: 10px; height: 20px;">
-            <div id="uploadProgressBar" style="width: 0%; height: 100%; background: #dda853; border-radius: 10px; transition: width 0.3s;"></div>
-        </div>
-        <p id="progressText" style="margin-top: 10px; font-size: 1.1rem; color: #27548a;">0% مكتمل</p>
-    `,
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                willOpen: () => {
-                    // دالة محاكاة للتقدم (يمكن استبدالها بالتقدم الفعلي)
-                    let progress = 0;
-                    const progressBar = document.getElementById('uploadProgressBar');
-                    const progressText = document.getElementById('progressText');
+    if (!imageFile && !currentImageUrl) {
+        showAlert('error', 'خطأ', 'الرجاء اختيار صورة للمشروع');
+        return;
+    }
 
-                    const progressInterval = setInterval(() => {
-                        progress += Math.random() * 10;
-                        if (progress > 100) progress = 100;
+    const month = document.getElementById('month').value;
+    const year = document.getElementById('year').value;
 
-                        progressBar.style.width = `${progress}%`;
-                        progressText.textContent = `${Math.round(progress)}% مكتمل`;
+    if (!document.getElementById('category').value ||
+        !document.getElementById('title').value.trim() ||
+        !document.getElementById('description').value.trim() ||
+        !document.getElementById('client').value.trim() ||
+        !month || !year) {
+        showAlert('error', 'خطأ', 'الرجاء ملء جميع الحقول المطلوبة');
+        return;
+    }
 
-                        if (progress === 100) {
-                            clearInterval(progressInterval);
-                        }
-                    }, 300);
-                }
-            });
+    try {
+        const imageUrl = await uploadImage(imageFile, currentImageUrl);
 
-            const imageUrl = await uploadImage(imageFile);
+        const newProject = {
+            category: document.getElementById('category').value,
+            image: imageUrl,
+            title: document.getElementById('title').value.trim(),
+            description: document.getElementById('description').value.trim(),
+            client: document.getElementById('client').value.trim(),
+            date: `${month} ${year}`,
+            tags: document.getElementById('tags').value.trim() ?
+                document.getElementById('tags').value.trim().split(',').map(t => t.trim()) : [],
+            external_link: document.getElementById('externalLink').value.trim() || null
+        };
 
-            const newProject = {
-                category: document.getElementById('category').value,
-                image: imageUrl,
-                title: document.getElementById('title').value.trim(),
-                description: document.getElementById('description').value.trim(),
-                client: document.getElementById('client').value.trim(),
-                date: `${month} ${year}`,
-                tags: document.getElementById('tags').value.trim() ?
-                    document.getElementById('tags').value.trim().split(',').map(t => t.trim()) : [],
-                external_link: document.getElementById('externalLink').value.trim() || null
-            };
+        const success = await savePortfolioData(newProject, isEditMode, editIndex);
 
-            const editIndex = editIndexInput.value;
-            let success = false;
-
-            if (editIndex === "-1") {
-                success = await savePortfolioData(newProject);
-                if (success) {
-                    Swal.fire({
-                        title: 'تمّ رفع المشروع',
-                        html: `
-            <div class="success-alert">
-                <i class="fas fa-check-circle"></i>
-            </div>
-        `,
-                        showDenyButton: true,
-                        confirmButtonText: 'شُكرًا',
-                        denyButtonText: 'رؤية المشروع',
-                        confirmButtonColor: '#4caf50',
-                        denyButtonColor: '#dda853',
-                    }).then((result) => {
-                        if (result.isDenied) {
-                            window.location.href = 'index.html#stats';
-                        }
-                    });
-                }
-            } else {
-                success = await savePortfolioData(newProject, true, editIndex);
-                if (success) {
-                    showAlert('success', 'تم التعديل', 'تم تحديث بيانات المشروع بنجاح');
-                }
-            }
-
-            if (success) {
-                await renderProjects();
-                resetForm();
-            }
-        } catch (error) {
-            console.error("Error in form submission:", error);
-            showAlert('error', 'خطأ', 'حدث خطأ أثناء حفظ بيانات المشروع');
+        if (success) {
+            await renderProjects();
+            resetForm();
         }
-    });
+    } catch (error) {
+        console.error("Error in form submission:", error);
+        showAlert('error', 'خطأ', 'حدث خطأ أثناء حفظ بيانات المشروع');
+    }
+});
 
     resetBtn.addEventListener('click', resetForm);
 
@@ -839,7 +796,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('year').value = dateParts[1];
 
                     loadTags(project.tags || []);
-                    document.getElementById('externalLink').value = project.externalLink || '';
+                    document.getElementById('externalLink').value = project.external_link || '';
 
                     editIndexInput.value = docId;
                     submitBtn.innerHTML = '<i class="fas fa-save"></i> حفظ التعديلات';
@@ -1209,4 +1166,130 @@ function setupDragAndDrop() {
 // استدعاء الدالة عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', function () {
     setupDragAndDrop();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// أضف هذه الدوال في قسم المتغيرات العامة
+function isValidUrl(url) {
+    try {
+        new URL(url);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function formatUrl(url) {
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        return `https://${url}`;
+    }
+    return url;
+}
+
+// أضف هذا المستمع في قسم مستمعين الأحداث
+document.getElementById('testLinkBtn').addEventListener('click', function() {
+    const urlInput = document.getElementById('externalLink');
+    let url = urlInput.value.trim();
+    
+    if (!url) {
+        showAlert('error', 'حقل فارغ', 'الرجاء إدخال رابط أولاً');
+        return;
+    }
+    
+    // تنسيق الرابط إذا لم يكن يحتوي على http/https
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = `https://${url}`;
+        urlInput.value = url;
+    }
+    
+    // التحقق من صحة الرابط
+    if (!isValidUrl(url)) {
+        showAlert('error', 'رابط غير صالح', 'الرجاء إدخال رابط صحيح يبدأ بـ http:// أو https://');
+        return;
+    }
+    
+    // فتح الرابط في نافذة جديدة بعد التأكيد
+    Swal.fire({
+        title: 'فتح الرابط',
+        html: `هل تريد فتح الرابط التالي في نافذة جديدة؟<br><br><a href="${url}" target="_blank" style="color: #27548a; word-break: break-all;">${url}</a>`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'نعم، افتح الرابط',
+        cancelButtonText: 'إلغاء',
+        confirmButtonColor: '#00b894',
+        cancelButtonColor: '#27548a'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.open(url, '_blank');
+        }
+    });
+});
+
+
+
+// أضف هذا المستمع للتحقق أثناء الكتابة
+document.getElementById('externalLink').addEventListener('input', function() {
+    const url = this.value.trim();
+    const testBtn = document.getElementById('testLinkBtn');
+    
+    if (url && isValidUrl(url)) {
+        this.setCustomValidity('');
+        testBtn.disabled = false;
+    } else {
+        testBtn.disabled = !url;
+    }
 });
