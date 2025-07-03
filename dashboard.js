@@ -2,6 +2,8 @@
 let cropper = null;
 let currentImageFile = null;
 let cropModalOpened = false;
+const bucket = 'portfolio-images';
+
 
 // تهيئة Supabase
 const {
@@ -26,8 +28,12 @@ function resetImageField() {
     document.getElementById('imageUpload').value = '';
     document.querySelector('.upload-area').style.display = 'flex';
     currentImageFile = null;
-
-    if (cropModalOpened) {
+    
+    // إعادة تعيين معلومات الملف
+    document.getElementById('fileName').textContent = '';
+    document.getElementById('fileSize').textContent = '';
+    
+    if (cropModalOpened && cropper) {
         closeCropModal(false);
     }
 }
@@ -117,7 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('removeImageBtn').addEventListener('click', function () {
-        resetImageField();
+    e.preventDefault();
+    resetImageField();
     });
 });
 if (cancelCrop) {
@@ -256,11 +263,12 @@ function closeCropModal(resetImage = false) {
             cropper = null;
         }
 
-        if (resetImage) {
+        // إزالة شرط resetImage لمنع إزالة الصورة عند الإلغاء
+        if (resetImage && document.getElementById('imagePreview').style.display === 'none') {
             resetImageField();
         }
 
-        cropModalOpened = false; // إعادة تعيين العلامة
+        cropModalOpened = false;
     }, 300);
 }
 
@@ -270,10 +278,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const projectsTableBody = document.querySelector('.projects-table tbody');
 
     if (form) {
-        form.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            // باقي الكود
-        });
+form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // جمع التصنيفات المحددة
+    const selectedCategories = Array.from(document.querySelectorAll('.category-checkbox:checked'))
+        .map(checkbox => checkbox.value);
+
+    if (selectedCategories.length === 0) {
+        showAlert('error', 'خطأ', 'الرجاء اختيار تصنيف واحد على الأقل');
+        return;
+    }
+
+});
     }
 
     if (projectsTableBody) {
@@ -346,15 +363,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function savePortfolioData(projectData, isEdit = false, docId = null) {
         try {
+            // معالجة تنسيق البيانات قبل الإرسال
+            const processedData = {
+                ...projectData,
+                tags: Array.isArray(projectData.tags) ? projectData.tags : [projectData.tags],
+                category: Array.isArray(projectData.category) ? projectData.category : [projectData.category]
+            };
+
             if (isEdit && docId) {
                 const {
                     error
-                } = await portfolioCollection.update(projectData).eq('id', docId);
+                } = await portfolioCollection.update(processedData).eq('id', docId);
                 if (error) throw error;
             } else {
                 const {
                     error
-                } = await portfolioCollection.insert([projectData]);
+                } = await portfolioCollection.insert([processedData]);
                 if (error) throw error;
             }
             return true;
@@ -419,20 +443,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    async function renderProjects() {
-        const portfolio = await getPortfolioData();
-        projectsTableBody.innerHTML = '';
+async function renderProjects() {
+    const portfolio = await getPortfolioData();
+    projectsTableBody.innerHTML = '';
 
-        portfolio.forEach((item) => {
-            const tr = document.createElement('tr');
-            tr.dataset.id = item.id; // تم إصلاح هذا السطر
-            tr.innerHTML = `
+    portfolio.forEach((item) => {
+        const tr = document.createElement('tr');
+        tr.dataset.id = item.id;
+        tr.innerHTML = `
             <td>
                 <input type="checkbox" class="select-checkbox" data-id="${item.id}">
             </td>
             <td><img src="${item.image}" alt="${item.title}" class="project-thumb"></td>
             <td>${item.title}</td>
-            <td><span class="category-badge category-${item.category}">${getCategoryName(item.category)}</span></td>
+            <td><div class="category-badges">${getCategoryName(item.category)}</div></td>
             <td>${item.client}</td>
             <td>${item.date}</td>
             <td class="project-link">
@@ -451,23 +475,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 </button>
             </td>
         `;
-            projectsTableBody.appendChild(tr);
-        });
+        projectsTableBody.appendChild(tr);
+    });
 
-        toggleEmptyState(portfolio);
-        setupSelectionHandlers();
-    }
+    toggleEmptyState(portfolio);
+    setupSelectionHandlers();
+}
 
-    function getCategoryName(category) {
-        const categories = {
-            graphic: 'جرافيك',
-            motion: 'موشن',
-            video: 'فيديو',
-            voice: 'صوت',
-            web: 'ويب'
-        };
-        return categories[category] || category;
-    }
+function getCategoryName(categories) {
+    if (!categories) return '';
+    if (typeof categories === 'string') categories = [categories];
+    
+    const categoryNames = {
+        graphic: { name: 'جرافيك', icon: 'fas fa-paint-brush' },
+        motion: { name: 'موشن', icon: 'fas fa-film' },
+        video: { name: 'فيديو', icon: 'fas fa-video' },
+        voice: { name: 'صوت', icon: 'fas fa-microphone' },
+        web: { name: 'ويب', icon: 'fas fa-globe' }
+    };
+    
+    return categories.map(cat => {
+        const category = categoryNames[cat] || { name: cat, icon: 'fas fa-tag' };
+        return `<span class="category-badge category-${cat}">
+            <i class="${category.icon}"></i> ${category.name}
+        </span>`;
+    }).join('');
+}
 
     // دوال التحكم بالتحديد
     function setupSelectionHandlers() {
@@ -600,11 +633,19 @@ function resetForm() {
     submitBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة مشروع';
     formTitle.textContent = 'إضافة مشروع جديد';
     formSubtitle.textContent = 'املأ النموذج لإضافة مشروع جديد إلى المعرض';
-    resetImageField();
-    tags = [];
-    renderTags();
+    
+    // إعادة تعيين الصورة مع الحفاظ على منطقة الرفع
     document.getElementById('imagePreview').style.display = 'none';
     document.querySelector('.upload-area').style.display = 'flex';
+    document.getElementById('imageUpload').value = '';
+    currentImageFile = null;
+    
+    // إعادة تعيين معلومات الملف
+    document.getElementById('fileName').textContent = '';
+    document.getElementById('fileSize').textContent = '';
+    
+    tags = [];
+    renderTags();
 }
 
     function showAlert(icon, title, text) {
@@ -661,88 +702,163 @@ function resetForm() {
     }
 
     // رفع الصورة
-async function uploadImage(file, currentImageUrl = null) {
-    if (!file && currentImageUrl) {
-        return currentImageUrl;
+    async function uploadImage(file) {
+        try {
+            // تهيئة متغيرات الثابتة
+            const BUCKET_NAME = 'portfolio-images';
+            const DATE_PREFIX = Date.now();
+
+            // تنظيف اسم الملف وإزالة المسافات والأحرف الخاصة
+            const cleanName = file.name
+                .replace(/[^a-zA-Z0-9._-]/g, '-')
+                .replace(/\s+/g, '-');
+
+            const fileName = `${DATE_PREFIX}-${cleanName}`;
+
+            // رفع الملف
+            const {
+                data: uploadData,
+                error: uploadError
+            } = await supabaseClient.storage
+                .from(BUCKET_NAME)
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (uploadError) throw uploadError;
+
+            // الحصول على رابط الصورة
+            const {
+                data: urlData,
+                error: urlError
+            } = await supabaseClient.storage
+                .from(BUCKET_NAME)
+                .getPublicUrl(fileName);
+
+            if (urlError) throw urlError;
+
+            return urlData.publicUrl;
+        } catch (error) {
+            console.error("خطأ في رفع الصورة:", error);
+            showAlert('error', 'خطأ في الرفع', `فشل رفع الصورة. تأكد من:\n1. وجود bucket باسم ${BUCKET_NAME}\n2. أن المفتاح Supabase صحيح\n3. أن لديك الأذونات المناسبة على Supabase\n4. تأكد من أن اسم الملف صحيح`);
+            return null;
+        }
     }
 
-    try {
-        const BUCKET_NAME = 'portfolio-images';
-        const DATE_PREFIX = Date.now();
+    // تهيئة أزرار معاينة الصورة
+    const cropBtn = document.getElementById('cropBtn');
+    const removeImageBtn = document.getElementById('removeImageBtn');
+    const previewImage = document.getElementById('previewImage');
 
-        const cleanName = file.name
-            .replace(/[^a-zA-Z0-9._-]/g, '-')
-            .replace(/\s+/g, '-');
+    // تهيئة مستمعي الأحداث للأزرار
+    cropBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (cropper) {
+            const canvas = cropper.getCroppedCanvas();
+            previewImage.src = canvas.toDataURL();
+            currentImageFile = dataURLtoFile(canvas.toDataURL(), 'cropped-image.jpg');
+            document.querySelector('.upload-area').style.display = 'none';
+            document.getElementById('imagePreview').style.display = 'flex';
+        }
+    });
 
-        const fileName = `${DATE_PREFIX}-${cleanName}`;
+    removeImageBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        resetImageField();
+        document.querySelector('.upload-area').style.display = 'flex';
+        document.getElementById('imagePreview').style.display = 'none';
+    });
 
-        const { data: uploadData, error: uploadError } = await supabaseClient.storage
-            .from(BUCKET_NAME)
-            .upload(fileName, file, {
-                cacheControl: '3600',
-                upsert: false
-            });
-
-        if (uploadError) throw uploadError;
-
-        const { data: urlData, error: urlError } = await supabaseClient.storage
-            .from(BUCKET_NAME)
-            .getPublicUrl(fileName);
-
-        if (urlError) throw urlError;
-
-        return urlData.publicUrl;
-    } catch (error) {
-        console.error("خطأ في رفع الصورة:", error);
-        showAlert('error', 'خطأ في الرفع', `فشل رفع الصورة. تأكد من:\n1. وجود bucket باسم ${BUCKET_NAME}\n2. أن المفتاح Supabase صحيح\n3. أن لديك الأذونات المناسبة على Supabase\n4. تأكد من أن اسم الملف صحيح`);
-        return null;
+    // دالة مساعدة لتحويل dataURL إلى ملف
+    function dataURLtoFile(dataurl, filename) {
+        const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, {type:mime});
     }
-}
 
     // مستمعين الأحداث
     // في دالة معالجة إرسال النموذج
 form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    const imageFile = document.getElementById('imageUpload').files[0];
-    const editIndex = editIndexInput.value;
-    const isEditMode = editIndex !== "-1";
-
-    let currentImageUrl = null;
-    if (isEditMode && !imageFile) {
-        try {
-            const { data: project, error } = await portfolioCollection.select().eq('id', editIndex).single();
-            if (error) throw error;
-            currentImageUrl = project.image;
-        } catch (error) {
-            console.error("Error getting current image:", error);
-            showAlert('error', 'خطأ', 'حدث خطأ أثناء جلب بيانات الصورة الحالية');
-            return;
-        }
-    }
-
-    if (!imageFile && !currentImageUrl) {
-        showAlert('error', 'خطأ', 'الرجاء اختيار صورة للمشروع');
-        return;
-    }
-
     const month = document.getElementById('month').value;
     const year = document.getElementById('year').value;
+    const imageFile = document.getElementById('imageUpload').files[0];
+    const categories = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(checkbox => checkbox.value);
 
-    if (!document.getElementById('category').value ||
+    // التحقق من الحقول المطلوبة مع استثناء الصورة عند التعديل
+    const editIndex = editIndexInput.value;
+    const isEditMode = editIndex !== "-1";
+    
+    if (categories.length === 0 ||
         !document.getElementById('title').value.trim() ||
         !document.getElementById('description').value.trim() ||
         !document.getElementById('client').value.trim() ||
-        !month || !year) {
-        showAlert('error', 'خطأ', 'الرجاء ملء جميع الحقول المطلوبة');
+        !month || !year || (!imageFile && !isEditMode)) { // لا تشترط الصورة في وضع التعديل
+        showAlert('error', 'خطأ', 'الرجاء ملء جميع الحقول المطلوبة' + (isEditMode ? '' : '، بما في ذلك رفع صورة المشروع'));
         return;
     }
 
     try {
-        const imageUrl = await uploadImage(imageFile, currentImageUrl);
+        Swal.fire({
+            title: isEditMode ? 'جاري تحديث المشروع' : 'جاري رفع المشروع للموقع',
+            html: `
+                <div class="progress-container" style="margin-top: 20px; background: #f1f1f1; border-radius: 10px; height: 20px;">
+                    <div id="uploadProgressBar" style="width: 0%; height: 100%; background: #dda853; border-radius: 10px; transition: width 0.3s;"></div>
+                </div>
+                <p id="progressText" style="margin-top: 10px; font-size: 1.1rem; color: #27548a;">0% مكتمل</p>
+            `,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            willOpen: () => {
+                let progress = 0;
+                const progressBar = document.getElementById('uploadProgressBar');
+                const progressText = document.getElementById('progressText');
+
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 10;
+                    if (progress > 100) progress = 100;
+
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `${Math.round(progress)}% مكتمل`;
+
+                    if (progress === 100) {
+                        clearInterval(progressInterval);
+                    }
+                }, 300);
+            }
+        });
+
+        const externalLink = document.getElementById('externalLink').value.trim();
+        if (externalLink && !isValidUrl(externalLink)) {
+            showAlert('error', 'رابط غير صالح', 'الرجاء إدخال رابط صحيح يبدأ بـ http:// أو https://');
+            return;
+        }
+
+        let imageUrl = document.getElementById('previewImage').src;
+
+        // إذا كان في وضع التعديل ولم يتم رفع صورة جديدة، نستخدم الصورة الحالية
+        if (isEditMode && !imageFile) {
+            const { data: existingProject, error } = await portfolioCollection
+                .select('image')
+                .eq('id', editIndex)
+                .single();
+            
+            if (error) throw error;
+            imageUrl = existingProject.image;
+        } else if (imageFile) {
+            // رفع الصورة الجديدة إذا تم توفيرها
+            imageUrl = await uploadImage(imageFile);
+            if (!imageUrl) throw new Error('Failed to upload image');
+        }
 
         const newProject = {
-            category: document.getElementById('category').value,
+            category: categories,
             image: imageUrl,
             title: document.getElementById('title').value.trim(),
             description: document.getElementById('description').value.trim(),
@@ -753,11 +869,33 @@ form.addEventListener('submit', async function (e) {
             external_link: document.getElementById('externalLink').value.trim() || null
         };
 
-        const success = await savePortfolioData(newProject, isEditMode, editIndex);
+        const success = await savePortfolioData(newProject, isEditMode, isEditMode ? editIndex : null);
 
         if (success) {
             await renderProjects();
             resetForm();
+            
+            if (isEditMode) {
+                showAlert('success', 'تم التعديل', 'تم تحديث بيانات المشروع بنجاح');
+            } else {
+                Swal.fire({
+                    title: 'تمّ رفع المشروع',
+                    html: `
+                        <div class="success-alert">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    `,
+                    showDenyButton: true,
+                    confirmButtonText: 'شُكرًا',
+                    denyButtonText: 'رؤية المشروع',
+                    confirmButtonColor: '#4caf50',
+                    denyButtonColor: '#dda853',
+                }).then((result) => {
+                    if (result.isDenied) {
+                        window.location.href = 'index.html#stats';
+                    }
+                });
+            }
         }
     } catch (error) {
         console.error("Error in form submission:", error);
@@ -767,52 +905,84 @@ form.addEventListener('submit', async function (e) {
 
     resetBtn.addEventListener('click', resetForm);
 
-    projectsTableBody.addEventListener('click', async function (e) {
-        const editBtn = e.target.closest('.edit-btn');
-        const deleteBtn = e.target.closest('.delete-btn');
+projectsTableBody.addEventListener('click', async function (e) {
+    const editBtn = e.target.closest('.edit-btn');
+    if (editBtn) {
+        const docId = editBtn.dataset.id;
+        try {
+            const { data: project, error } = await portfolioCollection.select().eq('id', docId).single();
+            if (error) throw error;
 
-        if (editBtn) {
-            const docId = editBtn.dataset.id;
-            try {
-                const {
-                    data: project,
-                    error
-                } = await portfolioCollection.select().eq('id', docId).single();
-                if (error) throw error;
+            if (project) {
+                // مسح جميع التحديدات أولاً
+                document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
 
-                if (project) {
-
-                    document.getElementById('category').value = project.category;
-                    document.getElementById('title').value = project.title;
-                    document.getElementById('description').value = project.description;
-                    document.getElementById('client').value = project.client;
-
-                    const preview = document.getElementById('previewImage');
-                    preview.src = project.image;
-                    document.getElementById('imagePreview').style.display = 'block';
-
-                    const dateParts = project.date.split(' ');
-                    document.getElementById('month').value = dateParts[0];
-                    document.getElementById('year').value = dateParts[1];
-
-                    loadTags(project.tags || []);
-                    document.getElementById('externalLink').value = project.external_link || '';
-
-                    editIndexInput.value = docId;
-                    submitBtn.innerHTML = '<i class="fas fa-save"></i> حفظ التعديلات';
-                    formTitle.textContent = 'تعديل المشروع';
-                    formSubtitle.textContent = 'قم بتعديل بيانات المشروع ثم احفظ التغييرات';
-
-                    document.querySelector('.form-container').scrollIntoView({
-                        behavior: 'smooth'
+                // تحديد التصنيفات المختارة
+                if (project.category) {
+                    const categories = Array.isArray(project.category) ? project.category : [project.category];
+                    categories.forEach(cat => {
+                        const checkbox = document.querySelector(`.category-checkbox[value="${cat}"]`);
+                        if (checkbox) checkbox.checked = true;
                     });
                 }
-            } catch (error) {
-                console.error("Error getting document:", error);
-                showAlert('error', 'خطأ', 'حدث خطأ أثناء تحميل بيانات المشروع');
-            }
-        }
 
+                // تعبئة حقول النموذج
+                document.getElementById('title').value = project.title;
+                document.getElementById('description').value = project.description;
+                document.getElementById('client').value = project.client;
+
+                // عرض الصورة الحالية
+                const preview = document.getElementById('previewImage');
+                preview.src = project.image;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.querySelector('.upload-area').style.display = 'none';
+                
+                // تعبئة معلومات الملف (إذا كانت متوفرة)
+    if (project.image) {
+        try {
+            const response = await fetch(project.image);
+            const blob = await response.blob();
+            currentImageFile = new File([blob], 'current-image.jpg', { type: blob.type });
+            
+            preview.src = project.image;
+            document.getElementById('imagePreview').style.display = 'block';
+            document.querySelector('.upload-area').style.display = 'none';
+            
+            // تحديث معلومات الملف
+            document.getElementById('fileName').textContent = 'الصورة الحالية';
+            document.getElementById('fileSize').textContent = formatFileSize(blob.size);
+        } catch (error) {
+            console.error("Error loading current image:", error);
+            currentImageFile = null;
+        }
+    }
+
+                // تعبئة التاريخ
+                const dateParts = project.date.split(' ');
+                document.getElementById('month').value = dateParts[0];
+                document.getElementById('year').value = dateParts[1];
+
+                // تعبئة الكلمات المفتاحية والرابط
+                loadTags(project.tags || []);
+                document.getElementById('externalLink').value = project.external_link || '';
+
+                // تعيين معرف المشروع للتحرير
+                editIndexInput.value = docId;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> حفظ التعديلات';
+                formTitle.textContent = 'تعديل المشروع';
+                formSubtitle.textContent = 'قم بتعديل بيانات المشروع ثم احفظ التغييرات';
+
+                document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+            }
+        } catch (error) {
+            console.error("Error getting document:", error);
+            showAlert('error', 'خطأ', 'حدث خطأ أثناء تحميل بيانات المشروع');
+        }
+    }
+
+        const deleteBtn = e.target.closest('.delete-btn');
         if (deleteBtn) {
             const docId = deleteBtn.dataset.id;
             Swal.fire({
@@ -903,9 +1073,14 @@ if (document.getElementById('flipVertical')) {
 
 // تحديث دالة openCropModal لإضافة تحديث الحجم
 function openCropModal(imageSrc) {
+
     const cropModal = document.getElementById('cropModal');
     if (!cropModal) return;
-
+    if (!imageSrc || !currentImageFile) {
+        console.error('Cannot open crop modal: no image source or file');
+        showAlert('error', 'خطأ', 'لا توجد صورة متاحة للاقتصاص');
+        return;
+    }
     cropModal.style.display = 'flex';
 
     setTimeout(() => {
@@ -1037,16 +1212,21 @@ function handleImageAfterProcessing(blob, file) {
     imageUpload.files = dataTransfer.files;
 }
 
-// إضافة مستمع لزر الاقتصاص من المعاينة
-document.getElementById('cropBtn').addEventListener('click', function () {
-    if (currentImageFile) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            openCropModal(event.target.result);
-            cropModalOpened = true;
-        };
-        reader.readAsDataURL(currentImageFile);
+// استبدال الكود الحالي لهذا الجزء بهذا الكود:
+document.getElementById('cropBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+    
+    if (!currentImageFile) {
+        showAlert('error', 'لا توجد صورة', 'لا توجد صورة متاحة للاقتصاص');
+        return;
     }
+    
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        openCropModal(event.target.result);
+        cropModalOpened = true;
+    };
+    reader.readAsDataURL(currentImageFile);
 });
 
 
@@ -1293,3 +1473,60 @@ document.getElementById('externalLink').addEventListener('input', function() {
         testBtn.disabled = !url;
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

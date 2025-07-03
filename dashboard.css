@@ -1288,6 +1288,7 @@ button:disabled {
     padding: 1.5rem;
     display: flex;
     justify-content: center;
+    gap: 1.5rem;
     background: #f5eedc ;
 }
 
@@ -1768,3 +1769,186 @@ div:where(.swal2-icon) {
         height: 40px;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* أنماط جديدة لتعدد التصنيفات */
+.categories-grid {
+    display: grid;
+grid-template-columns: repeat(5, 1fr);
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+}
+
+.category-option {
+    position: relative;
+}
+
+.category-checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.category-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0.5rem;
+    background: rgba(245, 238, 220, 0.5);
+    border: 2px solid rgba(39, 84, 138, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    height: 100%;
+}
+
+.category-label i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+    transition: var(--transition);
+}
+
+.category-label span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.category-checkbox:checked + .category-label {
+    background: rgba(221, 168, 83, 0.2);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(221, 168, 83, 0.1);
+}
+
+.category-checkbox:checked + .category-label i {
+    color: var(--accent-dark);
+    transform: scale(1.1);
+}
+
+.category-checkbox:focus + .category-label {
+    box-shadow: 0 0 0 3px rgba(221, 168, 83, 0.3);
+}
+
+.category-hint {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--primary-dark);
+    opacity: 0.7;
+}
+
+/* تعديلات للهواتف */
+@media (max-width: 768px) {
+    
+    .category-label {
+        padding: 0.8rem 0.3rem;
+    }
+    
+    .category-label i {
+        font-size: 1.2rem;
+    }
+}
+
+/* أنماط عرض التصنيفات في الجدول */
+.category-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* ألوان التصنيفات */
+.category-graphic {
+    background: rgba(86, 129, 188, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(86, 129, 188, 0.3);
+}
+
+.category-motion {
+    background: rgba(221, 168, 83, 0.1);
+    color: var(--accent-dark);
+    border: 1px solid rgba(221, 168, 83, 0.3);
+}
+
+.category-video {
+    background: rgba(253, 121, 168, 0.1);
+    color: #fd79a8;
+    border: 1px solid rgba(253, 121, 168, 0.3);
+}
+
+.category-voice {
+    background: rgba(0, 184, 148, 0.1);
+    color: #00b894;
+    border: 1px solid rgba(0, 184, 148, 0.3);
+}
+
+.category-web {
+    background: rgba(108, 92, 231, 0.1);
+    color: #6c5ce7;
+    border: 1px solid rgba(108, 92, 231, 0.3);
+}
+

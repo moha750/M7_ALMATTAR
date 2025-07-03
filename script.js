@@ -5,6 +5,9 @@ const projectsToShow = {
     desktop: 6    // عدد المشاريع للشاشات الكبيرة (768px وأكبر)
 };
 
+// تعريف العناصر المستخدمة
+const loadMoreBtn = document.querySelector('.btn-load-more');
+
 const siteData = {
     skills: [{
             name: "التصميم الجرافيكي",
@@ -104,20 +107,20 @@ async function loadPortfolio() {
     const totalCountElement = document.querySelector('.total-count');
 
     portfolioContainer.innerHTML = `
-  <div class="portfolio-loading">
-    <div class="loading-content">
-      <div class="loading-spinner">
-        <div class="spinner-circle"></div>
-        <div class="spinner-circle"></div>
-        <div class="spinner-circle"></div>
-      </div>
-      <div class="loading-text">
-        <h3>جاري تحميل المشاريع</h3>
-        <p>يرجى الانتظار بينما نقوم بجمع أعمالي الإبداعية</p>
-      </div>
-    </div>
-  </div>
-`;
+        <div class="portfolio-loading">
+            <div class="loading-content">
+                <div class="loading-spinner">
+                    <div class="spinner-circle"></div>
+                    <div class="spinner-circle"></div>
+                    <div class="spinner-circle"></div>
+                </div>
+                <div class="loading-text">
+                    <h3>جاري تحميل المشاريع</h3>
+                    <p>يرجى الانتظار بينما نقوم بجمع أعمالي الإبداعية</p>
+                </div>
+            </div>
+        </div>
+    `;
 
     try {
         const { data: projects, error } = await portfolioCollection.select('*').order('date', { ascending: false });
@@ -139,10 +142,15 @@ async function loadPortfolio() {
         let shownCount = 0;
 
         projects.forEach((project, index) => {
+            // تحويل التصنيفات إلى سلسلة نصية مفصولة بفواصل
+            const categories = Array.isArray(project.category) ? 
+                project.category.join(',') : 
+                project.category || '';
+
             if (index < initialItemsToShow) {
                 const portfolioHTML = `
                     <div class="portfolio-item" 
-                         data-category="${project.category}" 
+                         data-category="${categories}" 
                          data-index="${index}"
                          data-title="${project.title.toLowerCase()}"
                          data-client="${project.client.toLowerCase()}"
@@ -169,7 +177,7 @@ async function loadPortfolio() {
             } else {
                 const portfolioHTML = `
                     <div class="portfolio-item" 
-                         data-category="${project.category}" 
+                         data-category="${categories}" 
                          data-index="${index}"
                          data-title="${project.title.toLowerCase()}"
                          data-client="${project.client.toLowerCase()}"
@@ -199,8 +207,6 @@ async function loadPortfolio() {
         initPortfolioFilter();
         initPortfolioSearch();
 
-        // التحكم في ظهور زر تحميل المزيد
-        const loadMoreBtn = document.querySelector('.btn-load-more');
         if (projects.length <= initialItemsToShow) {
             loadMoreBtn.style.display = 'none';
         } else {
@@ -216,48 +222,64 @@ async function loadPortfolio() {
 
 function initPortfolioFilter() {
     const filterButtons = document.querySelectorAll('.filter-btn');
-
+    
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
+            // إزالة الفئة النشطة من جميع الأزرار
             filterButtons.forEach(btn => btn.classList.remove('active'));
+            // إضافة الفئة النشطة للزر المحدد
             button.classList.add('active');
-
+            
             const filterValue = button.dataset.filter;
             filterPortfolioItems(filterValue);
         });
     });
 }
 
+// في ملف script.js
 function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
     const portfolioItems = document.querySelectorAll('.portfolio-item');
     const shownCountElement = document.querySelector('.shown-count');
     const totalCountElement = document.querySelector('.total-count');
     let shownCount = 0;
+    let matchingItems = 0;
 
     // تحسين عملية البحث باستخدام تعبيرات منتظمة
     const searchRegex = new RegExp(searchTerm, 'i');
     
     portfolioItems.forEach(item => {
-        const category = item.dataset.category;
+        const categories = item.dataset.category.split(','); // تقسيم التصنيفات إلى مصفوفة
         const title = item.dataset.title;
         const client = item.dataset.client;
         const tags = item.dataset.tags;
 
-        // تطبيق الفلتر
-        const matchesFilter = filterValue === 'all' || category === filterValue;
-            item.dataset.tags.includes(searchTerm);
+        // تطبيق الفلتر مع دعم تعدد التصنيفات
+        const matchesFilter = filterValue === 'all' || categories.includes(filterValue);
+        const matchesSearch = searchRegex.test(title) || searchRegex.test(client) || searchRegex.test(tags);
         
         if (matchesFilter && matchesSearch) {
-            if (shownCount < initialItemsToShow) {
+            // تحديد عدد المشاريع المعروضة حسب حجم الشاشة
+            const itemsToShow = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
+            
+            if (shownCount < itemsToShow) {
                 item.style.display = 'block';
                 shownCount++;
             } else {
                 item.style.display = 'none';
             }
+            matchingItems++;
         } else {
             item.style.display = 'none';
         }
     });
+
+    // تحديث العدادات
+    if (shownCountElement) {
+        shownCountElement.textContent = shownCount;
+    }
+    if (totalCountElement) {
+        totalCountElement.textContent = matchingItems;
+    }
 
     // إظهار رسالة إذا لم توجد مشاريع مطابقة
     if (matchingItems === 0) {
@@ -271,11 +293,9 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
         shownCountElement.textContent = '0';
     }
 
-    // تحديث العداد المعروض
-    shownCountElement.textContent = shownCount;
-
     // التحكم في ظهور زر تحميل المزيد
-    if (matchingItems > initialItemsToShow) {
+    const itemsToShow = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
+    if (matchingItems > itemsToShow) {
         loadMoreBtn.style.display = 'flex';
         loadMoreBtn.textContent = 'تحميل المزيد';
         loadMoreBtn.classList.remove('show-less');
@@ -370,24 +390,31 @@ function initPortfolioLightbox(projectsData) {
         return lb;
     }
 
-    document.querySelectorAll('.portfolio-item').forEach(item => {
-        item.addEventListener('click', function (e) {
-            e.preventDefault();
+document.querySelectorAll('.portfolio-item').forEach(item => {
+    item.addEventListener('click', function (e) {
+        e.preventDefault();
 
-            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-            const searchTerm = document.querySelector('.search-input').value.trim().toLowerCase();
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+        const searchTerm = document.querySelector('.search-input').value.trim().toLowerCase();
 
-            filteredItems = Array.from(document.querySelectorAll('.portfolio-item')).filter(item => {
-                const matchesFilter = activeFilter === 'all' || item.dataset.category === activeFilter;
-                const matchesSearch = searchTerm === '' ||
-                    item.dataset.title.includes(searchTerm) ||
-                    item.dataset.client.includes(searchTerm) ||
-                    (item.dataset.tags && item.dataset.tags.includes(searchTerm));
-                return matchesFilter && matchesSearch && window.getComputedStyle(item).display !== 'none';
-            });
+        // تصفية العناصر المعروضة حالياً
+        filteredItems = Array.from(document.querySelectorAll('.portfolio-item')).filter(item => {
+            const isVisible = window.getComputedStyle(item).display !== 'none';
+            const matchesFilter = activeFilter === 'all' || item.dataset.category.split(',').includes(activeFilter);
+            const matchesSearch = searchTerm === '' ||
+                item.dataset.title.includes(searchTerm) ||
+                item.dataset.client.includes(searchTerm) ||
+                (item.dataset.tags && item.dataset.tags.includes(searchTerm));
+            return isVisible && matchesFilter && matchesSearch;
+        });
 
-            currentIndex = filteredItems.findIndex(el => el === this);
-            showProjectInLightbox(currentIndex, projectsData);
+        currentIndex = filteredItems.findIndex(el => el === this);
+        if (currentIndex === -1) {
+            console.error('Could not find clicked item in filtered items');
+            return;
+        }
+
+        showProjectInLightbox(currentIndex, projectsData);
 
             lightbox.classList.add('active');
             document.body.classList.add('no-scroll');
@@ -403,76 +430,128 @@ function initPortfolioLightbox(projectsData) {
         });
     });
 
-    function showProjectInLightbox(index, projects) {
-        if (!filteredItems.length || !projects) return;
+function showProjectInLightbox(index, projects) {
+    // التحقق من وجود العناصر والبيانات الأساسية
+    if (!filteredItems || !filteredItems.length || !projects || !Array.isArray(projects)) {
+        console.error('Invalid data: filteredItems or projects array is missing or empty');
+        return;
+    }
 
-        const projectIndex = filteredItems[index].dataset.index;
-        const project = projects[projectIndex];
+    if (index < 0 || index >= filteredItems.length) {
+        console.error('Invalid index:', index);
+        return;
+    }
 
-        if (!project) return;
+    const projectItem = filteredItems[index];
+    if (!projectItem || !projectItem.dataset || !projectItem.dataset.index) {
+        console.error('Invalid project item:', projectItem);
+        return;
+    }
 
-        const lightboxImg = lightbox.querySelector('.lightbox-image');
-        const lightboxTitle = lightbox.querySelector('h3');
-        const lightboxDesc = lightbox.querySelector('.info-description');
-        const lightboxClient = lightbox.querySelector('.info-client');
-        const lightboxDate = lightbox.querySelector('.info-date');
-        const lightboxCategory = lightbox.querySelector('.info-category');
-        const tagsContainer = lightbox.querySelector('.project-tags');
-        const viewProjectBtn = lightbox.querySelector('.btn-contact');
+    const projectIndex = parseInt(projectItem.dataset.index);
+    if (isNaN(projectIndex) || projectIndex < 0 || projectIndex >= projects.length) {
+        console.error('Invalid project index:', projectIndex);
+        return;
+    }
 
-        if (project.external_link) {
-            viewProjectBtn.href = project.external_link;
-            viewProjectBtn.target = '_blank';
-            viewProjectBtn.style.display = 'inline-flex';
-        } else {
-            viewProjectBtn.style.display = 'none';
-        }
+    const project = projects[projectIndex];
+    if (!project) {
+        console.error('Project not found at index:', projectIndex);
+        return;
+    }
 
+    // التحقق من وجود عناصر lightbox
+    const lightbox = document.querySelector('.portfolio-lightbox');
+    if (!lightbox) {
+        console.error('Lightbox element not found');
+        return;
+    }
+
+    const lightboxImg = lightbox.querySelector('.lightbox-image');
+    const lightboxTitle = lightbox.querySelector('h3');
+    const lightboxDesc = lightbox.querySelector('.info-description');
+    const lightboxClient = lightbox.querySelector('.info-client');
+    const lightboxDate = lightbox.querySelector('.info-date');
+    const lightboxCategory = lightbox.querySelector('.info-category');
+    const tagsContainer = lightbox.querySelector('.project-tags');
+    const viewProjectBtn = lightbox.querySelector('.btn-contact');
+
+    if (!lightboxImg || !lightboxTitle || !lightboxDesc || !lightboxClient || 
+        !lightboxDate || !lightboxCategory || !tagsContainer || !viewProjectBtn) {
+        console.error('One or more lightbox elements not found');
+        return;
+    }
+
+    // تعبئة بيانات المشروع
+    if (project.external_link) {
+        viewProjectBtn.href = project.external_link;
+        viewProjectBtn.target = '_blank';
+        viewProjectBtn.style.display = 'inline-flex';
+    } else {
+        viewProjectBtn.style.display = 'none';
+    }
+
+    // تحميل الصورة مع التحقق من وجودها
+    if (project.image) {
         gsap.to(lightboxImg, {
             opacity: 0,
             duration: 0.3
         });
         lightboxImg.src = project.image;
-        lightboxImg.alt = project.title;
+        lightboxImg.alt = project.title || '';
         lightboxImg.onload = () => {
             gsap.to(lightboxImg, {
                 opacity: 1,
                 duration: 0.5
             });
         };
+    }
 
-        lightboxTitle.textContent = project.title;
-        lightboxDesc.textContent = project.description;
-        lightboxClient.textContent = project.client;
-        lightboxDate.textContent = project.date;
+    // تعبئة النصوص مع قيم افتراضية في حالة عدم وجود البيانات
+    lightboxTitle.textContent = project.title || 'لا يوجد عنوان';
+    lightboxDesc.textContent = project.description || 'لا يوجد وصف';
+    lightboxClient.textContent = project.client || 'غير معروف';
+    lightboxDate.textContent = project.date || 'غير محدد';
 
-        const categoryNames = {
-            'graphic': 'تصميم جرافيك',
-            'motion': 'موشن جرافيك',
-            'video': 'مونتاج فيديو',
-            'voice': 'تعليق صوتي',
-            'web': 'تطوير ويب'
-        };
-        lightboxCategory.textContent = categoryNames[project.category] || project.category;
+    // معالجة التصنيفات المتعددة
+    const categoryNames = {
+        'graphic': 'تصميم جرافيك',
+        'motion': 'موشن جرافيك',
+        'video': 'مونتاج فيديو',
+        'voice': 'تعليق صوتي',
+        'web': 'تطوير ويب'
+    };
 
-        tagsContainer.innerHTML = '';
-        if (project.tags && project.tags.length > 0) {
-            project.tags.forEach(tag => {
+    const projectCategories = Array.isArray(project.category) ? 
+        project.category : 
+        (project.category ? [project.category] : []);
+    
+    lightboxCategory.textContent = projectCategories.length > 0 ?
+        projectCategories.map(cat => categoryNames[cat] || cat).join('، ') :
+        'غير مصنف';
+
+    // معالجة الكلمات المفتاحية
+    tagsContainer.innerHTML = '';
+    if (project.tags && project.tags.length > 0) {
+        project.tags.forEach(tag => {
+            if (tag) { // التحقق من وجود قيمة للكلمة المفتاحية
                 const tagElement = document.createElement('span');
                 tagElement.className = 'tag';
                 tagElement.textContent = tag;
                 tagsContainer.appendChild(tagElement);
-            });
-        }
-
-        gsap.from([lightboxTitle, lightboxDesc, lightbox.querySelector('.info-meta'), tagsContainer], {
-            opacity: 0,
-            y: 20,
-            duration: 0.3,
-            stagger: 0.1,
-            delay: 0.3
+            }
         });
     }
+
+    // تأثيرات الحركة
+    gsap.from([lightboxTitle, lightboxDesc, lightbox.querySelector('.info-meta'), tagsContainer], {
+        opacity: 0,
+        y: 20,
+        duration: 0.3,
+        stagger: 0.1,
+        delay: 0.3
+    });
+}
 
     lightbox.querySelector('.prev-btn').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1371,21 +1450,6 @@ window.addEventListener('resize', function() {
 
     
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

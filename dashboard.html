@@ -28,19 +28,49 @@
             <form id="projectForm">
                 <input type="hidden" id="editIndex" value="-1" />
 
-                <div class="form-group">
-                    <label for="category"><i class="fas fa-tag"></i> التصنيف</label>
-                    <select id="category" required>
-                        <option value="">اختر التصنيف</option>
-                        <option value="graphic">جرافيك</option>
-                        <option value="motion">موشن</option>
-                        <option value="video">فيديو</option>
-                        <option value="voice">صوت</option>
-                        <option value="web">ويب</option>
-                    </select>
-                </div>
+<!-- استبدال قسم التصنيفات الحالي بهذا الكود -->
+<div class="form-group">
+    <label><i class="fas fa-tags"></i> التصنيفات</label>
+    <div class="categories-grid">
+        <div class="category-option">
+            <input type="checkbox" id="categoryGraphic" name="categories" value="graphic" class="category-checkbox">
+            <label for="categoryGraphic" class="category-label">
+                <i class="fas fa-paint-brush"></i>
+                <span>جرافيك</span>
+            </label>
+        </div>
+        <div class="category-option">
+            <input type="checkbox" id="categoryMotion" name="categories" value="motion" class="category-checkbox">
+            <label for="categoryMotion" class="category-label">
+                <i class="fas fa-film"></i>
+                <span>موشن</span>
+            </label>
+        </div>
+        <div class="category-option">
+            <input type="checkbox" id="categoryVideo" name="categories" value="video" class="category-checkbox">
+            <label for="categoryVideo" class="category-label">
+                <i class="fas fa-video"></i>
+                <span>فيديو</span>
+            </label>
+        </div>
+        <div class="category-option">
+            <input type="checkbox" id="categoryVoice" name="categories" value="voice" class="category-checkbox">
+            <label for="categoryVoice" class="category-label">
+                <i class="fas fa-microphone"></i>
+                <span>صوت</span>
+            </label>
+        </div>
+        <div class="category-option">
+            <input type="checkbox" id="categoryWeb" name="categories" value="web" class="category-checkbox">
+            <label for="categoryWeb" class="category-label">
+                <i class="fas fa-globe"></i>
+                <span>ويب</span>
+            </label>
+        </div>
+    </div>
+    <small class="category-hint">يمكنك اختيار أكثر من تصنيف للمشروع</small>
+</div>
 
-                <!-- خانة رفع الصورة (منفصلة تماماً) -->
                 <div class="form-group">
                     <label for="imageUpload">
                         <i class="fas fa-image"></i> رفع صورة المشروع
