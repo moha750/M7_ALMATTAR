@@ -595,10 +595,7 @@ async function loadSkillsSection() {
     skillsGrid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المهارات...</div>';
 
     try {
-        const {
-            data: projects,
-            error
-        } = await portfolioCollection.select('*');
+        const { data: projects, error } = await portfolioCollection.select('*');
 
         if (error) {
             throw error;
@@ -609,28 +606,35 @@ async function loadSkillsSection() {
             let skillCategory;
             switch (skill.name) {
                 case "التصميم الجرافيكي":
-                    skillCategory = 'graphic';
+                    skillCategory = ['graphic'];
                     break;
                 case "الموشن جرافيك":
-                    skillCategory = 'motion';
+                    skillCategory = ['motion'];
                     break;
                 case "المونتاج المرئي":
-                    skillCategory = 'video';
+                    skillCategory = ['video'];
                     break;
                 case "التعليق الصوتي":
-                    skillCategory = 'voice';
+                    skillCategory = ['voice'];
                     break;
                 case "تطوير الويب":
-                    skillCategory = 'web';
+                    skillCategory = ['web'];
                     break;
                 case "كتابة المحتوى":
-                    skillCategory = 'content'; // فئة جديدة
+                    skillCategory = ['content'];
                     break;
                 default:
-                    skillCategory = 'other';
+                    skillCategory = ['other'];
             }
 
-            const skillProjects = projects.filter(p => p.category === skillCategory);
+            // حساب المشاريع المتعلقة بهذه المهارة
+            const skillProjects = projects.filter(project => {
+                const projectCategories = Array.isArray(project.category) ? 
+                    project.category : 
+                    [project.category];
+                
+                return projectCategories.some(cat => skillCategory.includes(cat));
+            });
 
             return {
                 ...skill,
@@ -1107,6 +1111,20 @@ function initHeaderScroll() {
     const navList = document.querySelector('.nav-list');
     const scrollProgressBar = document.querySelector('.scroll-progress-bar');
     const downloadCVBtn = document.getElementById('downloadCV');
+    const contactSection = document.getElementById('contact');
+
+    // مراقبة قسم التواصل
+    const contactObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && Swal.isVisible()) {
+                Swal.close(); // إغلاق النافذة المنبثقة إذا كانت مفتوحة
+            }
+        });
+    }, { threshold: 0.1 });
+
+    if (contactSection) {
+        contactObserver.observe(contactSection);
+    }
 
     window.addEventListener('scroll', () => {
         if (window.scrollY > 100) {
@@ -1124,37 +1142,79 @@ function initHeaderScroll() {
         }
     });
 
+// في دالة initHeaderScroll، تحديث جزء زر تحميل السيرة الذاتية
     if (downloadCVBtn) {
         downloadCVBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            
+            const downloadEvent = {
+                action: 'download_cv_clicked',
+                timestamp: new Date().toISOString(),
+                status: 'unavailable'
+            };
+            
             Swal.fire({
-                title: 'تحميل السيرة الذاتية',
-                text: 'سيتم تحميل ملف السيرة الذاتية بصيغة PDF',
-                icon: 'info',
-                confirmButtonText: 'تحميل',
-                cancelButtonText: 'إلغاء',
+                title: 'جاري تجهيز السيرة الذاتية',
+                html: `
+                    <div class="cv-notification">
+                        <div class="cv-progress-container">
+                            <div class="cv-progress-bar" style="width: 75%"></div>
+                            <div class="cv-progress-text">75% جاهزة</div>
+                        </div>
+                        <div class="cv-notification-content">
+                            <div class="cv-icon">
+                                <i class="fas fa-file-pdf"></i>
+                                <div class="cv-pulse"></div>
+                            </div>
+                            <div class="cv-details">
+                                <h3>سيرتي الذاتية قيد التطوير</h3>
+                                <p>نعمل حالياً على إنشاء نسخة متكاملة تحتوي على جميع تفاصيل خبراتي ومهاراتي</p>
+                                <div class="cv-features">
+                                    <span><i class="fas fa-check-circle"></i> تصميم تفاعلي</span>
+                                    <span><i class="fas fa-check-circle"></i> تحديثات مستمرة</span>
+                                    <span><i class="fas fa-check-circle"></i> متوافقة مع ATS</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cv-notification-footer">
+                            <p>يمكنك <a href="#contact">الاتصال بي</a> للحصول على نسخة مبدئية</p>
+                        </div>
+                    </div>
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'إشعاري عند توفرها',
                 showCancelButton: true,
+                cancelButtonText: 'سأنتظرها لاحقاً',
                 customClass: {
-                    confirmButton: 'btn btn-primary',
-                    cancelButton: 'btn btn-outline'
+                    popup: 'cv-swal-popup',
+                    title: 'cv-swal-title',
+                    htmlContainer: 'cv-swal-html',
+                    confirmButton: 'cv-swal-confirm',
+                    cancelButton: 'cv-swal-cancel',
+                    actions: 'cv-swal-actions'
                 },
-                buttonsStyling: false
+                didOpen: () => {
+                    gsap.from('.cv-progress-bar', {
+                        width: '0%',
+                        duration: 1.5,
+                        ease: "power2.out"
+                    });
+                    
+                    gsap.from('.cv-icon', {
+                        scale: 0,
+                        rotation: -45,
+                        duration: 0.8,
+                        delay: 0.3,
+                        ease: "back.out(1.2)"
+                    });
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     Swal.fire({
-                        title: 'جاري التحميل',
-                        html: 'يتم تجهيز ملف السيرة الذاتية...',
-                        timer: 2000,
-                        timerProgressBar: true,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    }).then(() => {
-                        Swal.fire(
-                            'تم التحميل!',
-                            'تم تحميل السيرة الذاتية بنجاح',
-                            'success'
-                        );
+                        icon: 'success',
+                        title: 'تم تسجيل طلبك',
+                        text: 'سنقوم بإرسال السيرة الذاتية لبريدك الإلكتروني عند توفرها',
+                        confirmButtonText: 'تم'
                     });
                 }
             });
@@ -1450,41 +1510,6 @@ window.addEventListener('resize', function() {
 
     
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
