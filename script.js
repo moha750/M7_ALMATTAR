@@ -1143,83 +1143,483 @@ function initHeaderScroll() {
     });
 
 // في دالة initHeaderScroll، تحديث جزء زر تحميل السيرة الذاتية
-    if (downloadCVBtn) {
-        downloadCVBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            const downloadEvent = {
-                action: 'download_cv_clicked',
-                timestamp: new Date().toISOString(),
-                status: 'unavailable'
-            };
-            
-            Swal.fire({
-                title: 'جاري تجهيز السيرة الذاتية',
-                html: `
-                    <div class="cv-notification">
-                        <div class="cv-progress-container">
-                            <div class="cv-progress-bar" style="width: 75%"></div>
-                            <div class="cv-progress-text">75% جاهزة</div>
+// في دالة initHeaderScroll، تحديث جزء زر تحميل السيرة الذاتية
+// في دالة initHeaderScroll، تحديث جزء زر تحميل السيرة الذاتية
+if (downloadCVBtn) {
+    downloadCVBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        const downloadEvent = {
+            action: 'download_cv_clicked',
+            timestamp: new Date().toISOString(),
+            status: 'unavailable'
+        };
+        
+        Swal.fire({
+            title: 'جاري تجهيز السيرة الذاتية',
+            html: `
+                <div class="cv-notification">
+                    <div class="cv-progress-container">
+                        <div class="cv-progress-bar" style="width: 75%"></div>
+                        <div class="cv-progress-text">75% جاهزة</div>
+                    </div>
+                    <div class="cv-notification-content">
+                        <div class="cv-icon">
+                            <i class="fas fa-file-pdf"></i>
+                            <div class="cv-pulse"></div>
                         </div>
-                        <div class="cv-notification-content">
-                            <div class="cv-icon">
-                                <i class="fas fa-file-pdf"></i>
-                                <div class="cv-pulse"></div>
+                        <div class="cv-details">
+                            <h3>سيرتي الذاتية قيد التطوير</h3>
+                            <p>أعمل حاليًا على إنشاء نسخة مُتكاملة ومُحدثة تحتوي على جميع تفاصيل خبراتي ومهاراتي</p>
+                            <div class="cv-features">
+                                <span><i class="fas fa-check-circle"></i> تصميم تفاعلي</span>
+                                <span><i class="fas fa-check-circle"></i> تحسينات مستمرة</span>
+                                <span><i class="fas fa-check-circle"></i> متوافقة مع ATS</span>
                             </div>
-                            <div class="cv-details">
-                                <h3>سيرتي الذاتية قيد التطوير</h3>
-                                <p>نعمل حالياً على إنشاء نسخة متكاملة تحتوي على جميع تفاصيل خبراتي ومهاراتي</p>
-                                <div class="cv-features">
-                                    <span><i class="fas fa-check-circle"></i> تصميم تفاعلي</span>
-                                    <span><i class="fas fa-check-circle"></i> تحديثات مستمرة</span>
-                                    <span><i class="fas fa-check-circle"></i> متوافقة مع ATS</span>
+                        </div>
+                    </div>
+                    <div class="cv-notification-footer">
+                        <p>يمكنك <a href="#contact">التواصل معي</a> للحصول على نسخة مبدئية</p>
+                    </div>
+                </div>
+            `,
+            showConfirmButton: true,
+            confirmButtonText: 'إشعاري عند توفرها',
+            showCancelButton: true,
+            cancelButtonText: 'سأنتظرها لاحقاً',
+            customClass: {
+                popup: 'cv-swal-popup',
+                title: 'cv-swal-title',
+                htmlContainer: 'cv-swal-html',
+                confirmButton: 'cv-swal-confirm',
+                cancelButton: 'cv-swal-cancel',
+                actions: 'cv-swal-actions'
+            },
+            didOpen: () => {
+                gsap.from('.cv-progress-bar', {
+                    width: '0%',
+                    duration: 1.5,
+                    ease: "power2.out"
+                });
+                
+                gsap.from('.cv-icon', {
+                    scale: 0,
+                    rotation: -45,
+                    duration: 0.8,
+                    delay: 0.3,
+                    ease: "back.out(1.2)"
+                });
+            }
+        }).then((result) => {
+if (result.isConfirmed) {
+    // عرض نموذج إدخال البيانات بتصميم محسن
+    Swal.fire({
+        title: '<span style="color: #27548a">كيف تريد استلام السيرة الذاتية؟</span>',
+        html: `
+            <div class="cv-contact-container">
+                <div class="contact-methods">
+                    <div class="method-card email-method active" data-method="email">
+                        <div class="method-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4>البريد الإلكتروني</h4>
+                        <p>استلمها مُباشرة على بريدك</p>
+                    </div>
+                    <div class="method-card phone-method" data-method="phone">
+                        <div class="method-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4>رسالة هاتف</h4>
+                        <p>استلمها مُباشرة على الواتساب</p>
+                    </div>
+                </div>
+                
+                <div class="contact-input-container">
+                    <div class="input-group email-input active">
+                        <label for="cv-email"><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                        <input type="email" id="cv-email" class="swal2-input" placeholder="example@domain.com">
+                    </div>
+                    <div class="input-group phone-input">
+                        <label for="cv-phone"><i class="fas fa-phone"></i> رقم الهاتف</label>
+                        <input type="tel" id="cv-phone" class="swal2-input" placeholder="05XXXXXXXX">
+                    </div>
+                    <div id="cv-contact-error" class="error-message"></div>
+                </div>
+                
+                <div class="privacy-notice">
+                    <i class="fas fa-lock"></i> جميع بيانات المستخدمين محفوظة ولا يتم مشاركتها مع أي طرف آخر
+                </div>
+            </div>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'تأكيد التسجيل',
+        cancelButtonText: 'إلغاء',
+        customClass: {
+            popup: 'cv-contact-popup',
+            title: 'cv-contact-title',
+            htmlContainer: 'cv-contact-html',
+            confirmButton: 'cv-contact-confirm',
+            cancelButton: 'cv-contact-cancel',
+            actions: 'cv-contact-actions'
+        },
+        didOpen: () => {
+            // إضافة مستمعات الأحداث لبطاقات الطريقة
+            document.querySelectorAll('.method-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const method = this.dataset.method;
+                    document.querySelectorAll('.input-group').forEach(input => input.classList.remove('active'));
+                    document.querySelector(`.${method}-input`).classList.add('active');
+                });
+            });
+        },
+        preConfirm: () => {
+            const activeMethod = document.querySelector('.method-card.active').dataset.method;
+            const email = document.getElementById('cv-email').value.trim();
+            const phone = document.getElementById('cv-phone').value.trim();
+            const errorElement = document.getElementById('cv-contact-error');
+            
+            // إخفاء رسالة الخطأ السابقة
+            errorElement.style.display = 'none';
+            errorElement.textContent = '';
+            
+            // التحقق من صحة البيانات حسب الطريقة المختارة
+            if (activeMethod === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email) {
+                    showError('يرجى إدخال البريد الإلكتروني');
+                    return false;
+                }
+                if (!emailRegex.test(email)) {
+                    showError('صيغة البريد الإلكتروني غير صحيحة');
+                    return false;
+                }
+                return { method: 'email', contact: email };
+            } else {
+                const phoneRegex = /^05\d{8}$/;
+                if (!phone) {
+                    showError('يرجى إدخال رقم الهاتف');
+                    return false;
+                }
+                if (!phoneRegex.test(phone)) {
+                    showError('يجب أن يبدأ رقم الهاتف بـ 05 ويتكون من 10 أرقام');
+                    return false;
+                }
+                return { method: 'phone', contact: phone };
+            }
+            
+            function showError(message) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                gsap.from(errorElement, {
+                    y: -10,
+                    opacity: 0,
+                    duration: 0.3
+                });
+            }
+        }
+}).then(async (result) => {
+    if (result.isConfirmed) {
+        const contactData = result.value;
+        
+        // عرض نافذة التحميل المتطورة
+const loadingSwal = Swal.fire({
+    // title: '<div class="swal2-progress-title">جاري معالجة طلبك</div>',
+    html: `
+        
+            <div class="loading-header">
+                <div class="loading-logo">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    <div class="loading-pulse"></div>
+                </div>
+                <h3>جاري تجهيز طلبك</h3>
+            </div>
+            
+            <div class="progress-track">
+                <div class="progress-bar"></div>
+                <div class="progress-text">
+                    <span class="progress-percent">0%</span>
+                    <span class="progress-status">جاري التحضير...</span>
+                </div>
+            </div>
+            
+            <div class="loading-details">
+                <div class="loading-step active">
+                    <i class="fas fa-check-circle"></i>
+                    <span>تأكيد البيانات</span>
+                </div>
+                <div class="loading-step">
+                    <i class="fas fa-spinner fa-pulse"></i>
+                    <span>معالجة الطلب</span>
+                </div>
+                <div class="loading-step">
+                    <i class="far fa-clock"></i>
+                    <span>إستلام طلبك</span>
+                </div>
+            </div>
+            
+            <div class="loading-tip">
+                <i class="fas fa-lightbulb"></i>
+                <p>يمكنك متابعة أعمالي خلال هذه الفترة في <a href="#portfolio">معرض الأعمال</a></p>
+            </div>
+    `,
+    allowOutsideClick: false,
+    showConfirmButton: false,
+            customClass: {
+            popup: 'custom-loading-container',
+            title: 'swal2-progress-title',
+            // htmlContainer: 'cv-contact-html',
+            // confirmButton: 'cv-contact-confirm',
+            // cancelButton: 'cv-contact-cancel',
+            // actions: 'cv-contact-actions'
+            },
+    didOpen: () => {
+        // تأثيرات الحركة عند الفتح
+        gsap.from('.loading-header', {
+            opacity: 0,
+            y: -20,
+            duration: 0.5
+        });
+        
+        gsap.from('.progress-track', {
+            opacity: 0,
+            y: 20,
+            duration: 0.5,
+            delay: 0.2
+        });
+        
+        gsap.from('.loading-step', {
+            opacity: 0,
+            x: 20,
+            stagger: 0.2,
+            duration: 0.5,
+            delay: 0.4
+        });
+        
+        // محاكاة تقدم الشريط
+        const progressBar = document.querySelector('.progress-bar');
+        const percentText = document.querySelector('.progress-percent');
+        const statusText = document.querySelector('.progress-status');
+        
+        gsap.to(progressBar, {
+            width: '100%',
+            duration: 3.5,
+            ease: "power1.inOut",
+            onUpdate: function() {
+                const progress = Math.round(this.progress() * 100);
+                percentText.textContent = `${progress}%`;
+                
+                // تحديث حالة التقدم
+                if (progress < 30) {
+                    statusText.textContent = 'جاري التحقق من البيانات...';
+                    progressBar.style.background = 'linear-gradient(90deg, #ffbc42, #ff5f57)';
+                } else if (progress < 70) {
+                    statusText.textContent = 'جاري معالجة الطلب...';
+                    progressBar.style.background = 'linear-gradient(90deg, #f5c266, #ffbc42)';
+                } else {
+                    statusText.textContent = 'جاري إعداد الملف النهائي...';
+                    progressBar.style.background = 'linear-gradient(90deg, #dda853, #f5c266)';
+                }
+                
+                // تحديث خطوات التقدم
+                const steps = document.querySelectorAll('.loading-step');
+                if (progress > 30) steps[0].classList.add('completed');
+                if (progress > 60) steps[1].classList.add('completed');
+                if (progress > 90) steps[2].classList.add('completed');
+            },
+            onComplete: () => {
+                statusText.textContent = 'اكتمل التجهيز بنجاح!';
+                progressBar.style.background = 'linear-gradient(90deg, #4bb543, #dda853)';
+            }
+        });
+    }
+});
+
+        try {
+            // محاكاة التأخير للإرسال (يمكن إزالته في الإنتاج)
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            
+            // إرسال البيانات الفعلي إلى Supabase
+            const { data, error } = await supabaseClient
+                .from('cv_requests')
+                .insert([
+                    {
+                        contact_method: contactData.method,
+                        contact_info: contactData.contact,
+                        request_date: new Date().toISOString(),
+                        status: 'pending'
+                    }
+                ]);
+            
+            if (error) throw error;
+            
+            // إغلاق نافذة التحميل بنجاح
+            await loadingSwal.close();
+                
+                // عرض رسالة نجاح متحركة
+                Swal.fire({
+                    title: '<span style="color: #27548a">تم التسجيل بنجاح!</span>',
+                    html: `
+                        <div class="success-animation">
+                            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                            </svg>
+                            <div class="success-content">
+                                <h3>شكراً لتسجيلك!</h3>
+                                <p>سيتم إرسال السيرة الذاتية إلى 
+                                    <span class="contact-highlight">
+                                        ${contactData.method === 'email' ? 
+                                            `<i class="fas fa-envelope"></i> ${contactData.contact}` : 
+                                            `<i class="fas fa-mobile-alt"></i> ${contactData.contact}`}
+                                    </span>
+                                    عند اكتمالها
+                                </p>
+                                <div class="success-details">
+                                    <i class="fas fa-info-circle"></i> ستتلقى رسالة بالسيرة الذاتية عند اكتمالها بإذن الله
                                 </div>
                             </div>
                         </div>
-                        <div class="cv-notification-footer">
-                            <p>يمكنك <a href="#contact">الاتصال بي</a> للحصول على نسخة مبدئية</p>
+                    `,
+                    confirmButtonText: 'شُكرًا، سأنتظر',
+                    customClass: {
+                        popup: 'success-popup',
+                        title: 'success-title',
+                        htmlContainer: 'success-html',
+                        confirmButton: 'success-confirm'
+                    },
+                    didOpen: () => {
+                        // تحريك علامة الاختيار
+                        const circle = document.querySelector('.checkmark__circle');
+                        const check = document.querySelector('.checkmark__check');
+                        
+                        gsap.set([circle, check], { opacity: 0 });
+                        
+                        gsap.to(circle, {
+                            opacity: 1,
+                            duration: 0.5,
+                            ease: "power2.out"
+                        });
+                        
+                        gsap.to(check, {
+                            opacity: 1,
+                            duration: 0.5,
+                            delay: 0.5,
+                            ease: "power2.out"
+                        });
+                    }
+                });
+                
+} catch (error) {
+    showErrorAlert(error);
+
+
+            
+            // عرض رسالة الخطأ بتصميم محسن
+function showErrorAlert(error) {
+    Swal.fire({
+        title: '<div>حدث خطأ!</div>',
+        html: `
+            <div class="error-container">
+                <div class="error-icon-animation">
+                    <div class="error-circle"></div>
+                    <div class="error-cross"></div>
+                </div>
+                
+                <div class="error-content">
+                    <h3>تعذر إتمام العملية</h3>
+                    <p class="error-message">${error.message || 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى لاحقاً'}</p>
+                    
+                    <div class="error-details">
+                        <div class="error-detail">
+                            <i class="fas fa-clock"></i>
+                            <span>وقت الخطأ: ${new Date().toLocaleString('EN-SA')}</span>
+                        </div>
+                        <div class="error-detail">
+                            <i class="fas fa-code"></i>
+                            <span>رمز الخطأ: ERR_${Math.floor(Math.random() * 1000)}</span>
                         </div>
                     </div>
-                `,
-                showConfirmButton: true,
-                confirmButtonText: 'إشعاري عند توفرها',
-                showCancelButton: true,
-                cancelButtonText: 'سأنتظرها لاحقاً',
-                customClass: {
-                    popup: 'cv-swal-popup',
-                    title: 'cv-swal-title',
-                    htmlContainer: 'cv-swal-html',
-                    confirmButton: 'cv-swal-confirm',
-                    cancelButton: 'cv-swal-cancel',
-                    actions: 'cv-swal-actions'
-                },
-                didOpen: () => {
-                    gsap.from('.cv-progress-bar', {
-                        width: '0%',
-                        duration: 1.5,
-                        ease: "power2.out"
+                </div>
+                
+                <div class="error-actions">
+                    <button class="error-retry">إعادة المحاولة</button>
+                    <button class="error-contact">تواصل معي</button>
+                </div>
+                
+                <div class="error-footer">
+                    <i class="fas fa-info-circle"></i>
+                    <p>إذا استمرت المشكلة، تقدر <a href="#contact">تتواصل معي</a></p>
+                </div>
+            </div>
+        `,
+        showConfirmButton: false,
+        customClass: {
+            popup: 'custom-error-popup',
+            container: 'custom-error-container',
+            title: "error-title"
+        },
+        didOpen: () => {
+            // تأثيرات الحركة عند الظهور
+            gsap.from('.error-icon-animation', {
+                scale: 0,
+                rotation: 45,
+                duration: 0.6,
+                ease: "back.out(1.7)"
+            });
+            
+            gsap.from('.error-content', {
+                opacity: 0,
+                y: 20,
+                duration: 0.5,
+                delay: 0.3
+            });
+            
+            gsap.from('.error-actions button', {
+                opacity: 0,
+                y: 20,
+                stagger: 0.1,
+                duration: 0.4,
+                delay: 0.6
+            });
+            
+            // إضافة مستمعات الأحداث للأزرار
+            document.querySelector('.error-retry').addEventListener('click', () => {
+                Swal.close();
+                // إعادة تحميل البيانات أو المحاولة مرة أخرى
+                loadPortfolio();
+            });
+            
+            document.querySelector('.error-contact').addEventListener('click', () => {
+                // الانتقال إلى قسم الاتصال أولاً
+                const contactSection = document.querySelector('#contact');
+                if (contactSection) {
+                    contactSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
                     });
                     
-                    gsap.from('.cv-icon', {
-                        scale: 0,
-                        rotation: -45,
-                        duration: 0.8,
-                        delay: 0.3,
-                        ease: "back.out(1.2)"
-                    });
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'تم تسجيل طلبك',
-                        text: 'سنقوم بإرسال السيرة الذاتية لبريدك الإلكتروني عند توفرها',
-                        confirmButtonText: 'تم'
-                    });
+                    // إغلاق النافذة بعد التأكد من الوصول إلى القسم
+                    setTimeout(() => {
+                        Swal.close();
+                    }, 1000); // تأخير إغلاق النافذة بمقدار ثانية واحدة
+                } else {
+                    Swal.close();
                 }
             });
-        });
+        }
+    });
+}
+        }
     }
+});
+}
+        });
+    });
+}
 
     mobileMenuBtn.addEventListener('click', () => {
         mobileMenuBtn.classList.toggle('active');
@@ -1510,69 +1910,3 @@ window.addEventListener('resize', function() {
 
     
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
