@@ -10,7 +10,7 @@ const loadMoreBtn = document.querySelector('.btn-load-more');
 
 const siteData = {
     skills: [{
-            name: "التصميم الجرافيكي",
+            name: "تصميم الجرافيك",
             level: 95,
             icon: "fas fa-paint-brush"
         },
@@ -115,8 +115,8 @@ async function loadPortfolio() {
                     <div class="spinner-circle"></div>
                 </div>
                 <div class="loading-text">
-                    <h3>جاري تحميل المشاريع</h3>
-                    <p>يرجى الانتظار بينما نقوم بجمع أعمالي الإبداعية</p>
+                    <h3>جاري تحميل مشاريعي</h3>
+                    <p>مُقدر انتظارك وحماسك لرؤية أعمالي الإبداعية</p>
                 </div>
             </div>
         </div>
@@ -214,10 +214,80 @@ async function loadPortfolio() {
         }
 
         initPortfolioLightbox(projects);
-    } catch (error) {
-        console.error('Error loading portfolio:', error);
-        portfolioContainer.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i> حدث خطأ أثناء تحميل المشاريع</div>';
-    }
+} catch (error) {
+    console.error('Error loading portfolio:', error);
+
+        portfolioContainer.innerHTML = `
+        <div class="skills-error-container1">
+            <div class="error-animation1">
+                <div class="error-icon1">
+                    <div class="error-circle1"></div>
+                    <div class="error-x-mark1">
+                        <div class="error-x-mark-line-left1"></div>
+                        <div class="error-x-mark-line-right1"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="error-content1">
+                <h3>حدث خطأ في تحميل المهارات</h3>
+                <p>تعذر تحميل بيانات المهارات بسبب مشكلة تقنية. يرجى المحاولة مرة أخرى لاحقاً.</p>
+                <div class="error-details1">
+                    <div class="error-detail1">
+                        <i class="fas fa-clock"></i>
+                        <span>${new Date().toLocaleString('ar-SA')}</span>
+                    </div>
+                    <div class="error-detail1">
+                        <i class="fas fa-code"></i>
+                        <span>رمز الخطأ: ERR_${Math.floor(Math.random() * 1000)}</span>
+                    </div>
+                </div>
+                <div class="error-actions1">
+                    <button class="error-retry1" onclick="loadSkillsSection()">
+                        <i class="fas fa-sync-alt"></i> إعادة المحاولة
+                    </button>
+                    <button class="error-contact1" onclick="document.querySelector('#contact').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-headset"></i> التواصل مع الدعم
+                    </button>
+                </div>
+                <div class="error-footer1">
+                    <i class="fas fa-info-circle"></i>
+                    <p>إذا استمرت المشكلة، يمكنك <a href="#contact">التواصل معي</a> للإبلاغ عن المشكلة</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // تأثيرات الحركة للرسالة
+    gsap.from(".portfolio-error", {
+        opacity: 0,
+        y: 50,
+        duration: 0.8,
+        ease: "back.out(1.2)"
+    });
+    
+    gsap.from(".error-icon", {
+        scale: 0,
+        rotation: 45,
+        duration: 0.6,
+        ease: "back.out(1.7)"
+    });
+    
+    gsap.from(".error-content h3, .error-content p", {
+        opacity: 0,
+        y: 20,
+        stagger: 0.1,
+        duration: 0.5,
+        delay: 0.3
+    });
+    
+    gsap.from(".error-actions button", {
+        opacity: 0,
+        y: 20,
+        stagger: 0.1,
+        duration: 0.4,
+        delay: 0.6
+    });
+}
 }
 
 function initPortfolioFilter() {
@@ -592,8 +662,21 @@ function showProjectInLightbox(index, projects) {
 
 async function loadSkillsSection() {
     const skillsGrid = document.getElementById('skillsGrid');
-    skillsGrid.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المهارات...</div>';
-
+skillsGrid.innerHTML = `
+            <div class="skill-loading">
+            <div class="loading-content-skill">
+                <div class="loading-spinner-skill">
+                    <div class="spinner-circle-skill"></div>
+                    <div class="spinner-circle-skill"></div>
+                    <div class="spinner-circle-skill"></div>
+                </div>
+                <div class="loading-text-skill">
+                    <h3>جاري تحميل مهاراتي وخبراتي</h3>
+                    <p>مُقدر انتظارك وحماسك لرؤية مهاراتي وخبراتي</p>
+                </div>
+            </div>
+        </div>
+`;
     try {
         const { data: projects, error } = await portfolioCollection.select('*');
 
@@ -605,7 +688,7 @@ async function loadSkillsSection() {
             // تحديد الفئة الصحيحة لكل مهارة
             let skillCategory;
             switch (skill.name) {
-                case "التصميم الجرافيكي":
+                case "تصميم الجرافيك":
                     skillCategory = ['graphic'];
                     break;
                 case "الموشن جرافيك":
@@ -645,42 +728,110 @@ async function loadSkillsSection() {
 
         skillsGrid.innerHTML = '';
 
-        enhancedSkills.forEach(skill => {
-            const skillCard = document.createElement('div');
-            skillCard.className = 'skill-card';
-            skillCard.dataset.skill = skill.name;
-            skillCard.dataset.category = skill.category;
-            skillCard.style.setProperty('--skill-percent', skill.level);
-
-            skillCard.innerHTML = `
-                <div class="skill-card-inner">
-                    <div class="skill-card-header">
-                        <div class="skill-icon-container">
-                            <div class="skill-icon-bg"></div>
-                            <div class="skill-icon">
-                                <i class="${skill.icon}"></i>
-                            </div>
-                        </div>
-                        <div class="skill-title-container">
-                            <h3 class="skill-title">${skill.name}</h3>
-                        </div>
-                    </div>
-                    
-                    <div class="skill-level-text">
-                        <i class="fas fa-chart-line"></i>
-                        <span>مستوى الإتقان: <strong>${skill.level}%</strong></span>
-                    </div>
-                    
-                    <div class="skill-projects-container">
-                        <h4 class="skill-projects-title">
-                            <i class="fas fa-folder-open"></i> عدد مشاريعي: <strong>${skill.projectsCount}</strong>
-                        </h4>
+enhancedSkills.forEach(skill => {
+    const skillCard = document.createElement('div');
+    skillCard.className = 'skill-card';
+    skillCard.dataset.skill = skill.name;
+    skillCard.style.setProperty('--skill-percent', skill.level);
+    
+    skillCard.innerHTML = `
+        <div class="skill-card-inner">
+            <div class="skill-card-header">
+                <div class="skill-icon-container">
+                    <div class="skill-icon-bg"></div>
+                    <div class="skill-icon">
+                        <i class="${skill.icon}"></i>
+                        <div class="skill-percent-badge">${skill.level}%</div>
                     </div>
                 </div>
-            `;
+                <div class="skill-title-container">
+                    <h3 class="skill-title">${skill.name}</h3>
+                    <div class="skill-progress-container">
+                        <div class="skill-progress-bar" style="width: ${skill.level}%">
+                        </div>
+                    </div>
+                    <div class="skill-level-text">
+                        <span class="level-label">مستوى الإتقان:</span>
+                        <span class="level-value">${getSkillLevelText(skill.level)}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="skill-stats">
+                <div class="stat-item">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>${skill.projectsCount} مشاريع</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span>${getSkillStars(skill.level)}</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    skillsGrid.appendChild(skillCard);
+});
 
-            skillsGrid.appendChild(skillCard);
+// دالة مساعدة لتحويل النسبة إلى نص وصفي
+function getSkillLevelText(percent) {
+    if (percent >= 90) return 'خبير';
+    if (percent >= 70) return 'متقدم';
+    if (percent >= 50) return 'متوسط';
+    return 'مبتدئ';
+}
+
+// دالة مساعدة لعرض النجوم حسب المستوى
+function getSkillStars(percent) {
+    const starsCount = Math.min(5, Math.ceil(percent / 20));
+    return '★'.repeat(starsCount) + '☆'.repeat(5 - starsCount);
+}
+
+// تأثيرات الظهور
+gsap.from(".skill-card", {
+    opacity: 0,
+    y: 50,
+    duration: 0.8,
+    stagger: 0.15,
+    ease: "back.out(1.2)",
+    delay: 0.3
+});
+
+// تأثيرات التحويم
+document.querySelectorAll('.skill-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        gsap.to(card, {
+            y: -10,
+            scale: 1.03,
+            duration: 0.3,
+            boxShadow: "0 15px 30px rgba(0,0,0,0.15)"
         });
+    });
+    
+    card.addEventListener('mouseleave', () => {
+        gsap.to(card, {
+            y: 0,
+            scale: 1,
+            duration: 0.3,
+            boxShadow: "0 5px 15px rgba(0,0,0,0.1)"
+        });
+    });
+});
+
+function calculateExperience(level) {
+    // حساب سنوات الخبرة بناءً على مستوى المهارة
+    return Math.max(1, Math.floor(level / 20));
+}
+
+function getSkillDescription(skillName) {
+    const descriptions = {
+        "التصميم الجرافيكي": "تصميم شعارات، بروشورات، هويات بصرية باستخدام أحدث أدوبي.",
+        "الموشن جرافيك": "تصميم رسوم متحركة وعروض تقديمية تفاعلية.",
+        "المونتاج المرئي": "مونتاج فيديوهات احترافية مع تأثيرات بصرية.",
+        // ... إضافة أوصاف أخرى
+    };
+    return descriptions[skillName] || "مهارة احترافية بمشاريع متنوعة.";
+}
 
         const skillCards = document.querySelectorAll('.skill-card');
         const observer = new IntersectionObserver((entries) => {
@@ -705,14 +856,84 @@ async function loadSkillsSection() {
             card.style.transform = 'translateY(30px)';
             observer.observe(card);
         });
-    } catch (error) {
-        console.error('Error loading skills:', error);
-        skillsGrid.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i> حدث خطأ أثناء تحميل المهارات</div>';
-    }
+// في دالة loadSkillsSection، استبدال جزء معالجة الخطأ الحالي بـ:
+} catch (error) {
+    console.error('Error loading skills:', error);
+    // تحسين رسالة الخطأ
+    skillsGrid.innerHTML = `
+        <div class="skills-error-container">
+            <div class="error-animation">
+                <div class="error-icon">
+                    <div class="error-circle"></div>
+                    <div class="error-x-mark">
+                        <div class="error-x-mark-line-left"></div>
+                        <div class="error-x-mark-line-right"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="error-content">
+                <h3>حدث خطأ في عرض مهاراتي وخبراتي</h3>
+                <p>تعذر تحميل بيانات المهارات والخبرات بسبب مشكلة تقنية. يرجى المحاولة مرة أخرى.</p>
+                <div class="error-details">
+                    <div class="error-detail">
+                        <i class="fas fa-clock"></i>
+                        <span>${new Date().toLocaleString('ar-SA')}</span>
+                    </div>
+                    <div class="error-detail">
+                        <i class="fas fa-code"></i>
+                        <span>رمز الخطأ: ERR_${Math.floor(Math.random() * 1000)}</span>
+                    </div>
+                </div>
+                <div class="error-actions">
+                    <button class="error-retry" onclick="loadSkillsSection()">
+                        <i class="fas fa-sync-alt"></i> إعادة المحاولة
+                    </button>
+                    <button class="error-contact" onclick="document.querySelector('#contact').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-headset"></i> التواصل مع الدعم
+                    </button>
+                </div>
+                <div class="error-footer">
+                    <i class="fas fa-info-circle"></i>
+                    <p>إذا استمرت المشكلة، يمكنك <a href="#contact">التواصل معي</a> للإبلاغ عن المشكلة</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // تأثيرات الحركة عند ظهور رسالة الخطأ
+    gsap.from(".skills-error-container", {
+        opacity: 0,
+        y: 50,
+        duration: 0.8,
+        ease: "back.out(1.2)"
+    });
+    
+    gsap.from(".error-icon", {
+        scale: 0,
+        rotation: 45,
+        duration: 0.6,
+        ease: "back.out(1.7)"
+    });
+    
+    gsap.from(".error-content", {
+        opacity: 0,
+        y: 20,
+        duration: 0.5,
+        delay: 0.3
+    });
+    
+    gsap.from(".error-actions button", {
+        opacity: 0,
+        y: 20,
+        stagger: 0.1,
+        duration: 0.4,
+        delay: 0.6
+    });
+}
 }
 
 function getSkillCategory(skillName) {
-    const designSkills = ['التصميم الجرافيكي', 'الموشن جرافيك'];
+    const designSkills = ['تصميم الجرافيك', 'الموشن جرافيك'];
     const mediaSkills = ['المونتاج المرئي', 'التعليق الصوتي'];
 
     if (designSkills.includes(skillName)) return 'design';
@@ -1514,106 +1735,77 @@ const loadingSwal = Swal.fire({
                 });
                 
 } catch (error) {
-    showErrorAlert(error);
-
-
-            
-            // عرض رسالة الخطأ بتصميم محسن
-function showErrorAlert(error) {
-    Swal.fire({
-        title: '<div>حدث خطأ!</div>',
-        html: `
-            <div class="error-container">
-                <div class="error-icon-animation">
+    console.error('Error loading portfolio:', error);
+    portfolioContainer.innerHTML = `
+        <div class="skills-error-container">
+            <div class="error-animation">
+                <div class="error-icon">
                     <div class="error-circle"></div>
-                    <div class="error-cross"></div>
-                </div>
-                
-                <div class="error-content">
-                    <h3>تعذر إتمام العملية</h3>
-                    <p class="error-message">${error.message || 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى لاحقاً'}</p>
-                    
-                    <div class="error-details">
-                        <div class="error-detail">
-                            <i class="fas fa-clock"></i>
-                            <span>وقت الخطأ: ${new Date().toLocaleString('EN-SA')}</span>
-                        </div>
-                        <div class="error-detail">
-                            <i class="fas fa-code"></i>
-                            <span>رمز الخطأ: ERR_${Math.floor(Math.random() * 1000)}</span>
-                        </div>
+                    <div class="error-x-mark">
+                        <div class="error-x-mark-line-left"></div>
+                        <div class="error-x-mark-line-right"></div>
                     </div>
                 </div>
-                
-                <div class="error-actions">
-                    <button class="error-retry">إعادة المحاولة</button>
-                    <button class="error-contact">تواصل معي</button>
+            </div>
+            <div class="error-content">
+                <h3>حدث خطأ في عرض مهاراتي وخبراتي</h3>
+                <p>تعذر تحميل بيانات المهارات والخبرات بسبب مشكلة تقنية. يرجى المحاولة مرة أخرى.</p>
+                <div class="error-details">
+                    <div class="error-detail">
+                        <i class="fas fa-clock"></i>
+                        <span>${new Date().toLocaleString('ar-SA')}</span>
+                    </div>
+                    <div class="error-detail">
+                        <i class="fas fa-code"></i>
+                        <span>رمز الخطأ: ERR_${Math.floor(Math.random() * 1000)}</span>
+                    </div>
                 </div>
-                
+                <div class="error-actions">
+                    <button class="error-retry" onclick="loadSkillsSection()">
+                        <i class="fas fa-sync-alt"></i> إعادة المحاولة
+                    </button>
+                    <button class="error-contact" onclick="document.querySelector('#contact').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-headset"></i> التواصل مع الدعم
+                    </button>
+                </div>
                 <div class="error-footer">
                     <i class="fas fa-info-circle"></i>
-                    <p>إذا استمرت المشكلة، تقدر <a href="#contact">تتواصل معي</a></p>
+                    <p>إذا استمرت المشكلة، يمكنك <a href="#contact">التواصل معي</a> للإبلاغ عن المشكلة</p>
                 </div>
             </div>
-        `,
-        showConfirmButton: false,
-        customClass: {
-            popup: 'custom-error-popup',
-            container: 'custom-error-container',
-            title: "error-title"
-        },
-        didOpen: () => {
-            // تأثيرات الحركة عند الظهور
-            gsap.from('.error-icon-animation', {
-                scale: 0,
-                rotation: 45,
-                duration: 0.6,
-                ease: "back.out(1.7)"
-            });
-            
-            gsap.from('.error-content', {
-                opacity: 0,
-                y: 20,
-                duration: 0.5,
-                delay: 0.3
-            });
-            
-            gsap.from('.error-actions button', {
-                opacity: 0,
-                y: 20,
-                stagger: 0.1,
-                duration: 0.4,
-                delay: 0.6
-            });
-            
-            // إضافة مستمعات الأحداث للأزرار
-            document.querySelector('.error-retry').addEventListener('click', () => {
-                Swal.close();
-                // إعادة تحميل البيانات أو المحاولة مرة أخرى
-                loadPortfolio();
-            });
-            
-            document.querySelector('.error-contact').addEventListener('click', () => {
-                // الانتقال إلى قسم الاتصال أولاً
-                const contactSection = document.querySelector('#contact');
-                if (contactSection) {
-                    contactSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    
-                    // إغلاق النافذة بعد التأكد من الوصول إلى القسم
-                    setTimeout(() => {
-                        Swal.close();
-                    }, 1000); // تأخير إغلاق النافذة بمقدار ثانية واحدة
-                } else {
-                    Swal.close();
-                }
-            });
-        }
+        </div>
+    `;
+    
+    // تأثيرات الحركة عند ظهور رسالة الخطأ
+    gsap.from(".skills-error-container", {
+        opacity: 0,
+        y: 50,
+        duration: 0.8,
+        ease: "back.out(1.2)"
+    });
+    
+    gsap.from(".error-icon", {
+        scale: 0,
+        rotation: 45,
+        duration: 0.6,
+        ease: "back.out(1.7)"
+    });
+    
+    gsap.from(".error-content", {
+        opacity: 0,
+        y: 20,
+        duration: 0.5,
+        delay: 0.3
+    });
+    
+    gsap.from(".error-actions button", {
+        opacity: 0,
+        y: 20,
+        stagger: 0.1,
+        duration: 0.4,
+        delay: 0.6
     });
 }
-        }
     }
 });
 }
@@ -1910,3 +2102,4 @@ window.addEventListener('resize', function() {
 
     
 });
+

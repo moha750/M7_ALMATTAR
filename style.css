@@ -4359,7 +4359,7 @@ body.no-scroll {
     padding: 2rem;
     background: rgba(245, 238, 220, 0.1);
     border-radius: 15px;
-    border: 2px dashed rgba(245, 238, 220, 0.3);
+    border: 2px dashed rgba(245, 238, 220, 0.5);
     margin: 1rem 0;
 }
 
@@ -5178,7 +5178,7 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel):hov
 
 .loading-text p {
     margin: 5px 0;
-    color: #27548a;
+    color: #dda853;
 }
 
 .progress-percent {
@@ -5739,3 +5739,457 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel):hov
     font-size: 0.9rem;
     color: #636e72;
 }
+
+.skills-loading {
+    background: rgba(245, 238, 220, 0.1);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.loading-animation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.loading-spinner {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.spinner-circle {
+    width: 15px;
+    height: 15px;
+    background: #dda853;
+    border-radius: 50%;
+    animation: bounce 1.5s infinite ease-in-out;
+}
+
+.spinner-circle:nth-child(1) { animation-delay: 0s; }
+.spinner-circle:nth-child(2) { animation-delay: 0.2s; }
+.spinner-circle:nth-child(3) { animation-delay: 0.4s; }
+
+.skill-card {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+.skill-level-bar {
+    height: 5px;
+    background: rgba(221, 168, 83, 0.2);
+    border-radius: 5px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.skill-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #dda853, #f5c266);
+    border-radius: 5px;
+    transition: width 1s ease-out;
+}
+
+.skill-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #636e72;
+}
+
+.skill-description {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed rgba(221, 168, 83, 0.3);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* شارة النسبة المئوية */
+.skill-percent-badge {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    width: 40px;
+    height: 40px;
+    background: #27548a;
+    color: #f5eedc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: 3px solid #f5eedc;
+    box-shadow: 0 3px 10px rgba(39, 84, 138, 0.3);
+    z-index: 2;
+}
+
+/* شريط التقدم */
+.skill-progress-container {
+    height: 8px;
+    background: rgba(221, 168, 83, 0.1);
+    border-radius: 4px;
+    margin: 0.8rem 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.skill-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #f5c266, #dda853);
+    border-radius: 4px;
+    position: relative;
+    transition: width 1s ease-out;
+}
+
+/* نص مستوى المهارة */
+.skill-level-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.level-label {
+    color: #636e72;
+}
+
+.level-value {
+    color: #27548a;
+    font-weight: bold;
+}
+
+/* إحصائيات المهارة */
+.skill-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed rgba(221, 168, 83, 0.3);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.stat-item i {
+    color: #dda853;
+}
+
+/* تأثيرات الحركة */
+.skill-icon-container {
+    position: relative;
+    transition: all 0.5s ease;
+}
+
+.skill-card:hover .skill-icon-container {
+    transform: rotate(15deg) scale(1.1);
+}
+
+.skill-card:hover .skill-percent-badge {
+    transform: scale(1.1) rotate(-15deg);
+    background: #dda853;
+}
+
+
+/* تنسيقات تحميل المشاريع */
+.skill-loading {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    padding: 2rem;
+    background: rgba(245, 238, 220, 0.2);
+    border-radius: 15px;
+    border: 2px dashed rgba(39, 84, 138, 0.5);
+    margin: 1rem 0;
+}
+
+.loading-content-skill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    text-align: center;
+}
+
+.loading-spinner-skill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    height: 60px;
+}
+
+.spinner-circle-skill {
+    width: 15px;
+    height: 15px;
+    background: #27548a;
+    border-radius: 50%;
+    animation: bounce 1.5s infinite ease-in-out;
+}
+
+.spinner-circle-skill:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.spinner-circle-skill:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.spinner-circle-skill:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.loading-text-skill h3 {
+    color: #f5eedc;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.loading-text-skill p {
+    color: #27548a;
+    font-size: 1rem;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* تأثيرات ظهور العناصر */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.skill-loading {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* أنماط صفحة خطأ المهارات */
+.skills-error-container {
+    background: rgba(245, 238, 220, 0.2);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    text-align: center;
+    border: 2px dashed rgba(231, 76, 60, 1);
+    grid-column: 1 / -1;
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.error-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+}
+
+.error-circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 5px solid rgba(231, 76, 60, 0.2);
+    border-radius: 50%;
+    animation: pulseError 2s infinite;
+}
+
+.error-x-mark {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-x-mark-line-left,
+.error-x-mark-line-right {
+    position: absolute;
+    height: 5px;
+    width: 60%;
+    background: #e74c3c;
+    border-radius: 3px;
+}
+
+.error-x-mark-line-left {
+    transform: rotate(45deg);
+}
+
+.error-x-mark-line-right {
+    transform: rotate(-45deg);
+}
+
+.error-content h3 {
+    font-size: 1.8rem;
+    color: #e74c3c;
+    margin-bottom: 1rem;
+}
+
+.error-content p {
+    color: #f5eedc;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.error-details {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 1.5rem 0rem;
+    flex-wrap: wrap;
+}
+
+.error-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 95, 87, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    color: #f5eedc;
+}
+
+.error-detail i {
+    color: #e74c3c;
+    width: 25px;
+    height: 25px;
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.error-retry {
+    color: #f5eedc !important;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    padding: 0.7rem 2rem !important;
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    font-size: 1rem;
+    border: none !important;
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4) !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.error-retry:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6);
+}
+
+.error-retry::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+    transition: 0.5s !important;
+}
+
+.error-retry:hover::after {
+    left: 100% !important;
+}
+
+.error-contact {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+    padding: 0.7rem 1.5rem !important;
+    border-radius: 50px !important;
+    font-weight: 500 !important;
+    border: 2px solid rgba(231, 76, 60, 0.3);
+    transition: all 0.3s ease !important;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.error-contact:hover {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: #e74c3c;
+    transform: translateY(-3px) !important;
+}
+
+.error-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #f5eedc;
+    background: rgba(255, 95, 87, 0.1);
+    padding: 0.8rem;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+}
+
+.error-footer i {
+    color: #e74c3c;
+}
+
+.error-footer a {
+    color: #e74c3c;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.error-footer a:hover {
+    text-decoration: underline;
+}
+
+@keyframes pulseError {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+    }
+}
+
