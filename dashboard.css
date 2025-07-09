@@ -90,17 +90,6 @@ h1::after {
     display: inline-block;
 }
 
-.form-header h2::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 50px;
-    height: 3px;
-    background: var(--accent);
-    border-radius: 3px;
-}
-
 .form-header p {
     color: #093451;
     opacity: 0.8;
