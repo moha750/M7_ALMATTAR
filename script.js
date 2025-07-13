@@ -58,7 +58,19 @@ function initTypingEffect() {
     const typingText = document.querySelector('.highlight');
     if (!typingText) return;
 
-    const professions = [
+    // مسح أي تأثير كتابة سابق
+    if (typingText.typingInterval) {
+        clearTimeout(typingText.typingInterval);
+    }
+
+    // استخدام النصوص المترجمة بناءً على اللغة الحالية
+    const professions = i18next.language === 'en' ? [
+        "Graphic Designer",
+        "Video Editor",
+        "Motion Graphics",
+        "Voice Over",
+        "Web Developer"
+    ] : [
         "مُصمم جرافيك",
         "مونتير فيديو",
         "موشن جرافيكر",
@@ -93,10 +105,12 @@ function initTypingEffect() {
             typingSpeed = 500;
         }
 
-        setTimeout(type, typingSpeed);
+        typingText.typingInterval = setTimeout(type, typingSpeed);
     }
 
-    setTimeout(type, 1000);
+    // بدء التأثير بالنص العربي أولاً
+    typingText.textContent = ''; // ابدأ بنص فارغ
+    typingText.typingInterval = setTimeout(type, 1000);
 }
 
 // ==================== قسم معرض الأعمال مع Firebase ====================
@@ -115,8 +129,8 @@ async function loadPortfolio() {
                     <div class="spinner-circle"></div>
                 </div>
                 <div class="loading-text">
-                    <h3>جاري تحميل مشاريعي</h3>
-                    <p>مُقدر انتظارك وحماسك لرؤية أعمالي الإبداعية</p>
+        <h3>${i18next.t('loadingpo.title')}</h3>
+        <p>${i18next.t('loadingpo.message')}</p>
                 </div>
             </div>
         </div>
@@ -164,9 +178,9 @@ async function loadPortfolio() {
                                     <span><i class="fas fa-user"></i> ${project.client}</span>
                                     <span><i class="fas fa-calendar"></i> ${project.date}</span>
                                 </div>
-                                <a href="#portfolio-item-${index}" class="btn btn-view" data-project="${index}">
-                                    <i class="fas fa-expand"></i> عرض المشروع
-                                </a>
+<a href="#portfolio-item-${index}" class="btn btn-view" data-project="${index}" data-i18n="portfolio.view_project">
+  <i class="fas fa-expand"></i> ${i18next.t('portfolio.view_project')}
+</a>
                             </div>
                         </div>
                     </div>
@@ -229,8 +243,8 @@ async function loadPortfolio() {
                 </div>
             </div>
             <div class="error-content1">
-                <h3>حدث خطأ في تحميل المهارات</h3>
-                <p>تعذر تحميل بيانات المهارات بسبب مشكلة تقنية. يرجى المحاولة مرة أخرى لاحقاً.</p>
+      <h3>${i18next.t('errorspo.title')}</h3>
+      <p>${i18next.t('errorspo.message')}</p>
                 <div class="error-details1">
                     <div class="error-detail1">
                         <i class="fas fa-clock"></i>
@@ -238,20 +252,20 @@ async function loadPortfolio() {
                     </div>
                     <div class="error-detail1">
                         <i class="fas fa-code"></i>
-                        <span>رمز الخطأ: ERR_${Math.floor(Math.random() * 1000)}</span>
+                        <span>${i18next.t('errorspo.error_code')}: ERR_${Math.floor(Math.random() * 1000)}</span>
                     </div>
                 </div>
                 <div class="error-actions1">
-                    <button class="error-retry1" onclick="loadSkillsSection()">
-                        <i class="fas fa-sync-alt"></i> إعادة المحاولة
+                    <button class="error-retry1" onclick="loadPortfolio()">
+                        <i class="fas fa-sync-alt"></i>${i18next.t('errorspo.retry')}
                     </button>
                     <button class="error-contact1" onclick="document.querySelector('#contact').scrollIntoView({behavior: 'smooth'})">
-                        <i class="fas fa-headset"></i> التواصل مع الدعم
+                        <i class="fas fa-headset"></i>${i18next.t('errorspo.contact')}
                     </button>
                 </div>
                 <div class="error-footer1">
                     <i class="fas fa-info-circle"></i>
-                    <p>إذا استمرت المشكلة، يمكنك <a href="#contact">التواصل معي</a> للإبلاغ عن المشكلة</p>
+                    <p>${i18next.t('errorspo.details')} <a href="#contact"></a></p>
                 </div>
             </div>
         </div>
@@ -375,12 +389,14 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
 }
 
 function initPortfolioSearch() {
-    const searchInput = document.querySelector('.portfolio-search');
+    const searchInput = document.querySelector('.search-input');
     if (!searchInput) return;
 
-    // إضافة تأخير في البحث لتحسين الأداء
+    searchInput.placeholder = i18next.t('portfolio.search_placeholder');
+
+    // باقي الكود كما هو...
     let searchTimeout;
-    const searchDelay = 300; // 300 مللي ثانية
+    const searchDelay = 300;
 
     searchInput.addEventListener('input', function() {
         clearTimeout(searchTimeout);
@@ -663,19 +679,19 @@ function showProjectInLightbox(index, projects) {
 async function loadSkillsSection() {
     const skillsGrid = document.getElementById('skillsGrid');
 skillsGrid.innerHTML = `
-            <div class="skill-loading">
-            <div class="loading-content-skill">
-                <div class="loading-spinner-skill">
-                    <div class="spinner-circle-skill"></div>
-                    <div class="spinner-circle-skill"></div>
-                    <div class="spinner-circle-skill"></div>
-                </div>
-                <div class="loading-text-skill">
-                    <h3>جاري تحميل مهاراتي وخبراتي</h3>
-                    <p>مُقدر انتظارك وحماسك لرؤية مهاراتي وخبراتي</p>
-                </div>
-            </div>
-        </div>
+  <div class="skill-loading">
+    <div class="loading-content-skill">
+      <div class="loading-spinner-skill">
+        <div class="spinner-circle-skill"></div>
+        <div class="spinner-circle-skill"></div>
+        <div class="spinner-circle-skill"></div>
+      </div>
+      <div class="loading-text-skill">
+        <h3>${i18next.t('loading.skills.title')}</h3>
+        <p>${i18next.t('loading.skills.message')}</p>
+      </div>
+    </div>
+  </div>
 `;
     try {
         const { data: projects, error } = await portfolioCollection.select('*');
@@ -745,13 +761,12 @@ enhancedSkills.forEach(skill => {
                     </div>
                 </div>
                 <div class="skill-title-container">
-                    <h3 class="skill-title">${skill.name}</h3>
+                    <h3 class="skill-title">${getTranslatedSkillName(skill.name)}</h3>
                     <div class="skill-progress-container">
-                        <div class="skill-progress-bar" style="width: ${skill.level}%">
-                        </div>
+                        <div class="skill-progress-bar" style="width: ${skill.level}%"></div>
                     </div>
                     <div class="skill-level-text">
-                        <span class="level-label">مستوى الإتقان:</span>
+                        <span class="level-label">${i18next.t('skills.mastery-level')}:</span>
                         <span class="level-value">${getSkillLevelText(skill.level)}</span>
                     </div>
                 </div>
@@ -760,7 +775,7 @@ enhancedSkills.forEach(skill => {
             <div class="skill-stats">
                 <div class="stat-item">
                     <i class="fa-solid fa-folder-open"></i>
-                    <span>${skill.projectsCount} مشاريع</span>
+                    <span>${skill.projectsCount} ${i18next.t('skills.projects-count')}</span>
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-star"></i>
@@ -775,10 +790,10 @@ enhancedSkills.forEach(skill => {
 
 // دالة مساعدة لتحويل النسبة إلى نص وصفي
 function getSkillLevelText(percent) {
-    if (percent >= 90) return 'خبير';
-    if (percent >= 70) return 'متقدم';
-    if (percent >= 50) return 'متوسط';
-    return 'مبتدئ';
+    if (percent >= 90) return i18next.t('skills.expert');
+    if (percent >= 70) return i18next.t('skills.advanced');
+    if (percent >= 50) return i18next.t('skills.intermediate');
+    return i18next.t('skills.beginner');
 }
 
 // دالة مساعدة لعرض النجوم حسب المستوى
@@ -856,49 +871,48 @@ function getSkillDescription(skillName) {
             card.style.transform = 'translateY(30px)';
             observer.observe(card);
         });
-// في دالة loadSkillsSection، استبدال جزء معالجة الخطأ الحالي بـ:
 } catch (error) {
     console.error('Error loading skills:', error);
     // تحسين رسالة الخطأ
-    skillsGrid.innerHTML = `
-        <div class="skills-error-container">
-            <div class="error-animation">
-                <div class="error-icon">
-                    <div class="error-circle"></div>
-                    <div class="error-x-mark">
-                        <div class="error-x-mark-line-left"></div>
-                        <div class="error-x-mark-line-right"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="error-content">
-                <h3>حدث خطأ في عرض مهاراتي وخبراتي</h3>
-                <p>تعذر تحميل بيانات المهارات والخبرات بسبب مشكلة تقنية. يرجى المحاولة مرة أخرى.</p>
-                <div class="error-details">
-                    <div class="error-detail">
-                        <i class="fas fa-clock"></i>
-                        <span>${new Date().toLocaleString('ar-SA')}</span>
-                    </div>
-                    <div class="error-detail">
-                        <i class="fas fa-code"></i>
-                        <span>رمز الخطأ: ERR_${Math.floor(Math.random() * 1000)}</span>
-                    </div>
-                </div>
-                <div class="error-actions">
-                    <button class="error-retry" onclick="loadSkillsSection()">
-                        <i class="fas fa-sync-alt"></i> إعادة المحاولة
-                    </button>
-                    <button class="error-contact" onclick="document.querySelector('#contact').scrollIntoView({behavior: 'smooth'})">
-                        <i class="fas fa-headset"></i> التواصل مع الدعم
-                    </button>
-                </div>
-                <div class="error-footer">
-                    <i class="fas fa-info-circle"></i>
-                    <p>إذا استمرت المشكلة، يمكنك <a href="#contact">التواصل معي</a> للإبلاغ عن المشكلة</p>
-                </div>
-            </div>
+skillsGrid.innerHTML = `
+  <div class="skills-error-container">
+    <div class="error-animation">
+      <div class="error-icon">
+        <div class="error-circle"></div>
+        <div class="error-x-mark">
+          <div class="error-x-mark-line-left"></div>
+          <div class="error-x-mark-line-right"></div>
         </div>
-    `;
+      </div>
+    </div>
+    <div class="error-content">
+      <h3>${i18next.t('errors.skills.title')}</h3>
+      <p>${i18next.t('errors.skills.message')}</p>
+      <div class="error-details">
+        <div class="error-detail">
+          <i class="fas fa-clock"></i>
+          <span>${new Date().toLocaleString()}</span>
+        </div>
+        <div class="error-detail">
+          <i class="fas fa-code"></i>
+          <span>${i18next.t('errors.skills.error_code')}: ERR_${Math.floor(Math.random() * 1000)}</span>
+        </div>
+      </div>
+      <div class="error-actions">
+        <button class="error-retry" onclick="loadSkillsSection()">
+          <i class="fas fa-sync-alt"></i> ${i18next.t('errors.skills.retry')}
+        </button>
+        <button class="error-contact" onclick="document.querySelector('#contact').scrollIntoView({behavior: 'smooth'})">
+          <i class="fas fa-headset"></i> ${i18next.t('errors.skills.contact')}
+        </button>
+      </div>
+      <div class="error-footer">
+        <i class="fas fa-info-circle"></i>
+        <p>${i18next.t('errors.skills.details')}</p>
+      </div>
+    </div>
+  </div>
+`;
     
     // تأثيرات الحركة عند ظهور رسالة الخطأ
     gsap.from(".skills-error-container", {
@@ -964,7 +978,7 @@ function initProjectLightbox() {
                         <p><i class="fas fa-tag"></i> <span class="lightbox-category"></span></p>
                     </div>
                     <a href="#" class="btn-view-project" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> عرض المشروع
+                        <i class="fas fa-external-link-alt"></i> ${i18next.t('portfolio.view_project')}
                     </a>
                 </div>
             </div>
@@ -1112,7 +1126,7 @@ function initContactForm() {
             const submitBtn = contactForm.querySelector('.submit-btn');
             const submitText = submitBtn.querySelector('span');
 
-            submitText.textContent = 'جاري الإرسال...';
+            submitText.textContent = i18next.t('con.sending'); // 'جاري الإرسال...'
             submitBtn.disabled = true;
 
             const formData = {
@@ -1142,15 +1156,15 @@ function initContactForm() {
                 if (result.created > 0) {
                     // استخدام SweetAlert2 مع تصميم مخصص
                     Swal.fire({
-                        title: 'تم الإرسال بنجاح!',
+                        title: i18next.t('contact.success.title'), // 'تم الإرسال بنجاح!'
                         html: `
                             <div class="success-alert">
                                 <i class="fas fa-check-circle"></i>
-                                <p>شكراً لك على رسالتك! سأتواصل معك قريباً</p>
+                                <p>${i18next.t('contact.success.message')}</p> <!-- 'شكراً لك على رسالتك! سأتواصل معك قريباً' -->
                             </div>
                         `,
                         showConfirmButton: true,
-                        confirmButtonText: 'حسناً',
+                        confirmButtonText: i18next.t('contact.success.button'), // 'حسناً'
                         customClass: {
                             popup: 'custom-swal-popup',
                             title: 'custom-swal-title',
@@ -1162,22 +1176,22 @@ function initContactForm() {
                     });
                     contactForm.reset();
                 } else {
-                    throw new Error('فشل في حفظ البيانات');
+                    throw new Error(i18next.t('errorsSend.contact.save_failed')); // 'فشل في حفظ البيانات'
                 }
 
             } catch (error) {
                 console.error('Error:', error);
                 // استخدام SweetAlert2 مع تصميم مخصص للخطأ
                 Swal.fire({
-                    title: 'حدث خطأ!',
+                    title: i18next.t('errorsSend.contact.title'), // 'حدث خطأ!'
                     html: `
                         <div class="error-alert">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <p>حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى</p>
+                            <p>${i18next.t('errorsSend.contact.message')}</p> <!-- 'حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى' -->
                         </div>
                     `,
                     showConfirmButton: true,
-                    confirmButtonText: 'حاول مجدداً',
+                    confirmButtonText: i18next.t('errorsSend.contact.retry'), // 'حاول مجدداً'
                     customClass: {
                         popup: 'custom-swal-popup',
                         title: 'custom-swal-title',
@@ -1188,7 +1202,7 @@ function initContactForm() {
                     buttonsStyling: false
                 });
             } finally {
-                submitText.textContent = 'إرسال الرسالة';
+                submitText.textContent = i18next.t('con.send-btn'); // 'إرسال الرسالة'
                 submitBtn.disabled = false;
             }
         });
@@ -1209,7 +1223,7 @@ function validateEmail() {
     const errorElement = document.getElementById('emailError');
 
     if (!emailRegex.test(email)) {
-        errorElement.textContent = 'صيغة البريد الإلكتروني غير صحيحة';
+        errorElement.textContent = i18next.t('errorsSend.contact.invalid_email'); // 'صيغة البريد الإلكتروني غير صحيحة'
         errorElement.style.display = 'block';
         return false;
     } else {
@@ -1223,7 +1237,7 @@ function validateMessage() {
     const errorElement = document.getElementById('messageError');
 
     if (message.length < 10) {
-        errorElement.textContent = 'الرسالة يجب أن تكون على الأقل 10 أحرف';
+        errorElement.textContent = i18next.t('errorsSend.contact.short_message'); // 'الرسالة يجب أن تكون على الأقل 10 أحرف'
         errorElement.style.display = 'block';
         return false;
     } else {
@@ -1237,7 +1251,7 @@ function validatePhone() {
     const errorElement = document.getElementById('phoneError');
 
     if (phone && phone.length !== 10) {
-        errorElement.textContent = ' يجب أن يتكون رقم الهاتف من 10 أرقام ';
+        errorElement.textContent = i18next.t('errorsSend.contact.invalid_phone'); // 'يجب أن يتكون رقم الهاتف من 10 أرقام'
         errorElement.style.display = 'block';
         return false;
     } else {
@@ -1366,7 +1380,14 @@ function initHeaderScroll() {
 // في دالة initHeaderScroll، تحديث جزء زر تحميل السيرة الذاتية
 // في دالة initHeaderScroll، تحديث جزء زر تحميل السيرة الذاتية
 // في دالة initHeaderScroll، تحديث جزء زر تحميل السيرة الذاتية
+// في دالة initHeaderScroll، تحديث جزء زر تحميل السيرة الذاتية
 if (downloadCVBtn) {
+    // تحديث نص الزر حسب اللغة
+    downloadCVBtn.innerHTML = `
+        <i class="fas fa-download"></i>
+        <span data-i18n="hero.download_cv">${i18next.t('hero.download_cv')}</span>
+    `;
+
     downloadCVBtn.addEventListener('click', (e) => {
         e.preventDefault();
         
@@ -1377,12 +1398,12 @@ if (downloadCVBtn) {
         };
         
         Swal.fire({
-            title: 'جاري تجهيز السيرة الذاتية',
+            title: i18next.language === 'ar' ? 'جاري تجهيز السيرة الذاتية' : 'Preparing Resume',
             html: `
                 <div class="cv-notification">
                     <div class="cv-progress-container">
                         <div class="cv-progress-bar" style="width: 75%"></div>
-                        <div class="cv-progress-text">75% جاهزة</div>
+                        <div class="cv-progress-text">75% ${i18next.language === 'ar' ? 'جاهزة' : 'ready'}</div>
                     </div>
                     <div class="cv-notification-content">
                         <div class="cv-icon">
@@ -1390,24 +1411,24 @@ if (downloadCVBtn) {
                             <div class="cv-pulse"></div>
                         </div>
                         <div class="cv-details">
-                            <h3>سيرتي الذاتية قيد التطوير</h3>
-                            <p>أعمل حاليًا على إنشاء نسخة مُتكاملة ومُحدثة تحتوي على جميع تفاصيل خبراتي ومهاراتي</p>
+                            <h3>${i18next.language === 'ar' ? 'سيرتي الذاتية قيد التطوير' : 'My resume is under development'}</h3>
+                            <p>${i18next.language === 'ar' ? 'أعمل حاليًا على إنشاء نسخة مُتكاملة ومُحدثة تحتوي على جميع تفاصيل خبراتي ومهاراتي' : 'I am currently creating a complete and updated version containing all my experience and skills details'}</p>
                             <div class="cv-features">
-                                <span><i class="fas fa-check-circle"></i> تصميم تفاعلي</span>
-                                <span><i class="fas fa-check-circle"></i> تحسينات مستمرة</span>
-                                <span><i class="fas fa-check-circle"></i> متوافقة مع ATS</span>
+                                <span><i class="fas fa-check-circle"></i> ${i18next.language === 'ar' ? 'تصميم تفاعلي' : 'Interactive design'}</span>
+                                <span><i class="fas fa-check-circle"></i> ${i18next.language === 'ar' ? 'تحسينات مستمرة' : 'Continuous improvements'}</span>
+                                <span><i class="fas fa-check-circle"></i> ${i18next.language === 'ar' ? 'متوافقة مع ATS' : 'ATS compatible'}</span>
                             </div>
                         </div>
                     </div>
                     <div class="cv-notification-footer">
-                        <p>يمكنك <a href="#contact">التواصل معي</a> للحصول على نسخة مبدئية</p>
+                        <p>${i18next.language === 'ar' ? 'يمكنك <a href="#contact">التواصل معي</a> للحصول على نسخة مبدئية' : 'You can <a href="#contact">contact me</a> to get a preliminary version'}</p>
                     </div>
                 </div>
             `,
             showConfirmButton: true,
-            confirmButtonText: 'إشعاري عند توفرها',
+            confirmButtonText: i18next.language === 'ar' ? 'إشعاري عند توفرها' : 'Notify me when ready',
             showCancelButton: true,
-            cancelButtonText: 'سأنتظرها لاحقاً',
+            cancelButtonText: i18next.language === 'ar' ? 'سأنتظرها لاحقاً' : 'I\'ll wait',
             customClass: {
                 popup: 'cv-swal-popup',
                 title: 'cv-swal-title',
@@ -1435,7 +1456,7 @@ if (downloadCVBtn) {
 if (result.isConfirmed) {
     // عرض نموذج إدخال البيانات بتصميم محسن
     Swal.fire({
-        title: '<span style="color: #27548a">كيف تريد استلام السيرة الذاتية؟</span>',
+        title: `<span style="color: #27548a">${i18next.t('cv.contact_method_title')}</span>`,
         html: `
             <div class="cv-contact-container">
                 <div class="contact-methods">
@@ -1443,39 +1464,39 @@ if (result.isConfirmed) {
                         <div class="method-icon">
                             <i class="fas fa-envelope"></i>
                         </div>
-                        <h4>البريد الإلكتروني</h4>
-                        <p>استلمها مُباشرة على بريدك</p>
+                        <h4>${i18next.t('cv.email_method')}</h4>
+                        <p>${i18next.t('cv.email_method_desc')}</p>
                     </div>
                     <div class="method-card phone-method" data-method="phone">
                         <div class="method-icon">
                             <i class="fas fa-mobile-alt"></i>
                         </div>
-                        <h4>رسالة هاتف</h4>
-                        <p>استلمها مُباشرة على الواتساب</p>
+                        <h4>${i18next.t('cv.phone_method')}</h4>
+                        <p>${i18next.t('cv.phone_method_desc')}</p>
                     </div>
                 </div>
                 
                 <div class="contact-input-container">
                     <div class="input-group email-input active">
-                        <label for="cv-email"><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
-                        <input type="email" id="cv-email" class="swal2-input" placeholder="example@domain.com">
+                        <label for="cv-email"><i class="fas fa-envelope"></i> ${i18next.t('cv.email_label')}</label>
+                        <input type="email" id="cv-email" class="swal2-input" placeholder="${i18next.t('cv.email_placeholder')}">
                     </div>
                     <div class="input-group phone-input">
-                        <label for="cv-phone"><i class="fas fa-phone"></i> رقم الهاتف</label>
-                        <input type="tel" id="cv-phone" class="swal2-input" placeholder="05XXXXXXXX">
+                        <label for="cv-phone"><i class="fas fa-phone"></i> ${i18next.t('cv.phone_label')}</label>
+                        <input type="tel" id="cv-phone" class="swal2-input" placeholder="${i18next.t('cv.phone_placeholder')}">
                     </div>
                     <div id="cv-contact-error" class="error-message"></div>
                 </div>
                 
                 <div class="privacy-notice">
-                    <i class="fas fa-lock"></i> جميع بيانات المستخدمين محفوظة ولا يتم مشاركتها مع أي طرف آخر
+                    <i class="fas fa-lock"></i> ${i18next.t('cv.privacy_notice')}
                 </div>
             </div>
         `,
         focusConfirm: false,
         showCancelButton: true,
-        confirmButtonText: 'تأكيد التسجيل',
-        cancelButtonText: 'إلغاء',
+        confirmButtonText: i18next.t('cv.confirm_button'),
+        cancelButtonText: i18next.t('cv.cancel_button'),
         customClass: {
             popup: 'cv-contact-popup',
             title: 'cv-contact-title',
@@ -1511,22 +1532,22 @@ if (result.isConfirmed) {
             if (activeMethod === 'email') {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!email) {
-                    showError('يرجى إدخال البريد الإلكتروني');
+                    showError(i18next.t('cv.email_required'));
                     return false;
                 }
                 if (!emailRegex.test(email)) {
-                    showError('صيغة البريد الإلكتروني غير صحيحة');
+                    showError(i18next.t('cv.invalid_email'));
                     return false;
                 }
                 return { method: 'email', contact: email };
             } else {
                 const phoneRegex = /^05\d{8}$/;
                 if (!phone) {
-                    showError('يرجى إدخال رقم الهاتف');
+                    showError(i18next.t('cv.phone_required'));
                     return false;
                 }
                 if (!phoneRegex.test(phone)) {
-                    showError('يجب أن يبدأ رقم الهاتف بـ 05 ويتكون من 10 أرقام');
+                    showError(i18next.t('cv.invalid_phone'));
                     return false;
                 }
                 return { method: 'phone', contact: phone };
@@ -1542,147 +1563,140 @@ if (result.isConfirmed) {
                 });
             }
         }
-}).then(async (result) => {
-    if (result.isConfirmed) {
-        const contactData = result.value;
-        
-        // عرض نافذة التحميل المتطورة
-const loadingSwal = Swal.fire({
-    // title: '<div class="swal2-progress-title">جاري معالجة طلبك</div>',
-    html: `
-        
-            <div class="loading-header">
-                <div class="loading-logo">
-                    <i class="fa-solid fa-hourglass-half"></i>
-                    <div class="loading-pulse"></div>
-                </div>
-                <h3>جاري تجهيز طلبك</h3>
-            </div>
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const contactData = result.value;
             
-            <div class="progress-track">
-                <div class="progress-bar"></div>
-                <div class="progress-text">
-                    <span class="progress-percent">0%</span>
-                    <span class="progress-status">جاري التحضير...</span>
-                </div>
-            </div>
-            
-            <div class="loading-details">
-                <div class="loading-step active">
-                    <i class="fas fa-check-circle"></i>
-                    <span>تأكيد البيانات</span>
-                </div>
-                <div class="loading-step">
-                    <i class="fas fa-spinner fa-pulse"></i>
-                    <span>معالجة الطلب</span>
-                </div>
-                <div class="loading-step">
-                    <i class="far fa-clock"></i>
-                    <span>إستلام طلبك</span>
-                </div>
-            </div>
-            
-            <div class="loading-tip">
-                <i class="fas fa-lightbulb"></i>
-                <p>يمكنك متابعة أعمالي خلال هذه الفترة في <a href="#portfolio">معرض الأعمال</a></p>
-            </div>
-    `,
-    allowOutsideClick: false,
-    showConfirmButton: false,
-            customClass: {
-            popup: 'custom-loading-container',
-            title: 'swal2-progress-title',
-            // htmlContainer: 'cv-contact-html',
-            // confirmButton: 'cv-contact-confirm',
-            // cancelButton: 'cv-contact-cancel',
-            // actions: 'cv-contact-actions'
-            },
-    didOpen: () => {
-        // تأثيرات الحركة عند الفتح
-        gsap.from('.loading-header', {
-            opacity: 0,
-            y: -20,
-            duration: 0.5
-        });
-        
-        gsap.from('.progress-track', {
-            opacity: 0,
-            y: 20,
-            duration: 0.5,
-            delay: 0.2
-        });
-        
-        gsap.from('.loading-step', {
-            opacity: 0,
-            x: 20,
-            stagger: 0.2,
-            duration: 0.5,
-            delay: 0.4
-        });
-        
-        // محاكاة تقدم الشريط
-        const progressBar = document.querySelector('.progress-bar');
-        const percentText = document.querySelector('.progress-percent');
-        const statusText = document.querySelector('.progress-status');
-        
-        gsap.to(progressBar, {
-            width: '100%',
-            duration: 3.5,
-            ease: "power1.inOut",
-            onUpdate: function() {
-                const progress = Math.round(this.progress() * 100);
-                percentText.textContent = `${progress}%`;
-                
-                // تحديث حالة التقدم
-                if (progress < 30) {
-                    statusText.textContent = 'جاري التحقق من البيانات...';
-                    progressBar.style.background = 'linear-gradient(90deg, #ffbc42, #ff5f57)';
-                } else if (progress < 70) {
-                    statusText.textContent = 'جاري معالجة الطلب...';
-                    progressBar.style.background = 'linear-gradient(90deg, #f5c266, #ffbc42)';
-                } else {
-                    statusText.textContent = 'جاري إعداد الملف النهائي...';
-                    progressBar.style.background = 'linear-gradient(90deg, #dda853, #f5c266)';
+            // عرض نافذة التحميل المتطورة
+            const loadingSwal = Swal.fire({
+                html: `
+                    <div class="loading-header">
+                        <div class="loading-logo">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                            <div class="loading-pulse"></div>
+                        </div>
+                        <h3>${i18next.t('cv.loading_title')}</h3>
+                    </div>
+                    
+                    <div class="progress-track">
+                        <div class="progress-bar"></div>
+                        <div class="progress-text">
+                            <span class="progress-percent">0%</span>
+                            <span class="progress-status">${i18next.t('cv.loading_status_preparing')}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="loading-details">
+                        <div class="loading-step active">
+                            <i class="fas fa-check-circle"></i>
+                            <span>${i18next.t('cv.loading_status_preparing')}</span>
+                        </div>
+                        <div class="loading-step">
+                            <i class="fas fa-spinner fa-pulse"></i>
+                            <span>${i18next.t('cv.loading_status_processing')}</span>
+                        </div>
+                        <div class="loading-step">
+                            <i class="far fa-clock"></i>
+                            <span>${i18next.t('cv.loading_status_finalizing')}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="loading-tip">
+                        <i class="fas fa-lightbulb"></i>
+                        <p>${i18next.t('cv.loading_tip')}</p>
+                    </div>
+                `,
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                customClass: {
+                    popup: 'custom-loading-container',
+                },
+                didOpen: () => {
+                    // تأثيرات الحركة عند الفتح
+                    gsap.from('.loading-header', {
+                        opacity: 0,
+                        y: -20,
+                        duration: 0.5
+                    });
+                    
+                    gsap.from('.progress-track', {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.5,
+                        delay: 0.2
+                    });
+                    
+                    gsap.from('.loading-step', {
+                        opacity: 0,
+                        x: 20,
+                        stagger: 0.2,
+                        duration: 0.5,
+                        delay: 0.4
+                    });
+                    
+                    // محاكاة تقدم الشريط
+                    const progressBar = document.querySelector('.progress-bar');
+                    const percentText = document.querySelector('.progress-percent');
+                    const statusText = document.querySelector('.progress-status');
+                    
+                    gsap.to(progressBar, {
+                        width: '100%',
+                        duration: 3.5,
+                        ease: "power1.inOut",
+                        onUpdate: function() {
+                            const progress = Math.round(this.progress() * 100);
+                            percentText.textContent = `${progress}%`;
+                            
+                            // تحديث حالة التقدم
+                            if (progress < 30) {
+                                statusText.textContent = i18next.t('cv.loading_status_preparing');
+                                progressBar.style.background = 'linear-gradient(90deg, #ffbc42, #ff5f57)';
+                            } else if (progress < 70) {
+                                statusText.textContent = i18next.t('cv.loading_status_processing');
+                                progressBar.style.background = 'linear-gradient(90deg, #f5c266, #ffbc42)';
+                            } else {
+                                statusText.textContent = i18next.t('cv.loading_status_finalizing');
+                                progressBar.style.background = 'linear-gradient(90deg, #dda853, #f5c266)';
+                            }
+                            
+                            // تحديث خطوات التقدم
+                            const steps = document.querySelectorAll('.loading-step');
+                            if (progress > 30) steps[0].classList.add('completed');
+                            if (progress > 60) steps[1].classList.add('completed');
+                            if (progress > 90) steps[2].classList.add('completed');
+                        },
+                        onComplete: () => {
+                            statusText.textContent = i18next.t('cv.loading_status_completed');
+                            progressBar.style.background = 'linear-gradient(90deg, #4bb543, #dda853)';
+                        }
+                    });
                 }
-                
-                // تحديث خطوات التقدم
-                const steps = document.querySelectorAll('.loading-step');
-                if (progress > 30) steps[0].classList.add('completed');
-                if (progress > 60) steps[1].classList.add('completed');
-                if (progress > 90) steps[2].classList.add('completed');
-            },
-            onComplete: () => {
-                statusText.textContent = 'اكتمل التجهيز بنجاح!';
-                progressBar.style.background = 'linear-gradient(90deg, #4bb543, #dda853)';
-            }
-        });
-    }
-});
+            });
 
-        try {
-            // محاكاة التأخير للإرسال (يمكن إزالته في الإنتاج)
-            await new Promise(resolve => setTimeout(resolve, 2500));
-            
-            // إرسال البيانات الفعلي إلى Supabase
-            const { data, error } = await supabaseClient
-                .from('cv_requests')
-                .insert([
-                    {
-                        contact_method: contactData.method,
-                        contact_info: contactData.contact,
-                        request_date: new Date().toISOString(),
-                        status: 'pending'
-                    }
-                ]);
-            
-            if (error) throw error;
-            
-            // إغلاق نافذة التحميل بنجاح
-            await loadingSwal.close();
+            try {
+                // محاكاة التأخير للإرسال (يمكن إزالته في الإنتاج)
+                await new Promise(resolve => setTimeout(resolve, 2500));
                 
+                // إرسال البيانات الفعلي إلى Supabase
+                const { data, error } = await supabaseClient
+                    .from('cv_requests')
+                    .insert([
+                        {
+                            contact_method: contactData.method,
+                            contact_info: contactData.contact,
+                            request_date: new Date().toISOString(),
+                            status: 'pending'
+                        }
+                    ]);
+                
+                if (error) throw error;
+                
+                // إغلاق نافذة التحميل بنجاح
+                await loadingSwal.close();
+                    
                 // عرض رسالة نجاح متحركة
                 Swal.fire({
-                    title: '<span style="color: #27548a">تم التسجيل بنجاح!</span>',
+                    title: `<span style="color: #27548a">${i18next.t('cv.success_title')}</span>`,
                     html: `
                         <div class="success-animation">
                             <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
@@ -1690,22 +1704,22 @@ const loadingSwal = Swal.fire({
                                 <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
                             </svg>
                             <div class="success-content">
-                                <h3>شكراً لتسجيلك!</h3>
-                                <p>سيتم إرسال السيرة الذاتية إلى 
+                                <h3>${i18next.t('cv.success_message')}</h3>
+                                <p>${i18next.t('cv.success_message')} 
                                     <span class="contact-highlight">
                                         ${contactData.method === 'email' ? 
                                             `<i class="fas fa-envelope"></i> ${contactData.contact}` : 
                                             `<i class="fas fa-mobile-alt"></i> ${contactData.contact}`}
                                     </span>
-                                    عند اكتمالها
+                                    ${i18next.language === 'ar' ? 'عند اكتمالها' : 'when ready'}
                                 </p>
                                 <div class="success-details">
-                                    <i class="fas fa-info-circle"></i> ستتلقى رسالة بالسيرة الذاتية عند اكتمالها بإذن الله
+                                    <i class="fas fa-info-circle"></i> ${i18next.t('cv.success_details')}
                                 </div>
                             </div>
                         </div>
                     `,
-                    confirmButtonText: 'شُكرًا، سأنتظر',
+                    confirmButtonText: i18next.t('cv.success_button'),
                     customClass: {
                         popup: 'success-popup',
                         title: 'success-title',
@@ -1734,7 +1748,7 @@ const loadingSwal = Swal.fire({
                     }
                 });
                 
-} catch (error) {
+            } catch (error) {
     console.error('Error loading portfolio:', error);
     portfolioContainer.innerHTML = `
         <div class="skills-error-container">
@@ -1917,16 +1931,21 @@ function initLoader() {
 // ==================== تحميل البيانات عند بدء التشغيل ====================
 
 function loadDynamicData() {
-    initLoader();
-    initHeaderScroll();
-    initNavLinks();
-    initTypingEffect();
-    initHeroAnimations();
-    loadSkillsSection();
-    loadPortfolio();
-    initContactForm();
-    initStatsCounter();
-    document.getElementById('year').textContent = new Date().getFullYear();
+  initLoader();
+  initHeaderScroll();
+  initNavLinks();
+  initTypingEffect();
+  initHeroAnimations();
+  loadSkillsSection();
+  loadPortfolio();
+  initContactForm();
+  initStatsCounter();
+  document.getElementById('year').textContent = new Date().getFullYear();
+  
+  // عرض نافذة اختيار اللغة بعد تحميل كل شيء
+  setTimeout(() => {
+    showLanguagePopup();
+  }, 1000);
 }
 
 // تنفيذ الكود عند تحميل الصفحة
@@ -2103,3 +2122,538 @@ window.addEventListener('resize', function() {
     
 });
 
+i18next
+  .use(i18nextHttpBackend)
+  .use(i18nextBrowserLanguageDetector)
+  .init({
+    fallbackLng: 'ar',
+    debug: false,
+    backend: {
+      loadPath: '{{lng}}/translation.json'
+    }
+  }, function(err, t) {
+    updateContent();
+  });
+
+function updateContent() {
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    const translation = i18next.t(key);
+    if (translation) {
+      // خاص بحقل البحث
+      if (element.tagName === 'INPUT' && element.classList.contains('search-input')) {
+        element.placeholder = translation;
+      } 
+      // تحديث زر معرض الأعمال (مع الأيقونة)
+      else if (element.tagName === 'A' && element.classList.contains('btn-primary')) {
+        const icon = element.querySelector('i');
+        if (icon) {
+          element.innerHTML = `${icon.outerHTML} ${translation}`;
+        } else {
+          element.textContent = translation;
+        }
+      }
+      // تحديث زر السيرة الذاتية (مع الأيقونة)
+      else if (element.tagName === 'A' && element.classList.contains('btn-outline')) {
+        const icon = element.querySelector('i');
+        if (icon) {
+          element.innerHTML = `${icon.outerHTML} ${translation}`;
+        } else {
+          element.textContent = translation;
+        }
+      }
+      else {
+        element.textContent = translation;
+      }
+    }
+  });
+
+  document.documentElement.lang = i18next.language;
+  loadSkillsSection();
+}
+
+// تغيير اللغة يدويًا
+function changeLang(lang) {
+  i18next.changeLanguage(lang, () => {
+    updateContent();
+    loadPortfolio();
+    initTypingEffect(); // إعادة تحميل تأثير الكتابة
+    initHeroAnimations(); // إعادة تحميل تأثيرات القسم الرئيسي
+  });
+}
+
+function getTranslatedSkillName(skillName) {
+  const skillMap = {
+    "تصميم الجرافيك": "graphic-design",
+    "الموشن جرافيك": "motion-graphics",
+    "المونتاج المرئي": "video-editing",
+    "التعليق الصوتي": "voice-over",
+    "تطوير الويب": "web-development",
+    "كتابة المحتوى": "content-writing"
+  };
+  
+  const key = skillMap[skillName] || skillName;
+  return i18next.t(`skills.${key}`);
+}
+
+
+// دالة عرض نافذة اختيار اللغة (بدون حفظ في localStorage)
+function showLanguagePopup() {
+  // التحقق من وجود تفضيل سابق
+  const savedLang = localStorage.getItem('preferredLanguage');
+  if (savedLang) {
+    changeLang(savedLang);
+    return;
+  }
+
+  // إنشاء عناصر الواجهة بشكل ديناميكي
+  const popupContent = document.createElement('div');
+  popupContent.className = 'enhanced-language-popup';
+  
+  popupContent.innerHTML = `
+    <div class="language-header">
+      <div class="language-title">
+        <h2>
+        اختر لغتك المفضلة<br/>
+        Choose Your Language
+        </h2>
+      </div>
+    </div>
+    
+<div class="language-cards-v2">
+  <!-- البطاقة العربية -->
+  <div class="lang-card arabic" id="arabic-option">
+    <div class="card-overlay"></div>
+    
+    <div class="lang-header">
+      <div class="lang-icon">
+        <i class="fas fa-mosque"></i>
+      </div>
+      <div class="lang-title">
+        <h3>العربية</h3>
+        <p>اللغة الرسمية</p>
+      </div>
+    </div>
+    
+    <div class="lang-details">
+      <div class="detail-item">
+        <i class="fas fa-check-circle"></i>
+        <span>دعم كامل للغة</span>
+      </div>
+      <div class="detail-item">
+        <i class="fas fa-font"></i>
+        <span>خطوط عربية</span>
+      </div>
+    </div>
+    
+    <div class="select-indicator">
+      <div class="indicator-inner"></div>
+      <i class="fas fa-check"></i>
+    </div>
+  </div>
+  
+  <!-- البطاقة الإنجليزية -->
+  <div class="lang-card english" id="english-option">
+    <div class="card-overlay"></div>
+    
+    <div class="lang-header">
+      <div class="lang-icon">
+        <i class="fas fa-globe-americas"></i>
+      </div>
+      <div class="lang-title">
+        <h3>English</h3>
+        <p>International</p>
+      </div>
+    </div>
+    
+    <div class="lang-details">
+      <div class="detail-item">
+        <i class="fas fa-check-circle"></i>
+        <span>Full language support</span>
+      </div>
+      <div class="detail-item">
+        <i class="fas fa-font"></i>
+        <span>Modern Fonts</span>
+      </div>
+    </div>
+    
+    <div class="select-indicator">
+      <div class="indicator-inner"></div>
+      <i class="fas fa-check"></i>
+    </div>
+  </div>
+</div>
+    
+<div class="language-options">
+  <!-- خيار تذكر اللغة -->
+  <div class="option-card remember-option">
+    <label class="option-toggle">
+      <input type="checkbox" id="remember-language" checked>
+      <span class="toggle-slider"></span>
+      <span class="toggle-icons">
+        <i class="fas fa-check active-icon"></i>
+        <i class="fas fa-times inactive-icon"></i>
+      </span>
+    </label>
+    <div class="option-details">
+      <h4>
+        <i class="fas fa-history"></i>
+        ${i18next.language === 'ar' ? 'تذكر اختياري' : 'Remember my choice'}
+      </h4>
+      <p>${i18next.language === 'ar' ? 
+        'سيتم حفظ تفضيلات اللغة للمرة القادمة' : 
+        'Your language preference will be saved for next time'}</p>
+    </div>
+  </div>
+
+
+</div>
+  `;
+
+  // عرض النافذة مع SweetAlert2
+  const languagePopup = Swal.fire({
+    html: popupContent,
+    padding: '0',
+    showConfirmButton: false,
+    showCloseButton: true,
+    allowOutsideClick: false,
+    showCloseButton: false,
+    customClass: {
+      container: 'language-popup-container',
+      popup: 'language-swal-popup',
+      closeButton: 'language-close-btn'
+    },
+
+  });
+
+  // اختيار العربية
+  function selectArabic() {
+    animateSelection('#arabic-option', 'ar');
+  }
+  
+  // اختيار الإنجليزية
+  function selectEnglish() {
+    animateSelection('#english-option', 'en');
+  }
+  
+  // إضافة مستمعات الأحداث للكروت مباشرة
+  document.getElementById('arabic-option')?.addEventListener('click', selectArabic);
+  document.getElementById('english-option')?.addEventListener('click', selectEnglish);
+  
+  // تأثيرات اختيار اللغة
+  function animateSelection(elementId, lang) {
+    const card = document.querySelector(elementId);
+    const remember = document.getElementById('remember-language').checked;
+    
+    // تأثير النقر
+    gsap.to(card, {
+      scale: 0.95,
+      duration: 0.2,
+      yoyo: true,
+      repeat: 1,
+      onComplete: () => {
+        if (remember) {
+          localStorage.setItem('preferredLanguage', lang);
+        }
+
+        
+        // تغيير اللغة بعد التأثيرات
+        setTimeout(() => {
+          changeLang(lang);
+          languagePopup.close();
+          showLanguageWelcome(lang);
+        }, 500);
+      }
+    });
+  }
+}
+
+// عرض رسالة ترحيبية متطورة
+// دالة عرض رسالة ترحيبية متطورة لكل لغة
+// دالة عرض رسالة ترحيبية متطورة لكل لغة
+function showLanguageWelcome(lang) {
+  // إعدادات التصميم لكل لغة
+  const welcomeConfig = {
+    ar: {
+      title: "أهلاً وسهلاً بك!",
+      message: "شكراً لاختيارك اللغة العربية، أتمنى لك تصفحاً مُمتعًا.",
+      icon: "fa-mosque",
+      iconColor: "#dda853",
+      bgGradient: "linear-gradient(135deg, #f5eedc 0%, #ffffff 100%)",
+      textColor: "#27548a",
+      buttonColor: "#dda853",
+      detailBg: "rgba(221, 168, 83, 0.1)",
+      detailBorder: "1px solid rgba(221, 168, 83, 0.3)"
+    },
+    en: {
+      title: "!Welcome",
+      message: "Thank you for choosing English. Enjoy exploring my portfolio website.",
+      icon: "fa-globe-europe",
+      iconColor: "#27548a",
+      bgGradient: "linear-gradient(135deg, #cbdff7ff 0%, #ffffff 100%)",
+      textColor: "#27548a",
+      buttonColor: "#27548a",
+      detailBg: "rgba(39, 84, 138, 0.1)",
+      detailBorder: "1px solid rgba(39, 84, 138, 0.3)"
+    }
+  };
+
+  const config = welcomeConfig[lang] || welcomeConfig.ar;
+  
+  // إنشاء عناصر الواجهة بشكل ديناميكي
+  const welcomeContent = document.createElement('div');
+  welcomeContent.className = `language-welcome ${lang}`;
+  
+  welcomeContent.innerHTML = `
+    <div class="welcome-container">
+      <div class="welcome-icon-container">
+        <div class="welcome-icon-bg">
+          <i class="fas ${config.icon}"></i>
+        </div>
+        <div class="welcome-sparkles"></div>
+      </div>
+      
+      <div class="welcome-text">
+        <h3>${config.title}</h3>
+        <p>${config.message}</p>
+      </div>
+      
+      <div class="welcome-details">
+        <div class="detail-item">
+          <div class="detail-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <span>${lang === 'ar' ? 'واجهة كاملة باللغة العربية' : 'Fully localized interface'}</span>
+        </div>
+        <div class="detail-item">
+          <div class="detail-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <span>${lang === 'ar' ? 'تجربة مستخدم مخصصة' : 'Custom user experience'}</span>
+        </div>
+      </div>
+      
+      <button class="welcome-btn">
+        ${lang === 'ar' ? 'ابدأ التصفح' : 'Start Browsing'}
+        <div class="btn-hover-effect"></div>
+      </button>
+    </div>
+  `;
+
+  // عرض النافذة مع SweetAlert2
+  Swal.fire({
+    html: welcomeContent,
+    background: config.bgGradient,
+    showConfirmButton: false,
+    timer: 5000,
+    timerProgressBar: true,
+    customClass: {
+      popup: 'welcome-popup',
+      htmlContainer: 'welcome-html'
+    },
+    didOpen: () => {
+      // تأثيرات الحركة للعناصر
+      gsap.from('.welcome-icon-container', {
+        scale: 0,
+        rotation: -30,
+        duration: 0.8,
+        ease: "elastic.out(1, 0.5)"
+      });
+      
+      gsap.from('.welcome-text', {
+        y: 20,
+        opacity: 0,
+        duration: 0.5,
+        delay: 0.3
+      });
+      
+      gsap.from('.detail-item', {
+        y: 20,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 0.4,
+        delay: 0.6
+      });
+      
+      gsap.from('.welcome-btn', {
+        y: 20,
+        opacity: 0,
+        duration: 0.4,
+        delay: 0.8
+      });
+      
+      // تأثير الشرر للأيقونة
+      const sparkles = document.querySelector('.welcome-sparkles');
+      if (sparkles) {
+        for (let i = 0; i < 8; i++) {
+          const spark = document.createElement('div');
+          spark.className = 'spark';
+          spark.style.transform = `rotate(${i * 45}deg)`;
+          spark.style.background = config.iconColor;
+          sparkles.appendChild(spark);
+          
+          gsap.to(spark, {
+            x: 'random(30, 50)',
+            y: 'random(-20, 20)',
+            opacity: 0,
+            duration: 'random(0.5, 1)',
+            delay: 0.3,
+            ease: "power2.out"
+          });
+        }
+      }
+      
+      // إضافة مستمع حدث للزر
+      document.querySelector('.welcome-btn')?.addEventListener('click', () => {
+        Swal.close();
+      });
+    }
+  });
+
+  // إضافة أنماط CSS ديناميكية
+  const style = document.createElement('style');
+  style.textContent = `
+    .language-welcome {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      color: ${config.textColor};
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .welcome-container {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .welcome-icon-container {
+      margin: 0 auto 1.5rem;
+      width: 5rem;
+      height: 5rem;
+      position: relative;
+    }
+    
+    .welcome-icon-bg {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      background: ${config.iconColor};
+      font-size: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .welcome-sparkles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .spark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      transform-origin: left center;
+    }
+    
+    .welcome-text h3 {
+      margin-bottom: 0.8rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    
+    .welcome-text p {
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+    
+    .welcome-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin: 1.5rem 0;
+    }
+    
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.95rem;
+      background: ${config.detailBg};
+      color: ${config.textColor};
+      padding: 0.8rem 1.2rem;
+      border-radius: 50px;
+      border: ${config.detailBorder};
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+    }
+    
+    .detail-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .welcome-btn {
+      position: relative;
+      overflow: hidden;
+      background: ${config.buttonColor};
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all 0.4s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .welcome-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .btn-hover-effect {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .welcome-btn:hover .btn-hover-effect {
+      left: 100%;
+    }
+    
+    @media (max-width: 480px) {
+      .language-welcome {
+        padding: 1.5rem 1rem;
+      }
+      
+      .welcome-text h3 {
+        font-size: 1.5rem;
+      }
+      
+      .detail-item {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+      }
+    }
+  `;
+  
+  document.head.appendChild(style);
+}

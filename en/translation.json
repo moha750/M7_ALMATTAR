@@ -1,0 +1,224 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "Resume",
+    "skills": "Skills",
+    "portfolio": "Portfolio",
+    "stats": "Stats",
+    "contact": "Contact"
+  },
+  "hero": {
+    "greeting": "Hello, I'm",
+    "my-name": "Mohammad Al-Mattar",
+    "subtitle": "Interested in self-education, passionate about developing skills, and believing that there are no ceilings or limits to creativity.",
+    "experience": "Years of Experience",
+    "view-portfolio": "My Portfolio",
+    "view-cv": "My Resume",
+    "download_cv": "Download CV"
+    
+  },
+  "cv-sec": {
+    "sec-title": "My Resume"
+  },
+  "skills": {
+    "sec-title": "My Skills",
+    "graphic-design": "Graphic Design",
+    "motion-graphics": "Motion Graphics",
+    "video-editing": "Video Editing",
+    "voice-over": "Voice Over",
+    "web-development": "Web Development",
+    "content-writing": "Content Writing",
+    "expert": "Expert",
+    "advanced": "Advanced",
+    "intermediate": "Intermediate",
+    "beginner": "Beginner",
+    "projects-count": "projects",
+    "mastery-level": "Mastery Level"
+  },
+  "loading": {
+    "skills": {
+      "title": "Loading my skills and experience",
+      "message": "Thank you for your patience and excitement to see my skills"
+    }
+  },
+  "loadingpo": {
+      "title": "Loading my Portfolio",
+      "message": "Thank you for your patience and excitement to see my Portfolio"
+  },
+  "errors": {
+    "skills": {
+      "title": "Error loading skills section",
+      "message": "Failed to load skills data due to a technical issue. Please try again.",
+      "retry": "Retry",
+      "contact": "Contact Support",
+      "details": "If the problem persists, you can <a href='#contact' class='error-link'>contact me</a> to report the issue",
+      "error_code": "Error Code"
+    }
+  },
+  "errorspo": {
+    "title": "Error loading Portfolio section",
+    "message": "Failed to load Portfolio data due to a technical issue. Please try again.",
+    "retry": "Retry",
+    "contact": "Contact Support",
+    "details": "If the problem persists, you can <a href='#contact' class='error-link'>contact me</a> to report the issue",
+    "timestamp": "Timestamp",
+    "error_code": "Error Code"
+  },
+  "num": {
+    "title": "My Stats",
+    "pro": "Completed Project",
+    "cli": "Customers",
+    "wir": "Working Hour",
+    "aj": "Award and honor"
+  },
+  "con": {
+    "title": "Contact Me",
+    "email": "E-Mail",
+    "num": "Phone / WhatsApp",
+    "send-email": "Send a Message",
+    "send-num": "Conversation",
+    "map1": "Location",
+    "map2": "Al-Ahsa, Kingdom of Saudi Arabia",
+    "soc": "Social Media",
+    "title1": "Send me a message",
+    "subtitle": "I will reply to you within 24 hours",
+    "send-btn": "Send a message",
+    "contactName": "the name",
+    "contactEmail": "e-mail",
+    "contactPhone": "Phone number (optional)",
+    "contactSubject": "Thesis topic",
+    "contactMessage": "Message text",
+    "sending": "Sending..."
+  },
+  "contact": {
+    "success": {
+      "title": "Sent successfully!",
+      "message": "Thank you for your message! I will contact you soon.",
+      "button": "Thanks"
+    }
+  },
+  "errorsSend": {
+    "contact": {
+      "title": "Something wrong!",
+      "message": "Something went wrong while Sending. Please try again.",
+      "retry": "Please try again",
+      "invalid_email": "Invalid email format",
+      "short_message": "The message must be at least 10 characters long.",
+      "invalid_phone": "Phone number must be 10 digits",
+      "save_failed": "Failed to save data"
+    }
+  },
+  "pageFooter": {
+    "title": "I provide creative solutions in graphic design, motion graphics, and professional editing to help brands highlight their identity in a distinctive way.",
+    "links": "Quick Links",
+    "con": "Contact me",
+    "c": "All rights reserved to Mohammad Al-Mattar 2025 ©",
+    "send": "Send a message",
+    "f1": "Home",
+    "f2": "Resume",
+    "f3": "Skills",
+    "f4": "Portfolio",
+    "f5": "Stats",
+    "f6": "Contact",
+    "f7": "Al-Ahsa, Kingdom of Saudi Arabia"
+  },
+  "portfolio": {
+    "title": "My Portfolio",
+    "all": "All",
+    "g": "Graphic",
+    "m": "Motion",
+    "vid": "Video",
+    "voice": "Voice",
+    "web": "Web",
+    "view_project": "View Project",
+    "view_project1": "View the project",
+    "search_placeholder": "Search for a project..."
+  },
+  "Resume": {
+    "title": "My Resume",
+
+    "t1": "Practical Experience",
+
+    "a": "graphic designer",
+    "aa": "Afkar Advertising Agency",
+    "aaa": "Designing visual identities for companies and institutions",
+    "aaaa": "Create motion graphics videos for ads",
+    "aaaaa": "Design project management and implementation",
+    "aaaaaa": "Collaborate with the marketing team to achieve goals.",
+
+    "b": "Head of the Media Committee",
+    "bb": "Adeeb Club - King Faisal University",
+    "bbb": "Design of marketing and promotional materials",
+    "bbbb": "Poster and advertisement design",
+    "bbbbb": "Creative content writing",
+    "bbbbbb": "Video editing",
+    "bbbbbbb": "Create motion graphics videos",
+    "bbbbbbbb": "Website design and Web Developer",
+
+    "c": "Member of the Media Center",
+    "cc": "Al-Bir Society in Al-Ahsa",
+    "ccc": "Design of marketing and promotional materials",
+    "cccc": "Poster and advertisement design",
+    "ccccc": "Create visual effects and motion",
+    "cccccc": "Video editing",
+
+    "d": "President of the Student Adib Club",
+    "dd": "King Faisal University",
+    "ddd": "Student Events and Activities Management",
+    "dddd": "Social media management",
+
+    "e": "graphic designer",
+    "ee": "Al-Ahsa Investment Forum",
+    "eee": "Designing advertisements and posters",
+
+    "t2": "Academic Qualifications",
+
+    "f": "Bachelor of Media",
+    "ff": "King Faisal University, Al-Ahsa",
+    "fff": "Audiovisual Media major",
+
+    "t3": "Certificates and Courses",
+
+    "g": "Professional Certificate in Motion Graphics",
+    "gg": "Digital Design Academy - 2022",
+    "ggg": "Advanced Course in After Effects",
+    "gggg": "Edraak Platform - 2021",
+    "ggggg": "Certified in UI/UX Design",
+    "gggggg": "Coursera Platform - 2020",
+
+    "t4": "Achievements",
+
+    "h": "Fifth place as the best student club",
+    "hh": "King Faisal University",
+    "hhh": "Designing a (Muni) identity for the Ambassadors of Moderation Program",
+    "hhhh": "Taibah University"
+  },
+  "cv": {
+  "contact_method_title": "How would you like to receive the CV?",
+  "email_method": "E-Mail",
+  "email_method_desc": "Receive it directly to your email",
+  "phone_method": "Phone Message",
+  "phone_method_desc": "Receive it directly via WhatsApp",
+  "email_label": "E-Mail",
+  "email_placeholder": "example@domain.com",
+  "phone_label": "Phone Number",
+  "phone_placeholder": "05XXXXXXXX",
+  "privacy_notice": "All user data is kept private and not shared with any third party",
+  "confirm_button": "Confirm Registration",
+  "cancel_button": "Cancel",
+  "email_required": "Please enter your email",
+  "invalid_email": "Invalid email format",
+  "phone_required": "Please enter your phone number",
+  "invalid_phone": "Phone number must start with 05 and be 10 digits",
+  "loading_title": "Processing Your Request",
+  "loading_status_preparing": "Preparing...",
+  "loading_status_processing": "Processing your request...",
+  "loading_status_finalizing": "Finalizing the file...",
+  "loading_status_completed": "Processing completed successfully!",
+  "loading_tip": "You can check my <a href=\"#portfolio\">portfolio</a> while waiting",
+  "success_title": "Registration Successful!",
+  "success_message": "Thank you for registering! The CV will be sent to",
+  "success_details": "You will receive a message with the CV when it's ready",
+  "success_button": "Thanks, I'll wait"
+}
+}

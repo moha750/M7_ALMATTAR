@@ -1,0 +1,24 @@
+{
+  "ar": {
+    "home": "الرئيسية",
+    "about": "السيرة الذاتية",
+    "skills": "المهارات",
+    "portfolio": "معرض الأعمال",
+    "stats": "أبرز الأرقام",
+    "contact": "التواصل",
+    "download_cv": "تحميل السيرة",
+    "welcome": "مرحبًا، أنا",
+    "experience_years": "سنوات خبرة"
+  },
+  "en": {
+    "home": "Home",
+    "about": "Resume",
+    "skills": "Skills",
+    "portfolio": "Portfolio",
+    "stats": "Stats",
+    "contact": "Contact",
+    "download_cv": "Download CV",
+    "welcome": "Hello, I'm",
+    "experience_years": "Years of Experience"
+  }
+}

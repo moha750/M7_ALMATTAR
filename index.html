@@ -1,177 +1,184 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سيرتي الذاتية | مصمم جرافيك وموشن جرافيكر</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سيرتي الذاتية | مصمم جرافيك وموشن جرافيكر</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/i18next@21.6.4/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@1.4.2/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@6.1.2/i18nextBrowserLanguageDetector.min.js"></script>
+
 </head>
+
 <body>
 
   <header class="site-header">
     <div class="container">
-        <div class="header-content">
-            <div class="logo">
-              <img src="logo.png" alt="" srcset="">
-            </div>
-            
-            <nav class="main-nav">
-                <ul class="nav-list">
-                    <li><a href="#hero" class="nav-link active">الرئيسية</a></li>
-                    <li><a href="#about" class="nav-link">السيرة الذاتية</a></li>
-                    <li><a href="#skills" class="nav-link">المهارات</a></li>
-                    <li><a href="#portfolio" class="nav-link">معرض الأعمال</a></li>
-                    <li><a href="#stats" class="nav-link">أبرز الأرقام</a></li>
-                    <li><a href="#contact" class="nav-link">التواصل</a></li>
-                </ul>
-                
-                <div class="mobile-menu-btn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </nav>
-            
-            <!-- إضافة زر تحميل السيرة الذاتية -->
-            <a href="#" class="btn-download-cv" id="downloadCV">
-                <i class="fas fa-download"></i> تحميل السيرة
-            </a>
+      <div class="header-content">
+        <div class="logo">
+          <img src="logo.png" alt="" srcset="">
         </div>
+
+        <nav class="main-nav">
+          <ul class="nav-list">
+            <li><a href="#hero" class="nav-link active" data-i18n="nav.home"></a></li>
+            <li><a href="#about" class="nav-link" data-i18n="nav.about"></a></li>
+            <li><a href="#skills" class="nav-link" data-i18n="nav.skills"></a></li>
+            <li><a href="#portfolio" class="nav-link" data-i18n="nav.portfolio"></a></li>
+            <li><a href="#stats" class="nav-link" data-i18n="nav.stats"></a></li>
+            <li><a href="#contact" class="nav-link" data-i18n="nav.contact"></a></li>
+          </ul>
+
+          <div class="mobile-menu-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </nav>
+
+        <!-- إضافة زر تحميل السيرة الذاتية -->
+        <a href="#" class="btn-download-cv" id="downloadCV">
+          <i class="fas fa-download"></i> تحميل السيرة
+        </a>
+
+      </div>
     </div>
-    
+
     <!-- إضافة شريط التقدم للتمرير -->
     <div class="scroll-progress-bar"></div>
-</header>
+  </header>
 
 
-<!-- قسم Hero المعدل -->
-<section id="hero" class="hero">
+  <!-- قسم Hero المعدل -->
+  <section id="hero" class="hero">
     <div class="container">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title">
-                    <span class="title-line">مرحبًا، أنا</span>
-                    <span class="title-line">محمد المطر</span>
-                    <span class="title-line highlight" id="typing-text"></span>
-                </h1>
-                <p class="hero-subtitle">مُهتم بالتعليم الذاتي، وشغوف بتطوير المهارات، ومُؤمن بأن لا سقف ولا حدود للإبداع.</p>
-                <div class="hero-buttons">
-                    <a href="#portfolio" class="btn btn-primary">
-                        <i class="fas fa-images"></i> معرض أعمالي
-                    </a>
-                    <a href="#about" class="btn btn-outline">
-                        <i class="fas fa-user-tie"></i> سيرتي الذاتية
-                    </a>
-                </div>
-            </div>
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="hero-title">
+            <span class="title-line" data-i18n="hero.greeting">مرحبًا، أنا</span>
+            <span class="title-line" data-i18n="hero.my-name">محمد المطر</span>
+            <span class="title-line highlight" id="typing-text"></span>
+          </h1>
+          <p class="hero-subtitle" data-i18n="hero.subtitle">مُهتم بالتعليم الذاتي، وشغوف بتطوير المهارات، ومُؤمن بأن لا سقف ولا حدود للإبداع.</p>
+          <div class="hero-buttons">
+            <a href="#portfolio" class="btn btn-primary" data-i18n="hero.view-portfolio">
+              <i class="fas fa-images"></i> معرض أعمالي
+            </a>
+            <a href="#about" class="btn btn-outline" data-i18n="hero.view-cv">
+              <i class="fas fa-user-tie"></i> سيرتي الذاتية
+            </a>
+          </div>
         </div>
-        <div class="hero-image">
-            <div class="image-frame">
-                <img src="IBR08014.jpg" alt="محمد المطر" loading="lazy">
-                <!-- إضافة طبقات تفاعلية -->
-                <div class="image-overlay"></div>
-                <div class="image-highlight"></div>
-            </div>
-            <div class="hero-badge">
-                <div class="badge-content">
-                    <span class="badge-number">7+</span>
-                    <span class="badge-text">سنوات خبرة</span>
-                </div>
-                <div class="badge-particles"></div>
-            </div>
-            <!-- إضافة عناصر تصميمية إضافية -->
-            <div class="design-element circle-element"></div>
-            <div class="design-element triangle-element"></div>
+      </div>
+      <div class="hero-image">
+        <div class="image-frame">
+          <img src="IBR08014.jpg" alt="محمد المطر" loading="lazy">
+          <!-- إضافة طبقات تفاعلية -->
+          <div class="image-overlay"></div>
+          <div class="image-highlight"></div>
         </div>
+        <div class="hero-badge">
+          <div class="badge-content">
+            <span class="badge-number">7+</span>
+            <span class="badge-text" data-i18n="hero.experience">سنوات خبرة</span>
+          </div>
+          <div class="badge-particles"></div>
+        </div>
+        <!-- إضافة عناصر تصميمية إضافية -->
+        <div class="design-element circle-element"></div>
+        <div class="design-element triangle-element"></div>
+      </div>
     </div>
     <div class="hero-scroll">
-        <a href="#about" class="scroll-down">
-            <i class="fas fa-chevron-down"></i>
-        </a>
+      <a href="#about" class="scroll-down">
+        <i class="fas fa-chevron-down"></i>
+      </a>
     </div>
     <div class="hero-shapes">
-        <div class="shape circle"></div>
-        <div class="shape triangle"></div>
-        <div class="shape square"></div>
+      <div class="shape circle"></div>
+      <div class="shape triangle"></div>
+      <div class="shape square"></div>
     </div>
-</section>
+  </section>
 
 
-<section class="resume" id="about">
+  <section class="resume" id="about">
     <div class="container">
-      <h2 class="resume-title">سيرتي الذاتية</h2>
-  
+      <h2 class="resume-title" data-i18n="Resume.title">سيرتي الذاتية</h2>
+
       <div class="resume-grid">
         <!-- العمود الأيمن - الخبرات العملية -->
         <div class="resume-column">
           <div class="resume-card">
             <div class="resume-card-header">
               <i class="fas fa-briefcase"></i>
-              <h3>الخبرات العملية</h3>
+              <h3 data-i18n="Resume.a">الخبرات العملية</h3>
             </div>
             <ul class="resume-timeline">
               <li>
                 <span class="resume-date">2019 - 2020</span>
-                <h4>مُصمم جرافيك</h4>
-                <p class="resume-company">وكالة أفكار للدعاية والإعلان</p>
+                <h4 data-i18n="Resume.t1">مُصمم جرافيك</h4>
+                <p class="resume-company" data-i18n="Resume.a">وكالة أفكار للدعاية والإعلان</p>
                 <div class="resume-details">
                   <ul>
-                    <li>تصميم الهويات البصرية للشركات والمؤسسات</li>
-                    <li>إنشاء فيديوهات الموشن جرافيك للإعلانات</li>
-                    <li>إدارة مشاريع التصميم وتنفيذها</li>
-                    <li>التعاون مع فريق التسويق لتحقيق الأهداف</li>
+                    <li data-i18n="Resume.aa">تصميم الهويات البصرية للشركات والمؤسسات</li>
+                    <li data-i18n="Resume.aaa">إنشاء فيديوهات الموشن جرافيك للإعلانات</li>
+                    <li data-i18n="Resume.aaaa">إدارة مشاريع التصميم وتنفيذها</li>
+                    <li data-i18n="Resume.aaaaa">التعاون مع فريق التسويق لتحقيق الأهداف</li>
                   </ul>
                 </div>
               </li>
               <li>
                 <span class="resume-date">2022 - 2023</span>
-                <h4>قائد لجنة الإعلام</h4>
-                <p class="resume-company">نادي أدِيب - جامعة الملك فيصل</p>
+                <h4 data-i18n="Resume.b">قائد لجنة الإعلام</h4>
+                <p class="resume-company" data-i18n="Resume.bb">نادي أدِيب - جامعة الملك فيصل</p>
                 <div class="resume-details">
                   <ul>
-                    <li>تصميم المواد التسويقية والترويجية</li>
-                    <li>تصميم البوسترات والإعلانات</li>
-                    <li>كتابة المحتوى الإبداعي</li>
-                    <li>مونتاج الفديوهات المرئية</li>
-                    <li>إنشاء فديوهات الموشن جرافيك</li>
-                    <li>تصميم وبرمجة المواقع الإلكترونية</li>
+                    <li data-i18n="Resume.bbb">تصميم المواد التسويقية والترويجية</li>
+                    <li data-i18n="Resume.bbbb">تصميم البوسترات والإعلانات</li>
+                    <li data-i18n="Resume.bbbbb">كتابة المحتوى الإبداعي</li>
+                    <li data-i18n="Resume.bbbbbb">مونتاج الفديوهات المرئية</li>
+                    <li data-i18n="Resume.bbbbbbb">إنشاء فديوهات الموشن جرافيك</li>
+                    <li data-i18n="Resume.bbbbbbbb">تصميم وبرمجة المواقع الإلكترونية</li>
                   </ul>
                 </div>
               </li>
-                <li>
+              <li>
                 <span class="resume-date">2024</span>
-                <h4>عضو المركز الإعلامي</h4>
-                <p class="resume-company">جمعية البر بالأحساء</p>
+                <h4 data-i18n="Resume.c">عضو المركز الإعلامي</h4>
+                <p class="resume-company" data-i18n="Resume.cc">جمعية البر بالأحساء</p>
                 <div class="resume-details">
                   <ul>
-                    <li>تصميم المواد التسويقية والترويجية</li>
-                    <li>تصميم البوسترات والإعلانات</li>
-                    <li>إنشاء التأثيرات البصرية والموشن</li>
-                    <li>مونتاج الفديوهات المرئية</li>
+                    <li data-i18n="Resume.ccc">تصميم المواد التسويقية والترويجية</li>
+                    <li data-i18n="Resume.cccc">تصميم البوسترات والإعلانات</li>
+                    <li data-i18n="Resume.ccccc">إنشاء التأثيرات البصرية والموشن</li>
+                    <li data-i18n="Resume.cccccc">مونتاج الفديوهات المرئية</li>
                   </ul>
                 </div>
               </li>
-                <li>
+              <li>
                 <span class="resume-date">2024 - حتى الآن</span>
-                <h4>رئيس نادي أدِيب الطُلابي</h4>
-                <p class="resume-company">جامعة الملك فيصل</p>
+                <h4 data-i18n="Resume.d">رئيس نادي أدِيب الطُلابي</h4>
+                <p class="resume-company" data-i18n="Resume.dd">جامعة الملك فيصل</p>
                 <div class="resume-details">
                   <ul>
-                    <li>إدارة الفعاليات والنشاطات الطُلابية</li>
-                    <li>إدارة مِنصات التواصل الإجتماعي</li>
+                    <li data-i18n="Resume.ddd">إدارة الفعاليات والنشاطات الطُلابية</li>
+                    <li data-i18n="Resume.dddd">إدارة مِنصات التواصل الإجتماعي</li>
                   </ul>
                 </div>
               </li>
-                <li>
+              <li>
                 <span class="resume-date">2025</span>
-                <h4>مُصمم جرافيك</h4>
-                <p class="resume-company">مُنتدى الأحساء للأستثمار</p>
+                <h4 data-i18n="Resume.e">مُصمم جرافيك</h4>
+                <p class="resume-company" data-i18n="Resume.ee">مُنتدى الأحساء للأستثمار</p>
                 <div class="resume-details">
                   <ul>
-                    <li>تصميم الإعلانات والبوسترات</li>
+                    <li data-i18n="Resume.eee">تصميم الإعلانات والبوسترات</li>
                   </ul>
                 </div>
               </li>
@@ -184,37 +191,37 @@
           <div class="resume-card">
             <div class="resume-card-header">
               <i class="fas fa-graduation-cap"></i>
-              <h3>المؤهلات العلمية</h3>
+              <h3 data-i18n="Resume.t2">المؤهلات العلمية</h3>
             </div>
             <ul class="resume-timeline">
               <li>
                 <span class="resume-date">2022 - حتى الآن</span>
-                <h4>بكالوريوس الإعلام</h4>
-                <p class="resume-institute">جامعة الملك فيصل، الأحساء</p>
+                <h4 data-i18n="Resume.f">بكالوريوس الإعلام</h4>
+                <p class="resume-institute" data-i18n="Resume.ff">جامعة الملك فيصل، الأحساء</p>
                 <div class="resume-details">
-                  <p>تخصص إعلام مرئي ومسموع</p>
+                  <p data-i18n="Resume.fff">تخصص إعلام مرئي ومسموع</p>
                 </div>
               </li>
             </ul>
           </div>
-  
+
           <div class="resume-card">
             <div class="resume-card-header">
               <i class="fas fa-certificate"></i>
-              <h3>الشهادات والدورات</h3>
+              <h3 data-i18n="Resume.t3">الشهادات والدورات</h3>
             </div>
             <ul class="resume-list">
               <li>
-                <h4>شهادة احترافية في الموشن جرافيك</h4>
-                <p>أكاديمية التصميم الرقمي - 2022</p>
+                <h4 data-i18n="Resume.g">شهادة احترافية في الموشن جرافيك</h4>
+                <p data-i18n="Resume.gg">أكاديمية التصميم الرقمي - 2022</p>
               </li>
               <li>
-                <h4>دورة متقدمة في برنامج After Effects</h4>
-                <p>منصة إدراك - 2021</p>
+                <h4 data-i18n="Resume.ggg">دورة متقدمة في برنامج After Effects</h4>
+                <p data-i18n="Resume.gggg">منصة إدراك - 2021</p>
               </li>
               <li>
-                <h4>شهادة معتمدة في UI/UX Design</h4>
-                <p>منصة كورسيرا - 2020</p>
+                <h4 data-i18n="Resume.ggggg">شهادة معتمدة في UI/UX Design</h4>
+                <p data-i18n="Resume.gggggg">منصة كورسيرا - 2020</p>
               </li>
             </ul>
           </div>
@@ -222,359 +229,321 @@
           <div class="resume-card">
             <div class="resume-card-header">
               <i class="fas fa-trophy"></i>
-              <h3>الإنجازات</h3>
+              <h3 data-i18n="Resume.t4">الإنجازات</h3>
             </div>
             <ul class="resume-list">
               <li>
-                <h4>المركز الخامس كأفضل نادي طُلابي</h4>
-                <p>جامعة الملك فيصل</p>
+                <h4 data-i18n="Resume.h">المركز الخامس كأفضل نادي طُلابي</h4>
+                <p data-i18n="Resume.hh">جامعة الملك فيصل</p>
               </li>
               <li>
-                <h4>تصميم هوية (منيع) لبرنامج سفراء الوسطية</h4>
-                <p>جامعة طيبة</p>
+                <h4 data-i18n="Resume.hhh">تصميم هوية (منيع) لبرنامج سفراء الوسطية</h4>
+                <p data-i18n="Resume.hhhh">جامعة طيبة</p>
               </li>
             </ul>
           </div>
         </div>
       </div>
     </div>
-</section>
+  </section>
 
-    <!-- قسم المهارات المتقدم -->
-    <section class="skills-section" id="skills">
-        <div class="skills-particles" id="skillsParticles"></div>
-        
-        <div class="container">
-            <div class="skills-header">
-                <h2 class="skills-title">خبراتي ومهاراتي</h2>
-                <!-- <p class="section-subtitle">مجموعة المهارات التي اكتسبتها على مدار سنوات من العمل الاحترافي</p> -->
-            </div>
-            
-            <div class="skills-grid" id="skillsGrid">
-                <!-- سيتم ملء المهارات عبر JavaScript -->
-            </div>
-        </div>
-        
-        <!-- Lightbox لعرض المشاريع -->
-        <div class="skill-project-lightbox" id="projectLightbox">
-            <div class="lightbox-content">
-              <span class="close-lightbox"><i class="fas fa-times"></i></span>
-                <img src="" alt="" class="lightbox-image">
-                <div class="lightbox-info">
-                    <h3>عنوان المشروع</h3>
-                    <p>وصف مفصل للمشروع وأهدافه ونتائجه.</p>
-                    <div class="lightbox-meta">
-                        <p><i class="fas fa-user"></i> <span class="lightbox-client">العميل</span></p>
-                        <p><i class="fas fa-calendar"></i> <span class="lightbox-date">التاريخ</span></p>
-                        <p><i class="fas fa-tag"></i> <span class="lightbox-category">التصنيف</span></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- قسم المهارات المتقدم -->
+  <section class="skills-section" id="skills">
+    <div class="skills-particles" id="skillsParticles"></div>
 
-    <!-- قسم معرض الأعمال -->
-<!-- في ملف index.html، قسم portfolio -->
-<!-- في ملف index.html، قسم portfolio -->
-<section class="portfolio" id="portfolio">
     <div class="container">
-        <h2 class="portfolio-title">معرض أعمالي</h2>
-        <div class="portfolio-header">
-            <div class="portfolio-filter">
-                <button class="filter-btn active" data-filter="all">الكل</button>
-                <button class="filter-btn" data-filter="graphic">جرافيك</button>
-                <button class="filter-btn" data-filter="motion">موشن</button>
-                <button class="filter-btn" data-filter="video">فيديو</button>
-                <button class="filter-btn" data-filter="voice">صوت</button>
-                <button class="filter-btn" data-filter="web">ويب</button>
-            </div>
-            <div class="portfolio-search">
-                <input type="text" placeholder="ابحث عن مشروع..." class="search-input">
-                <i class="fas fa-search"></i>
-            </div>
-        </div>
-        
-        <div class="portfolio-grid">
-            <!-- سيتم ملء الأعمال عبر JavaScript -->
-        </div>
-        
-        <div class="portfolio-footer">
-            <button class="btn btn-load-more">تحميل المزيد</button>
-            <div class="portfolio-stats">
-                <span>تمّ عرض <span class="shown-count">0</span> من <span class="total-count">0</span> مشروع</span>
-            </div>
-        </div>
-    </div>
-</section>
+      <div class="skills-header">
+        <h2 class="skills-title" data-i18n="skills.sec-title"></h2>
+        <!-- <p class="section-subtitle">مجموعة المهارات التي اكتسبتها على مدار سنوات من العمل الاحترافي</p> -->
+      </div>
 
-<!-- قسم أبزر الأرقام -->
-<section id="stats" class="stats-section">
+      <div class="skills-grid" id="skillsGrid">
+        <!-- سيتم ملء المهارات عبر JavaScript -->
+      </div>
+    </div>
+
+    <!-- Lightbox لعرض المشاريع -->
+    <div class="skill-project-lightbox" id="projectLightbox">
+      <div class="lightbox-content">
+        <span class="close-lightbox"><i class="fas fa-times"></i></span>
+        <img src="" alt="" class="lightbox-image">
+        <div class="lightbox-info">
+          <h3>عنوان المشروع</h3>
+          <p>وصف مفصل للمشروع وأهدافه ونتائجه.</p>
+          <div class="lightbox-meta">
+            <p><i class="fas fa-user"></i> <span class="lightbox-client">العميل</span></p>
+            <p><i class="fas fa-calendar"></i> <span class="lightbox-date">التاريخ</span></p>
+            <p><i class="fas fa-tag"></i> <span class="lightbox-category">التصنيف</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم معرض الأعمال -->
+  <!-- في ملف index.html، قسم portfolio -->
+  <!-- في ملف index.html، قسم portfolio -->
+  <section class="portfolio" id="portfolio">
     <div class="container">
-        <h2 class="stats-title">أبزر الأرقام</h2>
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-briefcase"></i>
-                </div>
-                <div class="stat-content">
-                    <span class="stat-number" data-count="150">0</span>
-                    <span class="stat-text">مشروع مكتمل</span>
-                </div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stat-content">
-                    <span class="stat-number" data-count="100">0</span>
-                    <span class="stat-text">عميل راضٍ</span>
-                </div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div class="stat-content">
-                    <span class="stat-number" data-count="10000">0</span>
-                    <span class="stat-text">ساعة عمل</span>
-                </div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="stat-content">
-                    <span class="stat-number" data-count="12">0</span>
-                    <span class="stat-text">جائزة وتكريم</span>
-                </div>
-            </div>
+      <h2 class="portfolio-title" data-i18n="portfolio.title"></h2>
+      <div class="portfolio-header">
+        <div class="portfolio-filter">
+          <button class="filter-btn active" data-filter="all" data-i18n="portfolio.all"></button>
+          <button class="filter-btn" data-filter="graphic" data-i18n="portfolio.g"></button>
+          <button class="filter-btn" data-filter="motion" data-i18n="portfolio.m"></button>
+          <button class="filter-btn" data-filter="video" data-i18n="portfolio.vid"></button>
+          <button class="filter-btn" data-filter="voice" data-i18n="portfolio.voice"></button>
+          <button class="filter-btn" data-filter="web" data-i18n="portfolio.web"></button>
         </div>
-    </div>
-</section>
+<div class="portfolio-search">
+    <input type="text" placeholder="" class="search-input" data-i18n="portfolio.search_placeholder">
+    <i class="fas fa-search"></i>
+</div>
+      </div>
 
-<!-- قسم التواصل المحسن -->
-<section class="contact-section" id="contact">
-  <div class="contact-container">
+      <div class="portfolio-grid">
+        <!-- سيتم ملء الأعمال عبر JavaScript -->
+      </div>
+
+<div class="portfolio-footer">
+    <button class="btn btn-load-more">تحميل المزيد</button>
+    <div class="portfolio-stats">
+        <span>تمّ عرض <span class="shown-count">0</span> من <span class="total-count">0</span> مشروع</span>
+    </div>
+</div>
+    </div>
+  </section>
+
+  <!-- قسم أبزر الأرقام -->
+  <section id="stats" class="stats-section">
+    <div class="container">
+      <h2 class="stats-title" data-i18n="num.title">أبزر الأرقام</h2>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number" data-count="150">0</span>
+            <span class="stat-text" data-i18n="num.pro"></span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number" data-count="100">0</span>
+            <span class="stat-text" data-i18n="num.cli"></span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number" data-count="10000">0</span>
+            <span class="stat-text" data-i18n="num.wir"></span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-number" data-count="12">0</span>
+            <span class="stat-text" data-i18n="num.aj"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم التواصل المحسن -->
+  <section class="contact-section" id="contact">
+    <div class="contact-container">
       <div class="contact-pattern"></div>
 
       <div class="contact-header">
-          <h2 class="contact-title">لنتواصل معاً</h2>
+        <h2 class="contact-title" data-i18n="con.title"></h2>
       </div>
 
       <div class="contact-content">
-          <div class="contact-info-wrapper">
-              <div class="contact-info-card" data-aos="fade-up" data-aos-delay="100">
-                  <div class="info-icon">
-                      <i class="fas fa-envelope-open-text"></i>
-                  </div>
-                  <h3>البريد الإلكتروني</h3>
-                  <p>mohammad.bin.ismael@gmail.com</p>
-                  <a href="mailto:mohammad.bin.ismael@gmail.com" class="contact-btn">
-                      <span>إرسال رسالة</span>
-                      <i class="fas fa-paper-plane"></i>
-                  </a>
-              </div>
+        <div class="contact-info-wrapper">
+          <div class="contact-info-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="info-icon">
+              <i class="fas fa-envelope-open-text"></i>
+            </div>
+            <h3 data-i18n="con.email"></h3>
+            <p>mohammad.bin.ismael@gmail.com</p>
+            <a href="mailto:mohammad.bin.ismael@gmail.com" class="contact-btn">
+              <span data-i18n="con.send-email"></span>
+              <i class="fas fa-paper-plane"></i>
+            </a>
+          </div>
 
-              <div class="contact-info-card" data-aos="fade-up" data-aos-delay="200">
-                  <div class="info-icon">
-                      <i class="fas fa-mobile-alt"></i>
-                  </div>
-                  <h3>الهاتف / واتساب</h3>
-                  <p>966554909663+</p>
-                  <a href="https://wa.me/966554909663" class="contact-btn" target="_blank">
-                      <span>محادثة واتساب</span>
-                      <i class="fab fa-whatsapp"></i>
-                  </a>
-              </div>
+          <div class="contact-info-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="info-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3 data-i18n="con.num">الهاتف / واتساب</h3>
+            <p>966554909663+</p>
+            <a href="https://wa.me/966554909663" class="contact-btn" target="_blank">
+              <span data-i18n="con.send-num">محادثة واتساب</span>
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
 
-              <div class="contact-info-card" data-aos="fade-up" data-aos-delay="300">
-                  <div class="info-icon">
-                      <i class="fas fa-map-marked-alt"></i>
-                  </div>
-                  <h3>الموقع الجغرافي</h3>
-                  <p>الأحساء، المملكة العربية السعودية</p>
-              </div>
-              <div class="contact-info-card" data-aos="fade-up" data-aos-delay="400">
-                <div class="info-icon">
-                    <i class="fas fa-share-alt"></i>
-                </div>
-                <h3>منصات التواصل</h3>
-                <div class="social-media-links">
-                    <a href="https://x.com/m7_almattar" class="social-link" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="https://www.instagram.com/m7_almattar" class="social-link" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://www.youtube.com/@m7_almattar" class="social-link" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-                    <a href="https://www.tiktok.com/@m7_almattar" class="social-link" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
-                </div>
+          <div class="contact-info-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="info-icon">
+              <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <h3 data-i18n="con.map1">الموقع الجغرافي</h3>
+            <p data-i18n="con.map2">الأحساء، المملكة العربية السعودية</p>
+          </div>
+          <div class="contact-info-card" data-aos="fade-up" data-aos-delay="400">
+            <div class="info-icon">
+              <i class="fas fa-share-alt"></i>
+            </div>
+            <h3 data-i18n="con.soc">منصات التواصل</h3>
+            <div class="social-media-links">
+              <a href="https://x.com/m7_almattar" class="social-link" target="_blank"><i class="fab fa-twitter"></i></a>
+              <a href="https://www.instagram.com/m7_almattar" class="social-link" target="_blank"><i
+                  class="fa-brands fa-instagram"></i></a>
+              <a href="https://www.youtube.com/@m7_almattar" class="social-link" target="_blank"><i
+                  class="fa-brands fa-youtube"></i></a>
+              <a href="https://www.tiktok.com/@m7_almattar" class="social-link" target="_blank"><i
+                  class="fa-brands fa-tiktok"></i></a>
             </div>
           </div>
+        </div>
 
-          <div class="contact-form-wrapper" data-aos="fade-up">
-            <form id="enhancedContactForm" class="contact-form">
-              <div class="form-header">
-                  <h3>أرسل لي رسالة</h3>
-                  <p>سأرد عليك في غضون 24 ساعة</p>
-              </div>
+        <div class="contact-form-wrapper" data-aos="fade-up">
+          <form id="enhancedContactForm" class="contact-form">
+            <div class="form-header">
+              <h3 data-i18n="con.title1"></h3>
+              <p data-i18n="con.subtitle"></p>
+            </div>
 
-              <div class="form-group floating-label">
-                  <input name="الأسم" type="text" id="contactName" placeholder="" required>
-                  <label for="contactName">الاسم الكريم</label>
-              </div>
+            <div class="form-group floating-label">
+              <input name="الأسم" type="text" id="contactName" placeholder="" required>
+              <label for="contactName" data-i18n="con.contactName">الاسم الكريم</label>
+            </div>
 
-              <div class="form-group floating-label">
-                  <input name="البريد الإلكتروني" type="email" id="contactEmail" placeholder="" required>
-                  <label for="contactEmail">البريد الإلكتروني</label>
-                  <div class="error-message" id="emailError"></div>
-              </div>
+            <div class="form-group floating-label">
+              <input name="البريد الإلكتروني" type="email" id="contactEmail" placeholder="" required>
+              <label for="contactEmail" data-i18n="con.contactEmail">البريد الإلكتروني</label>
+              <div class="error-message" id="emailError"></div>
+            </div>
 
-              <div class="form-group floating-label">
-                  <input name="رقم الجوال" type="number" id="contactPhone" placeholder="">
-                  <label for="contactPhone">رقم الهاتف (اختياري)</label>
-                  <div class="error-message" id="phoneError"></div>
-              </div>
+            <div class="form-group floating-label">
+              <input name="رقم الجوال" type="number" id="contactPhone" placeholder="">
+              <label for="contactPhone" data-i18n="con.contactPhone">رقم الهاتف (اختياري)</label>
+              <div class="error-message" id="phoneError"></div>
+            </div>
 
-              <div class="form-group floating-label">
-                  <input name="موضوع الرسالة" type="text" id="contactSubject" placeholder="">
-                  <label for="contactSubject">موضوع الرسالة</label>
-              </div>
+            <div class="form-group floating-label">
+              <input name="موضوع الرسالة" type="text" id="contactSubject" placeholder="">
+              <label for="contactSubject" data-i18n="con.contactSubject">موضوع الرسالة</label>
+            </div>
 
-              <div class="form-group floating-label">
-                  <textarea name="الرسالة" id="contactMessage" rows="5" placeholder="" required></textarea>
-                  <label for="contactMessage">نص الرسالة</label>
-                  <div class="error-message" id="messageError"></div>
-              </div>
+            <div class="form-group floating-label">
+              <textarea name="الرسالة" id="contactMessage" rows="5" placeholder="" required></textarea>
+              <label for="contactMessage" data-i18n="con.contactMessage">نص الرسالة</label>
+              <div class="error-message" id="messageError"></div>
+            </div>
 
-              <div class="form-footer">
-                  <button type="submit" class="submit-btn">
-                      <span>إرسال الرسالة</span>
-                      <i class="fas fa-paper-plane"></i>
-                  </button>
-                  <div class="form-success" id="formSuccess"></div>
-              </div>
+            <div class="form-footer">
+              <button type="submit" class="submit-btn">
+                <span data-i18n="con.send-btn"></span>
+                <i class="fas fa-paper-plane"></i>
+              </button>
+              <div class="form-success" id="formSuccess"></div>
+            </div>
           </form>
-          </div>
+        </div>
       </div>
-  </div>
-  <div class="contact-map" id="contactMap"></div>
-</section>
+    </div>
+    <div class="contact-map" id="contactMap"></div>
+  </section>
 
-<!-- Footer المعدل -->
-<footer class="site-footer">
-  <div class="footer-wave"></div>
-  <div class="container">
+  <!-- Footer المعدل -->
+  <footer class="site-footer">
+    <div class="footer-wave"></div>
+    <div class="container">
       <div class="footer-grid">
-          <div class="footer-col footer-about">
-              <div class="footer-logo">
-                <img src="logo.png" alt="" srcset="">
-              </div>
-              <p class="footer-description">أقدم حلولاً إبداعية في التصميم الجرافيكي، الموشن جرافيك، والمونتاج الاحترافي لمساعدة العلامات التجارية على إبراز هويتها بشكل مميز.</p>
-              <div class="footer-social">
-                  <a target="_blank" href="https://x.com/m7_almattar" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                  <a target="_blank" href="https://www.instagram.com/m7_almattar" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                  <a target="_blank" href="https://www.youtube.com/@m7_almattar" class="social-icon" aria-label="Youtube"><i class="fa-brands fa-youtube"></i></a>
-                  <a target="_blank" href="https://www.tiktok.com/@m7_almattar" class="social-icon" aria-label="Tiktok"><i class="fa-brands fa-tiktok"></i></a>
-              </div>
+        <div class="footer-col footer-about">
+          <div class="footer-logo">
+            <img src="logo.png" alt="" srcset="">
           </div>
+          <p class="footer-description" data-i18n="pageFooter.title"></p>
+          <div class="footer-social">
+            <a target="_blank" href="https://x.com/m7_almattar" class="social-icon" aria-label="Twitter"><i
+                class="fab fa-twitter"></i></a>
+            <a target="_blank" href="https://www.instagram.com/m7_almattar" class="social-icon"
+              aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a target="_blank" href="https://www.youtube.com/@m7_almattar" class="social-icon" aria-label="Youtube"><i
+                class="fa-brands fa-youtube"></i></a>
+            <a target="_blank" href="https://www.tiktok.com/@m7_almattar" class="social-icon" aria-label="Tiktok"><i
+                class="fa-brands fa-tiktok"></i></a>
+          </div>
+        </div>
 
-          <div class="footer-col footer-links">
-              <h3 class="footer-title">روابط سريعة</h3>
-              <ul class="footer-menu">
-                  <li><a href="#"><i class="fas fa-chevron-left"></i> الرئيسية</a></li>
-                  <li><a href="#about"><i class="fas fa-chevron-left"></i> السيرة الذاتية</a></li>
-                  <li><a href="#skills"><i class="fas fa-chevron-left"></i> المهارات</a></li>
-                  <li><a href="#portfolio"><i class="fas fa-chevron-left"></i> معرض الأعمال</a></li>
-                  <li><a href="#stats"><i class="fas fa-chevron-left"></i> أبرز الأرقام</a></li>
-                  <li><a href="#contact"><i class="fas fa-chevron-left"></i> التواصل</a></li>
-              </ul>
-          </div>
+        <div class="footer-col footer-links">
+          <h3 class="footer-title" data-i18n="pageFooter.links"></h3>
+          <ul class="footer-menu">
+            <li><a href="#"><i class="fas fa-chevron-left"></i><p data-i18n="pageFooter.f1"></p></a></li>
+            <li><a href="#about"><i class="fas fa-chevron-left"></i><p data-i18n="pageFooter.f2"></p></a></li>
+            <li><a href="#skills"><i class="fas fa-chevron-left"></i> <p data-i18n="pageFooter.f3"></p></a></li>
+            <li><a href="#portfolio"><i class="fas fa-chevron-left"></i><p data-i18n="pageFooter.f4"></p></a></li>
+            <li><a href="#stats"><i class="fas fa-chevron-left"></i><p data-i18n="pageFooter.f5"></p></a></li>
+            <li><a href="#contact"><i class="fas fa-chevron-left"></i><p data-i18n="pageFooter.f6"></p></a></li>
+          </ul>
+        </div>
 
-          <div class="footer-col footer-contact">
-              <h3 class="footer-title">تواصل معي</h3>
-              <ul class="contact-info">
-                  <li><i class="fas fa-envelope"></i> mohammad.bin.ismael@gmail.com</li>
-                  <li><i class="fas fa-phone"></i> 966554909663+</li>
-                  <li><i class="fas fa-map-marker-alt"></i> الأحساء، المملكة العربية السعودية</li>
-              </ul>
-              <a href="#contact" class="footer-cta-btn">
-                  <i class="fas fa-paper-plane"></i> أرسل رسالة
-              </a>
-          </div>
+        <div class="footer-col footer-contact">
+          <h3 class="footer-title">تواصل معي</h3>
+          <ul class="contact-info">
+            <li><i class="fas fa-envelope"></i> mohammad.bin.ismael@gmail.com</li>
+            <li><i class="fas fa-phone"></i> 966554909663+</li>
+            <li><i class="fas fa-map-marker-alt"></i><p data-i18n="pageFooter.f7"></p></li>
+          </ul>
+          <a href="#contact" class="footer-cta-btn">
+            <i class="fas fa-paper-plane"></i> <p data-i18n="pageFooter.send"></p>
+          </a>
+        </div>
       </div>
 
       <div class="footer-bottom">
-          <div class="copyright">
-               جميع الحقوق محفوظة لـ <span class="brand-name">محمد المطر </span> <span id="year"></span> &copy;
-          </div>
-      </div>
-  </div>
-</footer>
-
-<!-- Loader -->
-<div class="page-loader">
-    <div class="loader-content">
-        <div class="loader-logo">
-            <img src="logo.png" alt="Loader Logo">
+        <div class="copyright" data-i18n="pageFooter.c">
+          جميع الحقوق محفوظة لـ <span class="brand-name">محمد المطر </span> <span id="year"></span> &copy;
         </div>
-        <div class="loader-spinner"></div>
-        <div class="loader-text">جاري التحميل...</div>
+      </div>
     </div>
-</div>
+  </footer>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Loader -->
+  <div class="page-loader">
+    <div class="loader-content">
+      <div class="loader-logo">
+        <img src="logo.png" alt="Loader Logo">
+      </div>
+      <div class="loader-spinner"></div>
+      <div class="loader-text">جاري التحميل...</div>
+    </div>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="script.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="script.js"></script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
