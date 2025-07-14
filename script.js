@@ -1,3 +1,11 @@
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => console.log('ServiceWorker registered'))
+      .catch(err => console.log('ServiceWorker registration failed: ', err));
+  });
+}
+
 // بيانات المهارات الثابتة
 // عدد المشاريع المطلوب لكل حجم شاشة
 const projectsToShow = {
@@ -217,7 +225,8 @@ async function loadPortfolio() {
             }
         });
 
-        shownCountElement.textContent = shownCount;
+shownCountElement.textContent = shownCount;
+totalCountElement.textContent = projects.length;
         initPortfolioFilter();
         initPortfolioSearch();
 
@@ -322,9 +331,14 @@ function initPortfolioFilter() {
 
 // في ملف script.js
 function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
+    const portfolioContainer = document.querySelector('.portfolio-grid');
     const shownCountElement = document.querySelector('.shown-count');
     const totalCountElement = document.querySelector('.total-count');
+    const loadMoreBtn = document.querySelector('.btn-load-more');
+    
+    if (!portfolioContainer || !shownCountElement || !totalCountElement || !loadMoreBtn) return;
+
+    const portfolioItems = portfolioContainer.querySelectorAll('.portfolio-item');
     let shownCount = 0;
     let matchingItems = 0;
 
@@ -332,18 +346,27 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
     const searchRegex = new RegExp(searchTerm, 'i');
     
     portfolioItems.forEach(item => {
-        const categories = item.dataset.category.split(','); // تقسيم التصنيفات إلى مصفوفة
-        const title = item.dataset.title;
-        const client = item.dataset.client;
-        const tags = item.dataset.tags;
+        // تحويل التصنيفات إلى مصفوفة إذا كانت سلسلة نصية
+        const categories = item.dataset.category 
+            ? item.dataset.category.split(',') 
+            : [];
+            
+        const title = item.dataset.title || '';
+        const client = item.dataset.client || '';
+        const tags = item.dataset.tags || '';
 
         // تطبيق الفلتر مع دعم تعدد التصنيفات
-        const matchesFilter = filterValue === 'all' || categories.includes(filterValue);
-        const matchesSearch = searchRegex.test(title) || searchRegex.test(client) || searchRegex.test(tags);
+        const matchesFilter = filterValue === 'all' || categories.some(cat => cat === filterValue);
+        const matchesSearch = searchTerm === '' || 
+                             searchRegex.test(title) || 
+                             searchRegex.test(client) || 
+                             searchRegex.test(tags);
         
         if (matchesFilter && matchesSearch) {
             // تحديد عدد المشاريع المعروضة حسب حجم الشاشة
-            const itemsToShow = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
+            const itemsToShow = window.innerWidth < 768 
+                ? projectsToShow.mobile 
+                : projectsToShow.desktop;
             
             if (shownCount < itemsToShow) {
                 item.style.display = 'block';
@@ -358,11 +381,20 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
     });
 
     // تحديث العدادات
-    if (shownCountElement) {
-        shownCountElement.textContent = shownCount;
-    }
-    if (totalCountElement) {
-        totalCountElement.textContent = matchingItems;
+shownCountElement.textContent = shownCount;
+totalCountElement.textContent = projects.length;
+
+    // التحكم في ظهور زر تحميل المزيد
+    const itemsToShow = window.innerWidth < 768 
+        ? projectsToShow.mobile 
+        : projectsToShow.desktop;
+        
+    if (matchingItems > itemsToShow) {
+        loadMoreBtn.style.display = 'flex';
+        loadMoreBtn.textContent = i18next.t('search.more');
+        loadMoreBtn.classList.remove('show-less');
+    } else {
+        loadMoreBtn.style.display = 'none';
     }
 
     // إظهار رسالة إذا لم توجد مشاريع مطابقة
@@ -370,21 +402,20 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
         const noResultsHTML = `
             <div class="empty-portfolio">
                 <i class="fas fa-search"></i>
-                <p>لا توجد مشاريع تطابق بحثك</p>
+                <p>${i18next.t('search.title')}</p>
             </div>
         `;
-        portfolioContainer.innerHTML = noResultsHTML;
-        shownCountElement.textContent = '0';
-    }
-
-    // التحكم في ظهور زر تحميل المزيد
-    const itemsToShow = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
-    if (matchingItems > itemsToShow) {
-        loadMoreBtn.style.display = 'flex';
-        loadMoreBtn.textContent = 'تحميل المزيد';
-        loadMoreBtn.classList.remove('show-less');
+        
+        // إنشاء عنصر الرسالة فقط إذا لم يكن موجودًا بالفعل
+        if (!portfolioContainer.querySelector('.empty-portfolio')) {
+            portfolioContainer.insertAdjacentHTML('beforeend', noResultsHTML);
+        }
     } else {
-        loadMoreBtn.style.display = 'none';
+        // إزالة رسالة "لا توجد نتائج" إذا كانت موجودة
+        const emptyMsg = portfolioContainer.querySelector('.empty-portfolio');
+        if (emptyMsg) {
+            emptyMsg.remove();
+        }
     }
 }
 
@@ -394,16 +425,16 @@ function initPortfolioSearch() {
 
     searchInput.placeholder = i18next.t('portfolio.search_placeholder');
 
-    // باقي الكود كما هو...
     let searchTimeout;
     const searchDelay = 300;
 
     searchInput.addEventListener('input', function() {
         clearTimeout(searchTimeout);
         const searchTerm = this.value.trim().toLowerCase();
+        const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
         
         searchTimeout = setTimeout(() => {
-            filterPortfolioItems('all', searchTerm);
+            filterPortfolioItems(activeFilter, searchTerm);
         }, searchDelay);
     });
 
@@ -411,7 +442,8 @@ function initPortfolioSearch() {
     searchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             const searchTerm = this.value.trim().toLowerCase();
-            filterPortfolioItems('all', searchTerm);
+            const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+            filterPortfolioItems(activeFilter, searchTerm);
         }
     });
 
@@ -426,12 +458,12 @@ function initPortfolioSearch() {
 
     // تحسين تجربة المستخدم
     searchInput.addEventListener('focus', function() {
-        this.placeholder = 'ابحث عن مشاريع...';
+        this.placeholder = i18next.t('search.title1');
     });
 
     searchInput.addEventListener('blur', function() {
         if (!this.value) {
-            this.placeholder = 'البحث...';
+            this.placeholder = i18next.t('portfolio.search_placeholder');
         } else {
             // تطبيق الفلتر والبحث
             filterPortfolioItems(activeFilter, searchTerm);
@@ -2001,10 +2033,10 @@ async function loadMoreProjects() {
 
         // التحكم في ظهور زر تحميل المزيد
         if (parseInt(shownCountElement.textContent) >= filteredProjects.length) {
-            loadMoreBtn.textContent = 'عرض أقل';
+            loadMoreBtn.textContent = i18next.t('search.less');
             loadMoreBtn.classList.add('show-less');
         } else {
-            loadMoreBtn.textContent = 'تحميل المزيد';
+            loadMoreBtn.textContent = i18next.t('search.more');
             loadMoreBtn.classList.remove('show-less');
         }
 
@@ -2063,7 +2095,7 @@ async function showLessProjects() {
         totalCountElement.textContent = filteredProjects.length;
 
         // تحديث حالة الزر
-        loadMoreBtn.textContent = 'تحميل المزيد';
+        loadMoreBtn.textContent = i18next.t('search.more');
         loadMoreBtn.classList.remove('show-less');
         loadMoreBtn.style.display = filteredProjects.length > initialItemsToShow ? 'flex' : 'none';
 
@@ -2167,6 +2199,15 @@ function updateContent() {
       }
     }
   });
+
+    const portfolioStats = document.querySelector('.portfolio-stats span');
+  if (portfolioStats) {
+    portfolioStats.innerHTML = i18next.t('portfolio.stats', {
+      shown: document.querySelector('.shown-count')?.textContent || '0',
+      total: document.querySelector('.total-count')?.textContent || '0'
+    });
+  }
+
 
   document.documentElement.lang = i18next.language;
   loadSkillsSection();
@@ -2657,3 +2698,77 @@ function showLanguageWelcome(lang) {
   
   document.head.appendChild(style);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

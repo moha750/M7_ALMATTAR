@@ -131,7 +131,8 @@
     "web": "ويب",
     "view_project": "عرض المشروع",
     "view_project1": "عرض العمل بالكامل",
-    "search_placeholder": "ابحث عن مشروع..."
+    "search_placeholder": "...أبحث عن مشروع",
+    "stats": "تمّ عرض <span class='shown-count'>0</span> من <span class='total-count'>0</span> مشروع"
   },
   "Resume": {
     "title": "سيرتي الذاتية",
@@ -219,5 +220,12 @@
   "success_message": "شكراً لتسجيلك! سيتم إرسال السيرة الذاتية إلى",
   "success_details": "ستتلقى رسالة بالسيرة الذاتية عند اكتمالها بإذن الله",
   "success_button": "شُكرًا، سأنتظر"
-}
+},
+  "search": {
+      "title": "لا توجد مشاريع تطابق بحثك",
+      "title1": "... هوية بصرية، موشن جرافيك",
+      "more": "عرض المزيد",
+      "less": "عرض أقل"
+      
+    }
 }

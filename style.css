@@ -6464,7 +6464,7 @@ div:where(.swal2-container).swal2-noanimation {
     border-color: #ccc;
 }
 
-.remember-option input:checked ~ .checkmark {
+.remember-option input:checked~.checkmark {
     background: linear-gradient(135deg, #27548a 0%, #1a3a6b 100%);
     border-color: transparent;
 }
@@ -6482,7 +6482,7 @@ div:where(.swal2-container).swal2-noanimation {
     transform: rotate(45deg);
 }
 
-.remember-option input:checked ~ .checkmark:after {
+.remember-option input:checked~.checkmark:after {
     display: block;
 }
 
@@ -6491,7 +6491,7 @@ div:where(.swal2-container).swal2-noanimation {
     .language-swal-popup {
         width: 95%;
     }
-    
+
     .language-title h2 {
         font-size: 1.5rem;
     }
@@ -6565,202 +6565,194 @@ div:where(.swal2-container).swal2-noanimation {
 }
 
 .language-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 25px;
-  justify-content: center;
-  perspective: 1000px;
-  padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    perspective: 1000px;
+    padding: 20px;
 }
 
 .language-card {
-  position: relative;
-  flex: 1;
-  min-width: 280px;
-  max-width: 320px;
-  background: white;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-  transform-style: preserve-3d;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  z-index: 1;
+    position: relative;
+    flex: 1;
+    min-width: 280px;
+    max-width: 320px;
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    transform-style: preserve-3d;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 1;
 }
 
 /* تأثيرات البطاقة */
 .card-effects {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
 }
 
 .effect-dots {
-  position: absolute;
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, rgba(221, 168, 83, 0.1) 0%, transparent 70%);
-  top: -50px;
-  right: -50px;
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(221, 168, 83, 0.1) 0%, transparent 70%);
+    top: -50px;
+    right: -50px;
 }
 
 .english-card .effect-dots {
-  background: radial-gradient(circle, rgba(39, 84, 138, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(39, 84, 138, 0.1) 0%, transparent 70%);
 }
 
 .effect-wave {
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  width: 100%;
-  height: 20px;
-  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23f5f9ff" opacity=".25"/></svg>');
-  background-size: cover;
-}
-
-/* محتوى البطاقة */
-.card-content {
-  position: relative;
-  padding: 25px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 2;
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23f5f9ff" opacity=".25"/></svg>');
+    background-size: cover;
 }
 
 .card-decoration {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, #dda853, #f5c266);
-  overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #dda853, #f5c266);
+    overflow: hidden;
 }
 
 .english-card .card-decoration {
-  background: linear-gradient(90deg, #27548a, #3a6cb3);
+    background: linear-gradient(90deg, #27548a, #3a6cb3);
 }
 
 .decoration-pattern {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(255, 255, 255, 0.3) 10px,
-    rgba(255, 255, 255, 0.3) 20px
-  );
-  animation: slide 3s linear infinite;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    background: repeating-linear-gradient(45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.3) 10px,
+            rgba(255, 255, 255, 0.3) 20px);
+    animation: slide 3s linear infinite;
 }
 
 @keyframes slide {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 /* قسم العلم */
 .language-display {
-  position: relative;
-  margin-bottom: 25px;
+    position: relative;
+    margin-bottom: 25px;
 }
 
 .language-flag {
-  width: 110px;
-  height: 80px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-  position: relative;
+    width: 110px;
+    height: 80px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .language-flag img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .flag-shadow {
-  position: absolute;
-  bottom: -10px;
-  left: 10%;
-  width: 80%;
-  height: 20px;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.2) 0%, transparent 80%);
-  filter: blur(5px);
-  z-index: -1;
+    position: absolute;
+    bottom: -10px;
+    left: 10%;
+    width: 80%;
+    height: 20px;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.2) 0%, transparent 80%);
+    filter: blur(5px);
+    z-index: -1;
 }
 
 .language-badge {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  background: linear-gradient(135deg, #dda853, #c98e30);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: linear-gradient(135deg, #dda853, #c98e30);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .english-card .language-badge {
-  background: linear-gradient(135deg, #27548a, #1a3a6b);
+    background: linear-gradient(135deg, #27548a, #1a3a6b);
 }
 
 /* معلومات اللغة */
 .language-info {
-  text-align: center;
-  width: 100%;
+    text-align: center;
+    width: 100%;
 }
 
 .language-info h3 {
-  margin: 0 0 8px;
-  color: #333;
-  font-size: 1.6rem;
-  font-weight: 700;
-  transition: all 0.3s ease;
+    margin: 0 0 8px;
+    color: #333;
+    font-size: 1.6rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
 }
 
 .language-info p {
-  margin: 0 0 20px;
-  color: #666;
-  font-size: 0.95rem;
-  line-height: 1.5;
+    margin: 0 0 20px;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 .language-stats {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
 }
 
 .stat-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.85rem;
-  color: #555;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    color: #555;
 }
 
 .stat-item i {
-  color: #dda853;
+    color: #dda853;
 }
 
 .english-card .stat-item i {
-  color: #27548a;
+    color: #27548a;
 }
 
 /* مؤشر الاختيار */
@@ -6781,582 +6773,603 @@ div:where(.swal2-container).swal2-noanimation {
 }
 
 .indicator-circle {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: transparent;
-  transition: all 0.3s ease;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: transparent;
+    transition: all 0.3s ease;
 }
 
 .select-indicator i {
-  color: white;
-  font-size: 0.8rem;
-  opacity: 0;
-  transform: scale(0.5);
-  transition: all 0.3s ease;
+    color: white;
+    font-size: 0.8rem;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s ease;
 }
 
 /* تأثيرات التحويم */
 .hover-effects {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .effect-circle {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  background: radial-gradient(circle, rgba(221, 168, 83, 0.1) 0%, transparent 70%);
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  transition: all 0.6s ease;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(221, 168, 83, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: all 0.6s ease;
 }
 
 .effect-pulse {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, transparent 0%, rgba(221, 168, 83, 0.05) 100%);
-  opacity: 0;
-  transition: all 0.6s ease;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 0%, rgba(221, 168, 83, 0.05) 100%);
+    opacity: 0;
+    transition: all 0.6s ease;
 }
 
 /* تأثيرات الحركة */
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .language-card {
-  animation: float 6s ease-in-out infinite;
+    animation: float 6s ease-in-out infinite;
 }
 
 .english-card {
-  animation-delay: 0.5s;
+    animation-delay: 0.5s;
 }
 
 /* التجاوب مع الشاشات الصغيرة */
 @media (max-width: 768px) {
-  .language-cards {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .language-card {
-    min-width: 100%;
-    max-width: 100%;
-  }
+    .language-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .language-card {
+        min-width: 100%;
+        max-width: 100%;
+    }
 }
 
 .card-glass-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.05) 100%
-  );
-  z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.05) 100%);
+    z-index: -1;
 }
 
 /* تخصيص لكل لغة */
 .arabic {
-  --primary-color: #dda853;
-  --secondary-color: #8e6c3a;
-  --text-color: #2c1e0f;
+    --primary-color: #dda853;
+    --secondary-color: #8e6c3a;
+    --text-color: #2c1e0f;
 }
 
 .english {
-  --primary-color: #27548a;
-  --secondary-color: #1a3a6b;
-  --text-color: #0a1a2e;
+    --primary-color: #27548a;
+    --secondary-color: #1a3a6b;
+    --text-color: #0a1a2e;
 }
 
 /* رأس البطاقة */
 .lang-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 .lang-title h3 {
-  margin: 0;
-  font-size: 1.8rem;
-  color: var(--text-color);
-  font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--text-color);
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .lang-subtitle {
-  font-size: 0.9rem;
-  color: var(--secondary-color);
-  font-weight: 500;
-  opacity: 0.8;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    font-weight: 500;
+    opacity: 0.8;
 }
 
 /* شريط التقدم */
 .lang-progress {
-  margin: 20px 0;
+    margin: 20px 0;
 }
 
 .progress-bar {
-  height: 8px;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 8px;
+    height: 8px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
 }
 
 .progress-fill {
-  height: 100%;
-  width: var(--progress);
-  background: linear-gradient(
-    90deg,
-    var(--primary-color),
-    var(--secondary-color)
-  );
-  border-radius: 10px;
-  transition: width 0.5s ease;
+    height: 100%;
+    width: var(--progress);
+    background: linear-gradient(90deg,
+            var(--primary-color),
+            var(--secondary-color));
+    border-radius: 10px;
+    transition: width 0.5s ease;
 }
 
 .progress-text {
-  font-size: 0.85rem;
-  color: var(--text-color);
-  opacity: 0.8;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.8;
 }
 
 .select-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: all 0.3s ease;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
 }
 
 /* تأثيرات النقر */
 .lang-card:active {
-  transform: translateY(-5px) scale(0.98);
+    transform: translateY(-5px) scale(0.98);
+}
+
+.lang-card:hover {
+    transform: translateY(-0.2rem);
 }
 
 /* الزخارف والخلفيات */
 .lang-decoration {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
 }
 
 .decoration-circle {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.1) 0%,
-    transparent 70%
-  );
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 70%);
 }
 
 .decoration-circle.c1 {
-  width: 150px;
-  height: 150px;
-  top: -50px;
-  right: -50px;
+    width: 150px;
+    height: 150px;
+    top: -50px;
+    right: -50px;
 }
 
 .decoration-circle.c2 {
-  width: 200px;
-  height: 200px;
-  bottom: -80px;
-  left: -80px;
+    width: 200px;
+    height: 200px;
+    bottom: -80px;
+    left: -80px;
 }
 
 .arabic-pattern {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M30,50 Q50,30 70,50 T90,50" fill="none" stroke="%23dda853" stroke-width="0.5" opacity="0.1"/></svg>');
-  opacity: 0.1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M30,50 Q50,30 70,50 T90,50" fill="none" stroke="%23dda853" stroke-width="0.5" opacity="0.1"/></svg>');
+    opacity: 0.1;
 }
 
 .english-pattern {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="45" y="10" width="10" height="80" fill="%2327548a" opacity="0.1"/><rect x="10" y="45" width="80" height="10" fill="%2327548a" opacity="0.1"/></svg>');
-  opacity: 0.1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="45" y="10" width="10" height="80" fill="%2327548a" opacity="0.1"/><rect x="10" y="45" width="80" height="10" fill="%2327548a" opacity="0.1"/></svg>');
+    opacity: 0.1;
 }
 
 /* تأثيرات الحركة */
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
 }
 
 .english {
-  animation-delay: 0.5s;
+    animation-delay: 0.5s;
 }
 
 /* أنماط التصميم الجديدة */
 .language-cards-v2 {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-direction: row;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-direction: row;
 }
 
 .lang-card {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 25px;
-  padding: 25px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  overflow: hidden;
-  z-index: 1;
-  
-  /* تأثير الزجاج (Glassmorphism) */
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 4px 15px rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 25px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    z-index: 1;
+
+    /* تأثير الزجاج (Glassmorphism) */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 4px 15px rgba(255, 255, 255, 0.2);
 }
 
 /* طبقة التدرج اللوني الخلفية */
 .card-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }
 
 .arabic .card-overlay {
-  background: linear-gradient(135deg, rgba(221, 168, 83, 0.3) 0%, rgba(205, 127, 50, 0.5) 100%);
+    background: linear-gradient(135deg, rgba(221, 168, 83, 0.3) 0%, rgba(205, 127, 50, 0.5) 100%);
 }
 
 .english .card-overlay {
-  background: linear-gradient(135deg, rgba(39, 84, 138, 0.3) 0%, rgba(26, 58, 107, 0.5) 100%);
+    background: linear-gradient(135deg, rgba(39, 84, 138, 0.3) 0%, rgba(26, 58, 107, 0.5) 100%);
 }
 
 /* رأس البطاقة */
 .lang-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  width: 100%;
-  margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .lang-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: white;
-  
-  /* تأثير Neumorphism */
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 
-    3px 3px 6px rgba(0, 0, 0, 0.1),
-    -3px -3px 6px rgba(255, 255, 255, 0.1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+
+    /* تأثير Neumorphism */
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow:
+        3px 3px 6px rgba(0, 0, 0, 0.1),
+        -3px -3px 6px rgba(255, 255, 255, 0.1);
 }
 
 .arabic .lang-icon {
-  background: rgba(221, 168, 83, 0.3);
+    background: rgba(221, 168, 83, 0.3);
 }
 
 .english .lang-icon {
-  background: rgba(39, 84, 138, 0.3);
+    background: rgba(39, 84, 138, 0.3);
 }
 
 .lang-title h3 {
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .lang-title p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 /* تفاصيل اللغة */
 .lang-details {
-  width: 100%;
-  margin: 20px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .detail-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.9rem;
-  color: white;
-  padding: 8px 15px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
 }
 
 .detail-item i {
-  font-size: 1rem;
+    font-size: 1rem;
 }
 
 .arabic .detail-item i {
-  color: #f5c266;
+    color: #f5c266;
 }
 
 .english .detail-item i {
-  color: #8ab4f8;
+    color: #8ab4f8;
 }
+
 /* مؤشر الاختيار */
 .select-indicator {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
 }
 
 .indicator-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: transparent;
-  transition: all 0.3s ease;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: transparent;
+    transition: all 0.3s ease;
 }
 
 .select-indicator i {
-  position: absolute;
-  color: white;
-  font-size: 0.8rem;
-  opacity: 0;
-  transform: scale(0.5);
-  transition: all 0.3s ease;
+    position: absolute;
+    color: white;
+    font-size: 0.8rem;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s ease;
 }
 
 /* تأثيرات الحركة */
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .english {
-  animation-delay: 0.3s;
+    animation-delay: 0.3s;
 }
 
 /* التجاوب مع الشاشات الصغيرة */
 @media (max-width: 630px) {
-  .language-cards-v2 {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .lang-card {
-  width: 100%;
-  height: 100%;
-  }
+    .language-cards-v2 {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .lang-card {
+        width: 100%;
+        height: 100%;
+    }
 }
 
 .language-options {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
 }
 
 .option-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.8rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  margin-top: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
 
     /* تأثير الزجاج (Glassmorphism) */
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 4px 15px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 4px 15px rgba(255, 255, 255, 0.2);
 }
 
 .option-card:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-0.2rem);
 }
 
 .option-toggle {
-  position: relative;
-  width: 50px;
-  height: 26px;
-  display: block;
+    position: relative;
+    width: 50px;
+    height: 26px;
+    display: block;
 }
 
 .option-toggle input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
 .toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 34px;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
 }
 
 .toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
 }
 
-input:checked + .toggle-slider {
-  background-color: #4bb543;
+input:checked+.toggle-slider {
+    background-color: #4bb543;
 }
 
-input:checked + .toggle-slider:before {
-  transform: translateX(24px);
+input:checked+.toggle-slider:before {
+    transform: translateX(24px);
 }
 
 .toggle-icons {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 8px;
-  pointer-events: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 8px;
+    pointer-events: none;
 }
 
 .toggle-icons i {
-  font-size: 12px;
-  color: white;
-  opacity: 0.7;
+    font-size: 12px;
+    color: white;
+    opacity: 0.7;
 }
 
 .toggle-icons .active-icon {
-  opacity: 0;
+    opacity: 0;
 }
 
-input:checked ~ .toggle-icons .active-icon {
-  opacity: 1;
+input:checked~.toggle-icons .active-icon {
+    opacity: 1;
 }
 
-input:checked ~ .toggle-icons .inactive-icon {
-  opacity: 0;
+input:checked~.toggle-icons .inactive-icon {
+    opacity: 0;
 }
 
 .option-details h4 {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #fff;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
 }
 
 .option-details p {
-  margin: 0.3rem 0 0;
-  font-size: 0.85rem;
-  opacity: 0.8;
+    margin: 0.3rem 0 0;
+    font-size: 0.8rem;
+    opacity: 0.8;
     color: #fff;
 }
 
 .option-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
 }
 
 .reset-option .option-icon {
-  background: rgba(70, 130, 180, 0.2);
-  color: #4682b4;
+    background: rgba(70, 130, 180, 0.2);
+    color: #4682b4;
 }
 
 @media (max-width: 480px) {
-  .language-options {
-    padding: 0;
-  }
-  
-  .option-card {
-    padding: 0.7rem;
-  }
-  
-  .option-details h4 {
-    font-size: 0.9rem;
-  }
-  
-  .option-details p {
-    font-size: 0.8rem;
-  }
+    .language-options {
+        padding: 0;
+    }
+
+    .option-card {
+        padding: 0.7rem;
+    }
+
+    .option-details h4 {
+        font-size: 0.9rem;
+    }
+
+    .option-details p {
+        font-size: 0.7rem;
+    }
 }
+

@@ -15,7 +15,6 @@
     "view-portfolio": "My Portfolio",
     "view-cv": "My Resume",
     "download_cv": "Download CV"
-    
   },
   "cv-sec": {
     "sec-title": "My Resume"
@@ -42,8 +41,8 @@
     }
   },
   "loadingpo": {
-      "title": "Loading my Portfolio",
-      "message": "Thank you for your patience and excitement to see my Portfolio"
+    "title": "Loading my Portfolio",
+    "message": "Thank you for your patience and excitement to see my Portfolio"
   },
   "errors": {
     "skills": {
@@ -132,7 +131,8 @@
     "web": "Web",
     "view_project": "View Project",
     "view_project1": "View the project",
-    "search_placeholder": "Search for a project..."
+    "search_placeholder": "Search for a project...",
+    "stats": "Showing <span class='shown-count'>0</span> of <span class='total-count'>0</span> projects"
   },
   "Resume": {
     "title": "My Resume",
@@ -194,31 +194,37 @@
     "hhhh": "Taibah University"
   },
   "cv": {
-  "contact_method_title": "How would you like to receive the CV?",
-  "email_method": "E-Mail",
-  "email_method_desc": "Receive it directly to your email",
-  "phone_method": "Phone Message",
-  "phone_method_desc": "Receive it directly via WhatsApp",
-  "email_label": "E-Mail",
-  "email_placeholder": "example@domain.com",
-  "phone_label": "Phone Number",
-  "phone_placeholder": "05XXXXXXXX",
-  "privacy_notice": "All user data is kept private and not shared with any third party",
-  "confirm_button": "Confirm Registration",
-  "cancel_button": "Cancel",
-  "email_required": "Please enter your email",
-  "invalid_email": "Invalid email format",
-  "phone_required": "Please enter your phone number",
-  "invalid_phone": "Phone number must start with 05 and be 10 digits",
-  "loading_title": "Processing Your Request",
-  "loading_status_preparing": "Preparing...",
-  "loading_status_processing": "Processing your request...",
-  "loading_status_finalizing": "Finalizing the file...",
-  "loading_status_completed": "Processing completed successfully!",
-  "loading_tip": "You can check my <a href=\"#portfolio\">portfolio</a> while waiting",
-  "success_title": "Registration Successful!",
-  "success_message": "Thank you for registering! The CV will be sent to",
-  "success_details": "You will receive a message with the CV when it's ready",
-  "success_button": "Thanks, I'll wait"
-}
+    "contact_method_title": "How would you like to receive the CV?",
+    "email_method": "E-Mail",
+    "email_method_desc": "Receive it directly to your email",
+    "phone_method": "Phone Message",
+    "phone_method_desc": "Receive it directly via WhatsApp",
+    "email_label": "E-Mail",
+    "email_placeholder": "example@domain.com",
+    "phone_label": "Phone Number",
+    "phone_placeholder": "05XXXXXXXX",
+    "privacy_notice": "All user data is kept private and not shared with any third party",
+    "confirm_button": "Confirm Registration",
+    "cancel_button": "Cancel",
+    "email_required": "Please enter your email",
+    "invalid_email": "Invalid email format",
+    "phone_required": "Please enter your phone number",
+    "invalid_phone": "Phone number must start with 05 and be 10 digits",
+    "loading_title": "Processing Your Request",
+    "loading_status_preparing": "Preparing...",
+    "loading_status_processing": "Processing your request...",
+    "loading_status_finalizing": "Finalizing the file...",
+    "loading_status_completed": "Processing completed successfully!",
+    "loading_tip": "You can check my <a href=\"#portfolio\">portfolio</a> while waiting",
+    "success_title": "Registration Successful!",
+    "success_message": "Thank you for registering! The CV will be sent to",
+    "success_details": "You will receive a message with the CV when it's ready",
+    "success_button": "Thanks, I'll wait"
+  },
+  "search": {
+    "title": "There are no projects that match your search",
+    "title1": "Graphic design, motion graphics ...",
+    "more": "Show more",
+    "less": "Show less"
+  }
 }
