@@ -1,3 +1,16 @@
+// تسجيل Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then((registration) => {
+        console.log('ServiceWorker مسجل بنجاح:', registration.scope);
+      })
+      .catch((err) => {
+        console.log('فشل تسجيل ServiceWorker:', err);
+      });
+  });
+}
+
 // بيانات المهارات الثابتة
 // عدد المشاريع المطلوب لكل حجم شاشة
 const projectsToShow = {
