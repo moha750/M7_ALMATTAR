@@ -2,7 +2,7 @@
   "name": "M7_Almattar | محمد المطر",
   "short_name": "M7_Almattar",
   "description": "موقع شخصي يعرض أعمالي، خبراتي ومهاراتي",
-  "start_url": "/",
+  "start_url": "index.hmtl",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#27548a",
