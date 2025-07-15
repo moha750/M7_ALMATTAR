@@ -10,11 +10,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
   <!-- إضافة Favicon -->
-<link rel="icon" type="image/png" href="./images/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="./images/favicon.svg" />
-<link rel="shortcut icon" href="./images/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png" />
-<link rel="manifest" href="./images/site.webmanifest" />
+  <link rel="icon" type="image/png" href="./images/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="./images/favicon.svg" />
+  <link rel="shortcut icon" href="./images/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png" />
+  <link rel="manifest" href="./images/site.webmanifest" />
 
   <!-- Open Graph Meta Tags -->
   <meta property="og:type" content="website">
@@ -33,14 +33,8 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/i18next@21.6.4/i18next.min.js"></script>
   <script src="https://unpkg.com/i18next-http-backend@1.4.2/i18nextHttpBackend.min.js"></script>
-<script src="https://unpkg.com/i18next-browser-languagedetector@6.1.2/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@6.1.2/i18nextBrowserLanguageDetector.min.js"></script>
 
-<!-- في قسم head -->
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#27548a">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 </head>
 
 <body>
@@ -590,19 +584,19 @@
   <script src="script.js"></script>
 
   <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/service-worker.js').then(
-        function (registration) {
-          console.log('ServiceWorker مسجل بنجاح:', registration.scope);
-        },
-        function (err) {
-          console.log('فشل تسجيل ServiceWorker:', err);
-        }
-      );
-    });
-  }
-</script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/service-worker.js').then(
+          function (registration) {
+            console.log('ServiceWorker مسجل بنجاح:', registration.scope);
+          },
+          function (err) {
+            console.log('فشل تسجيل ServiceWorker:', err);
+          }
+        );
+      });
+    }
+  </script>
 
 </body>
 
