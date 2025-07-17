@@ -133,12 +133,16 @@ img {
 }
 
 .site-header.scrolled {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1) !important;
     padding: 0rem 0;
     /* background: transparent; */
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    box-shadow: 0 5px 30px rgba(39, 64, 96, 0.2);
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    box-shadow: 0 5px 30px rgba(39, 64, 96, 0.3) !important;
+
+
+
+    
 }
 
 .header-content {
@@ -1783,7 +1787,7 @@ img {
     position: relative;
     width: 80px;
     height: 80px;
-    margin-left: 1.5rem;
+    margin-left: 1rem;
     flex-shrink: 0;
 }
 
