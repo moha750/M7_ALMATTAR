@@ -139,10 +139,6 @@ img {
     backdrop-filter: blur(15px) !important;
     -webkit-backdrop-filter: blur(15px) !important;
     box-shadow: 0 5px 30px rgba(39, 64, 96, 0.3) !important;
-
-
-
-    
 }
 
 .header-content {
@@ -320,15 +316,6 @@ img {
     z-index: -1;
     transition: all 0.4s ease;
 }
-
-.site-header.scrolled::before {
-    background: transparent;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    box-shadow: 0 5px 30px rgba(39, 64, 96, 0.1);
-}
-
-
 
 /* Responsive Styles */
 @media (max-width: 1200px) {
