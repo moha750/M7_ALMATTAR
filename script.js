@@ -119,6 +119,13 @@ async function loadPortfolio() {
     const portfolioContainer = document.querySelector('.portfolio-grid');
     const shownCountElement = document.querySelector('.shown-count');
     const totalCountElement = document.querySelector('.total-count');
+    const loadMoreBtn = document.querySelector('.btn-load-more');
+
+    // التحقق من وجود العناصر الأساسية
+    if (!portfolioContainer) {
+        console.error('Portfolio container not found');
+        return;
+    }
 
     portfolioContainer.innerHTML = `
         <div class="portfolio-loading">
@@ -129,8 +136,8 @@ async function loadPortfolio() {
                     <div class="spinner-circle"></div>
                 </div>
                 <div class="loading-text">
-        <h3>${i18next.t('loadingpo.title')}</h3>
-        <p>${i18next.t('loadingpo.message')}</p>
+                    <h3>${i18next.t('loadingpo.title')}</h3>
+                    <p>${i18next.t('loadingpo.message')}</p>
                 </div>
             </div>
         </div>
@@ -144,11 +151,17 @@ async function loadPortfolio() {
         }
 
         portfolioContainer.innerHTML = '';
-        totalCountElement.textContent = projects.length;
+        
+        // تحديث العداد فقط إذا كان العنصر موجوداً
+        if (totalCountElement) {
+            totalCountElement.textContent = projects.length;
+        }
 
         if (projects.length === 0) {
             portfolioContainer.innerHTML = '<div class="empty-portfolio"><i class="fas fa-folder-open"></i> لا توجد مشاريع حالياً</div>';
-            shownCountElement.textContent = '0';
+            if (shownCountElement) {
+                shownCountElement.textContent = '0';
+            }
             return;
         }
 
@@ -156,7 +169,6 @@ async function loadPortfolio() {
         let shownCount = 0;
 
         projects.forEach((project, index) => {
-            // تحويل التصنيفات إلى سلسلة نصية مفصولة بفواصل
             const categories = Array.isArray(project.category) ? 
                 project.category.join(',') : 
                 project.category || '';
@@ -178,9 +190,9 @@ async function loadPortfolio() {
                                     <span><i class="fas fa-user"></i> ${project.client}</span>
                                     <span><i class="fas fa-calendar"></i> ${project.date}</span>
                                 </div>
-<a href="#portfolio-item-${index}" class="btn btn-view" data-project="${index}" data-i18n="portfolio.view_project">
-  <i class="fas fa-expand"></i> ${i18next.t('portfolio.view_project')}
-</a>
+                                <a href="#portfolio-item-${index}" class="btn btn-view" data-project="${index}" data-i18n="portfolio.view_project">
+                                    <i class="fas fa-expand"></i> ${i18next.t('portfolio.view_project')}
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -217,92 +229,74 @@ async function loadPortfolio() {
             }
         });
 
-shownCountElement.textContent = shownCount;
-totalCountElement.textContent = projects.length;
+        // تحديث العداد فقط إذا كان العنصر موجوداً
+        if (shownCountElement) {
+            shownCountElement.textContent = shownCount;
+        }
+        if (totalCountElement) {
+            totalCountElement.textContent = projects.length;
+        }
+
         initPortfolioFilter();
         initPortfolioSearch();
 
-        if (projects.length <= initialItemsToShow) {
+        if (projects.length <= initialItemsToShow && loadMoreBtn) {
             loadMoreBtn.style.display = 'none';
-        } else {
+        } else if (loadMoreBtn) {
             loadMoreBtn.style.display = 'flex';
         }
 
         initPortfolioLightbox(projects);
-} catch (error) {
-    console.error('Error loading portfolio:', error);
-
+    } catch (error) {
+        console.error('Error loading portfolio:', error);
         portfolioContainer.innerHTML = `
-        <div class="skills-error-container1">
-            <div class="error-animation1">
-                <div class="error-icon1">
-                    <div class="error-circle1"></div>
-                    <div class="error-x-mark1">
-                        <div class="error-x-mark-line-left1"></div>
-                        <div class="error-x-mark-line-right1"></div>
+            <div class="skills-error-container1">
+                <div class="error-animation1">
+                    <div class="error-icon1">
+                        <div class="error-circle1"></div>
+                        <div class="error-x-mark1">
+                            <div class="error-x-mark-line-left1"></div>
+                            <div class="error-x-mark-line-right1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="error-content1">
+                    <h3>${i18next.t('errorspo.title')}</h3>
+                    <p>${i18next.t('errorspo.message')}</p>
+                    <div class="error-details1">
+                        <div class="error-detail1">
+                            <i class="fas fa-clock"></i>
+                            <span>${new Date().toLocaleString('ar-SA')}</span>
+                        </div>
+                        <div class="error-detail1">
+                            <i class="fas fa-code"></i>
+                            <span>${i18next.t('errorspo.error_code')}: ERR_${Math.floor(Math.random() * 1000)}</span>
+                        </div>
+                    </div>
+                    <div class="error-actions1">
+                        <button class="error-retry1" onclick="loadPortfolio()">
+                            <i class="fas fa-sync-alt"></i>${i18next.t('errorspo.retry')}
+                        </button>
+                        <button class="error-contact1" onclick="document.querySelector('#contact').scrollIntoView({behavior: 'smooth'})">
+                            <i class="fas fa-headset"></i>${i18next.t('errorspo.contact')}
+                        </button>
+                    </div>
+                    <div class="error-footer1">
+                        <i class="fas fa-info-circle"></i>
+                        <p>${i18next.t('errorspo.details')} <a href="#contact"></a></p>
                     </div>
                 </div>
             </div>
-            <div class="error-content1">
-      <h3>${i18next.t('errorspo.title')}</h3>
-      <p>${i18next.t('errorspo.message')}</p>
-                <div class="error-details1">
-                    <div class="error-detail1">
-                        <i class="fas fa-clock"></i>
-                        <span>${new Date().toLocaleString('ar-SA')}</span>
-                    </div>
-                    <div class="error-detail1">
-                        <i class="fas fa-code"></i>
-                        <span>${i18next.t('errorspo.error_code')}: ERR_${Math.floor(Math.random() * 1000)}</span>
-                    </div>
-                </div>
-                <div class="error-actions1">
-                    <button class="error-retry1" onclick="loadPortfolio()">
-                        <i class="fas fa-sync-alt"></i>${i18next.t('errorspo.retry')}
-                    </button>
-                    <button class="error-contact1" onclick="document.querySelector('#contact').scrollIntoView({behavior: 'smooth'})">
-                        <i class="fas fa-headset"></i>${i18next.t('errorspo.contact')}
-                    </button>
-                </div>
-                <div class="error-footer1">
-                    <i class="fas fa-info-circle"></i>
-                    <p>${i18next.t('errorspo.details')} <a href="#contact"></a></p>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // تأثيرات الحركة للرسالة
-    gsap.from(".portfolio-error", {
-        opacity: 0,
-        y: 50,
-        duration: 0.8,
-        ease: "back.out(1.2)"
-    });
-    
-    gsap.from(".error-icon", {
-        scale: 0,
-        rotation: 45,
-        duration: 0.6,
-        ease: "back.out(1.7)"
-    });
-    
-    gsap.from(".error-content h3, .error-content p", {
-        opacity: 0,
-        y: 20,
-        stagger: 0.1,
-        duration: 0.5,
-        delay: 0.3
-    });
-    
-    gsap.from(".error-actions button", {
-        opacity: 0,
-        y: 20,
-        stagger: 0.1,
-        duration: 0.4,
-        delay: 0.6
-    });
-}
+        `;
+        
+        // تأثيرات الحركة للرسالة
+        gsap.from(".portfolio-error", {
+            opacity: 0,
+            y: 50,
+            duration: 0.8,
+            ease: "back.out(1.2)"
+        });
+    }
 }
 
 function initPortfolioFilter() {
@@ -2690,77 +2684,3 @@ function showLanguageWelcome(lang) {
   
   document.head.appendChild(style);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

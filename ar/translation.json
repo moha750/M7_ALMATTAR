@@ -33,7 +33,7 @@
     "intermediate": "متوسط",
     "beginner": "مبتدئ",
     "projects-count": "مشاريع",
-    "mastery-level": "مستوى الإتقان"
+    "mastery-level": "المستوى"
   },
   "loading": {
     "skills": {
@@ -110,6 +110,7 @@
   "pageFooter": {
     "title": "أقدم حلولاً إبداعية في التصميم الجرافيكي، الموشن جرافيك، والمونتاج الاحترافي لمساعدة العلامات التجارية على إبراز هويتها بشكل مميز.",
     "links": "روابط سريعة",
+    "contect": "تواصل معي",
     "con": "تواصل معي",
     "c": "جميع الحقوق محفوظة لـ محمد المطر 2025 ©",
     "send": "أرسل رسالة",
@@ -194,38 +195,37 @@
     "hhhh": "جامعة طيبة"
   },
   "cv": {
-  "contact_method_title": "كيف تريد استلام السيرة الذاتية؟",
-  "email_method": "البريد الإلكتروني",
-  "email_method_desc": "استلمها مُباشرة على بريدك",
-  "phone_method": "رسالة هاتف",
-  "phone_method_desc": "استلمها مُباشرة على الواتساب",
-  "email_label": "البريد الإلكتروني",
-  "email_placeholder": "example@domain.com",
-  "phone_label": "رقم الهاتف",
-  "phone_placeholder": "05XXXXXXXX",
-  "privacy_notice": "جميع بيانات المستخدمين محفوظة ولا يتم مشاركتها مع أي طرف آخر",
-  "confirm_button": "تأكيد التسجيل",
-  "cancel_button": "إلغاء",
-  "email_required": "يرجى إدخال البريد الإلكتروني",
-  "invalid_email": "صيغة البريد الإلكتروني غير صحيحة",
-  "phone_required": "يرجى إدخال رقم الهاتف",
-  "invalid_phone": "يجب أن يبدأ رقم الهاتف بـ 05 ويتكون من 10 أرقام",
-  "loading_title": "جاري تجهيز طلبك",
-  "loading_status_preparing": "جاري التحضير...",
-  "loading_status_processing": "جاري معالجة الطلب...",
-  "loading_status_finalizing": "جاري إعداد الملف النهائي...",
-  "loading_status_completed": "اكتمل التجهيز بنجاح!",
-  "loading_tip": "يمكنك متابعة أعمالي خلال هذه الفترة في <a href=\"#portfolio\">معرض الأعمال</a>",
-  "success_title": "تم التسجيل بنجاح!",
-  "success_message": "شكراً لتسجيلك! سيتم إرسال السيرة الذاتية إلى",
-  "success_details": "ستتلقى رسالة بالسيرة الذاتية عند اكتمالها بإذن الله",
-  "success_button": "شُكرًا، سأنتظر"
-},
+    "contact_method_title": "كيف تريد استلام السيرة الذاتية؟",
+    "email_method": "البريد الإلكتروني",
+    "email_method_desc": "استلمها مُباشرة على بريدك",
+    "phone_method": "رسالة هاتف",
+    "phone_method_desc": "استلمها مُباشرة على الواتساب",
+    "email_label": "البريد الإلكتروني",
+    "email_placeholder": "example@domain.com",
+    "phone_label": "رقم الهاتف",
+    "phone_placeholder": "05XXXXXXXX",
+    "privacy_notice": "جميع بيانات المستخدمين محفوظة ولا يتم مشاركتها مع أي طرف آخر",
+    "confirm_button": "تأكيد التسجيل",
+    "cancel_button": "إلغاء",
+    "email_required": "يرجى إدخال البريد الإلكتروني",
+    "invalid_email": "صيغة البريد الإلكتروني غير صحيحة",
+    "phone_required": "يرجى إدخال رقم الهاتف",
+    "invalid_phone": "يجب أن يبدأ رقم الهاتف بـ 05 ويتكون من 10 أرقام",
+    "loading_title": "جاري تجهيز طلبك",
+    "loading_status_preparing": "جاري التحضير...",
+    "loading_status_processing": "جاري معالجة الطلب...",
+    "loading_status_finalizing": "جاري إعداد الملف النهائي...",
+    "loading_status_completed": "اكتمل التجهيز بنجاح!",
+    "loading_tip": "يمكنك متابعة أعمالي خلال هذه الفترة في <a href=\"#portfolio\">معرض الأعمال</a>",
+    "success_title": "تم التسجيل بنجاح!",
+    "success_message": "شكراً لتسجيلك! سيتم إرسال السيرة الذاتية إلى",
+    "success_details": "ستتلقى رسالة بالسيرة الذاتية عند اكتمالها بإذن الله",
+    "success_button": "شُكرًا، سأنتظر"
+  },
   "search": {
-      "title": "لا توجد مشاريع تطابق بحثك",
-      "title1": "... هوية بصرية، موشن جرافيك",
-      "more": "عرض المزيد",
-      "less": "عرض أقل"
-      
-    }
+    "title": "لا توجد مشاريع تطابق بحثك",
+    "title1": "... هوية بصرية، موشن جرافيك",
+    "more": "عرض المزيد",
+    "less": "عرض أقل"
+  }
 }

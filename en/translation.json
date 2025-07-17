@@ -32,7 +32,7 @@
     "intermediate": "Intermediate",
     "beginner": "Beginner",
     "projects-count": "projects",
-    "mastery-level": "Mastery Level"
+    "mastery-level": "Level"
   },
   "loading": {
     "skills": {
@@ -110,6 +110,7 @@
   "pageFooter": {
     "title": "I provide creative solutions in graphic design, motion graphics, and professional editing to help brands highlight their identity in a distinctive way.",
     "links": "Quick Links",
+    "contect": "Contact me",
     "con": "Contact me",
     "c": "All rights reserved to Mohammad Al-Mattar 2025 ©",
     "send": "Send a message",

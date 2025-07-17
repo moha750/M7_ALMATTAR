@@ -3011,7 +3011,7 @@ img {
 }
 
 .footer-col {
-    padding: 1.5rem;
+    padding: 1.5rem 0rem;
 }
 
 .footer-logo {
@@ -4774,8 +4774,7 @@ body.no-scroll {
 }
 
 .contact-info {
-    background: rgba(39, 84, 138, 0.1);
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0rem;
     border-radius: 8px;
     margin-top: 1rem;
     font-weight: 600;
@@ -7372,4 +7371,14 @@ input:checked~.toggle-icons .inactive-icon {
         font-size: 0.7rem;
     }
 }
+
+
+
+
+
+
+
+
+
+
 

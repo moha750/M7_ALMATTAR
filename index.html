@@ -541,7 +541,7 @@
         </div>
 
         <div class="footer-col footer-contact">
-          <h3 class="footer-title">تواصل معي</h3>
+          <h3 class="footer-title" data-i18n="pageFooter.contect">تواصل معي</h3>
           <ul class="contact-info">
             <li><i class="fas fa-envelope"></i> mohammad.bin.ismael@gmail.com</li>
             <li><i class="fas fa-phone"></i> 966554909663+</li>
@@ -582,21 +582,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="script.js"></script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/service-worker.js').then(
-          function (registration) {
-            console.log('ServiceWorker مسجل بنجاح:', registration.scope);
-          },
-          function (err) {
-            console.log('فشل تسجيل ServiceWorker:', err);
-          }
-        );
-      });
-    }
-  </script>
 
 </body>
 
