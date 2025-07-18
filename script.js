@@ -2186,6 +2186,15 @@ function updateContent() {
     }
   });
 
+  document.body.setAttribute('data-lang', i18next.language);
+  if (i18next.language === 'en') {
+    document.body.classList.add('ltr-layout');
+    document.documentElement.dir = 'ltr';
+  } else {
+    document.body.classList.remove('ltr-layout');
+    document.documentElement.dir = 'rtl';
+  }
+
     const portfolioStats = document.querySelector('.portfolio-stats span');
   if (portfolioStats) {
     portfolioStats.innerHTML = i18next.t('portfolio.stats', {
@@ -2197,6 +2206,7 @@ function updateContent() {
 
   document.documentElement.lang = i18next.language;
   loadSkillsSection();
+  
 }
 
 // تغيير اللغة يدويًا
@@ -2684,3 +2694,4 @@ function showLanguageWelcome(lang) {
   
   document.head.appendChild(style);
 }
+

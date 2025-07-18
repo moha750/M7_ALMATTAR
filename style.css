@@ -6356,9 +6356,9 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel):hov
 
 
 
-/* إطار النافذة الرئيسي */
-div:where(.swal2-container).swal2-backdrop-show,
-div:where(.swal2-container).swal2-noanimation {
+
+
+.language-popup-container {
     background: linear-gradient(135deg, #093451 0%, #27548a 100%) !important;
 }
 
@@ -7373,3 +7373,150 @@ input:checked~.toggle-icons .inactive-icon {
 
 
 
+/* Hero Section - LTR Layout for English */
+.ltr-layout {
+  direction: ltr;
+}
+
+/* قسم السيرة الذاتية للغة الانجليزية */
+.ltr-layout .resume-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #dda853;
+    transition: all 0.4s ease;
+}
+
+.ltr-layout .resume-details {
+    background: rgba(245, 238, 220, 1);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 0.8rem;
+    border-right: none; /* إزالة الحد الأيمن */
+    border-left: 3px solid #dda853; /* إضافة حد يساري */
+}
+
+.ltr-layout .resume-card-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, #f5eedc, transparent);
+}
+
+.ltr-layout .resume-details ul {
+    list-style: none;
+    padding-right: 0;
+    padding-left: 1rem;
+    margin: 0;
+}
+
+.ltr-layout .resume-details li {
+    position: relative;
+    padding-right: 0;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #093451;
+}
+
+.ltr-layout .resume-details li::before {
+    content: '\f00c';
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: #dda853;
+    font-size: 1rem;
+}
+
+.ltr-layout .resume-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 20px;
+    height: 100%;
+    width: 2px;
+    background: #f5eedc;
+}
+
+.ltr-layout .resume-timeline li {
+    padding-right: 0;
+    padding-left: 3rem;
+}
+
+.ltr-layout .resume-timeline li::before {
+    right: 0;
+    left: 14.4px;
+}
+
+.ltr-layout .skill-icon-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-left: 0;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.ltr-layout .nav-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(245, 238, 220, 0.8);
+    color: #27548a;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    transform: rotate(180deg);
+}
+
+.ltr-layout .nav-btn:hover {
+    background: #dda853;
+    color: #f5eedc;
+    transform: scale(1.1);
+    transform: rotate(180deg);
+}
+
+.ltr-layout .footer-menu i {
+    margin-right: 0.8rem;
+    font-size: 0.8rem;
+    transition: var(--transition);
+    transform: rotate(180deg);
+}
+
+.ltr-layout .footer-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: #f5eedc;
+    border-radius: 3px;
+}
+
+.ltr-layout .floating-label label {
+    right: auto; /* إلغاء المحاذاة لليمين */
+    left: 1rem; /* المحاذاة لليسار في الوضع الإنجليزي */
+}
+
+.ltr-layout .floating-label input:focus + label,
+.ltr-layout .floating-label input:not(:placeholder-shown) + label,
+.ltr-layout .floating-label textarea:focus + label,
+.ltr-layout .floating-label textarea:not(:placeholder-shown) + label {
+    right: auto; /* إلغاء اليمين */
+    left: 1rem; /* المحاذاة لليسار */
+}
