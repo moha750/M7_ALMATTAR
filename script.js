@@ -1,8 +1,14 @@
 // بيانات المهارات الثابتة
 // عدد المشاريع المطلوب لكل حجم شاشة
 const projectsToShow = {
-    mobile: 4,    // عدد المشاريع للشاشات الصغيرة (أقل من 768px)
-    desktop: 6    // عدد المشاريع للشاشات الكبيرة (768px وأكبر)
+    mobile: {
+        initial: 4,    // عدد المشاريع الأولي للشاشات الصغيرة
+        loadMore: 2    // عدد المشاريع الإضافية عند الضغط على "تحميل المزيد"
+    },
+    desktop: {
+        initial: 6,    // عدد المشاريع الأولي للشاشات الكبيرة
+        loadMore: 3     // عدد المشاريع الإضافية عند الضغط على "تحميل المزيد"
+    }
 };
 
 // تعريف العناصر المستخدمة
@@ -371,9 +377,8 @@ shownCountElement.textContent = shownCount;
 totalCountElement.textContent = projects.length;
 
     // التحكم في ظهور زر تحميل المزيد
-    const itemsToShow = window.innerWidth < 768 
-        ? projectsToShow.mobile 
-        : projectsToShow.desktop;
+    const itemsConfig = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
+    const itemsToShow = itemsConfig.initial;
         
     if (matchingItems > itemsToShow) {
         loadMoreBtn.style.display = 'flex';
@@ -1998,14 +2003,17 @@ async function loadMoreProjects() {
             return matchesFilter && matchesSearch;
         });
 
+            const itemsConfig = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
+    const itemsToAdd = itemsConfig.loadMore;
+
         // حساب المشاريع المعروضة حالياً
         const currentlyShown = portfolioContainer.querySelectorAll('.portfolio-item[style*="display: block"], .portfolio-item:not([style])').length;
         
         // حساب عدد المشاريع الجديدة التي سيتم عرضها
-        const itemsToShow = Math.min(filteredProjects.length - currentlyShown, window.innerWidth < 768 ? 2 : 6);
+        const itemsToShow = Math.min(filteredProjects.length - currentlyShown, window.innerWidth < 768 ? 2 : 3);
 
         // عرض المشاريع الجديدة
-        for (let i = currentlyShown; i < currentlyShown + itemsToShow; i++) {
+        for (let i = currentlyShown; i < currentlyShown + itemsToAdd; i++) {
             const project = filteredProjects[i];
             const portfolioItem = portfolioContainer.querySelector(`[data-index="${projects.indexOf(project)}"]`);
             if (portfolioItem) {
@@ -2065,9 +2073,11 @@ async function showLessProjects() {
             return matchesFilter && matchesSearch;
         });
 
-        // تحديد عدد المشاريع الأولية المعروضة حسب حجم الشاشة
-        const initialItemsToShow = window.innerWidth < 768 ? 4 : 6; // 4 للشاشات الصغيرة، 6 للشاشات الكبيرة
         
+
+        // تحديد عدد المشاريع الأولية المعروضة حسب حجم الشاشة
+    const itemsConfig = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
+    const initialItemsToShow = itemsConfig.initial;        
         // إخفاء المشاريع الزائدة
         filteredProjects.forEach((project, index) => {
             const portfolioItem = portfolioContainer.querySelector(`[data-index="${projects.indexOf(project)}"]`);
@@ -2113,22 +2123,20 @@ window.addEventListener('resize', function() {
         window.getComputedStyle(item).display !== 'none'
     );
 
+    const itemsConfig = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
+    
     if (window.innerWidth < 768) {
-        // في الجوال، نعرض كل العناصر ونخفي الزر إذا لم يكن هناك عناصر مخفية
-        allItems.forEach(item => item.style.display = 'block');
-        loadMoreBtn.style.display = 'none';
-    } else {
-        // في الشاشات الكبيرة، نتحقق إذا كان هناك عناصر مخفية لنظهر الزر
-        const hiddenItems = Array.from(allItems).filter(item => 
-            item.style.display === 'none'
-        );
-        loadMoreBtn.style.display = hiddenItems.length > 0 ? 'flex' : 'none';
+        // في الجوال، نعرض العدد الأولي ونخفي الزر إذا لم يكن هناك عناصر مخفية
+        allItems.forEach((item, index) => {
+            item.style.display = index < itemsConfig.initial ? 'block' : 'none';
+        });
     }
-
-        if (document.querySelector('.btn-load-more').classList.contains('show-less')) {
-        showLessProjects();
-    }
-
+    
+    // تحديث حالة زر "تحميل المزيد"
+    const hiddenItems = Array.from(allItems).filter(item => 
+        item.style.display === 'none'
+    );
+    loadMoreBtn.style.display = hiddenItems.length > 0 ? 'flex' : 'none';
 
     // تحديث العداد
     const shownCountElement = document.querySelector('.shown-count');
@@ -2136,8 +2144,6 @@ window.addEventListener('resize', function() {
         shownCountElement.textContent = 
             portfolioContainer.querySelectorAll('.portfolio-item[style*="display: block"], .portfolio-item:not([style])').length;
     }
-
-    
 });
 
 i18next
