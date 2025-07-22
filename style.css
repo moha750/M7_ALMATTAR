@@ -1529,10 +1529,6 @@ img {
     transform: scale(1);
 }
 
-.lightbox-info {
-    padding: 2rem;
-}
-
 .info-description {
     margin-bottom: 1.5rem;
     color: var(--dark);
@@ -1969,10 +1965,6 @@ img {
 .skill-project-lightbox.active {
     opacity: 1;
     pointer-events: all;
-}
-
-.lightbox-info {
-    padding: 2rem;
 }
 
 .lightbox-info h3 {
@@ -3416,6 +3408,11 @@ img {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+}
+
+.lightbox-info .btn-contact {
+  margin-top: auto; /* يدفع الزر إلى الأسفل */
+  align-self: center; /* توسيط الزر أفقيًا */
 }
 
 .lightbox-title {
