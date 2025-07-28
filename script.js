@@ -171,7 +171,7 @@ async function loadPortfolio() {
             return;
         }
 
-        const initialItemsToShow = Math.min(projects.length, window.innerWidth < 768 ? 4 : 6);
+        const initialItemsToShow = Math.min(projects.length, window.innerWidth < 952 ? 4 : 6);
         let shownCount = 0;
 
         projects.forEach((project, index) => {
@@ -309,20 +309,20 @@ function initPortfolioFilter() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     
     filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
             // إزالة الفئة النشطة من جميع الأزرار
             filterButtons.forEach(btn => btn.classList.remove('active'));
             // إضافة الفئة النشطة للزر المحدد
             button.classList.add('active');
             
             const filterValue = button.dataset.filter;
-            filterPortfolioItems(filterValue);
+            await filterPortfolioItems(filterValue);
         });
     });
 }
 
 // في ملف script.js
-function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
+async function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
     const portfolioContainer = document.querySelector('.portfolio-grid');
     const shownCountElement = document.querySelector('.shown-count');
     const totalCountElement = document.querySelector('.total-count');
@@ -330,83 +330,91 @@ function filterPortfolioItems(filterValue = 'all', searchTerm = '') {
     
     if (!portfolioContainer || !shownCountElement || !totalCountElement || !loadMoreBtn) return;
 
-    const portfolioItems = portfolioContainer.querySelectorAll('.portfolio-item');
-    let shownCount = 0;
-    let matchingItems = 0;
+    try {
+        // Get projects data from Supabase
+        const { data: projects, error } = await portfolioCollection.select('*').order('date', { ascending: false });
+        if (error) throw error;
 
-    // تحسين عملية البحث باستخدام تعبيرات منتظمة
-    const searchRegex = new RegExp(searchTerm, 'i');
-    
-    portfolioItems.forEach(item => {
-        // تحويل التصنيفات إلى مصفوفة إذا كانت سلسلة نصية
-        const categories = item.dataset.category 
-            ? item.dataset.category.split(',') 
-            : [];
-            
-        const title = item.dataset.title || '';
-        const client = item.dataset.client || '';
-        const tags = item.dataset.tags || '';
+        const portfolioItems = portfolioContainer.querySelectorAll('.portfolio-item');
+        let shownCount = 0;
+        let matchingItems = 0;
 
-        // تطبيق الفلتر مع دعم تعدد التصنيفات
-        const matchesFilter = filterValue === 'all' || categories.some(cat => cat === filterValue);
-        const matchesSearch = searchTerm === '' || 
-                             searchRegex.test(title) || 
-                             searchRegex.test(client) || 
-                             searchRegex.test(tags);
+        // تحسين عملية البحث باستخدام تعبيرات منتظمة
+        const searchRegex = new RegExp(searchTerm, 'i');
         
-        if (matchesFilter && matchesSearch) {
-            // تحديد عدد المشاريع المعروضة حسب حجم الشاشة
-            const itemsToShow = window.innerWidth < 768 
-                ? projectsToShow.mobile 
-                : projectsToShow.desktop;
+        portfolioItems.forEach(item => {
+            // تحويل التصنيفات إلى مصفوفة إذا كانت سلسلة نصية
+            const categories = item.dataset.category 
+                ? item.dataset.category.split(',') 
+                : [];
+                
+            const title = item.dataset.title || '';
+            const client = item.dataset.client || '';
+            const tags = item.dataset.tags || '';
+
+            // تطبيق الفلتر مع دعم تعدد التصنيفات
+            const matchesFilter = filterValue === 'all' || categories.some(cat => cat === filterValue);
+            const matchesSearch = searchTerm === '' || 
+                                 searchRegex.test(title) || 
+                                 searchRegex.test(client) || 
+                                 searchRegex.test(tags);
             
-            if (shownCount < itemsToShow) {
-                item.style.display = 'block';
-                shownCount++;
+            if (matchesFilter && matchesSearch) {
+                // تحديد عدد المشاريع المعروضة حسب حجم الشاشة
+                const itemsToShow = window.innerWidth < 952 
+                    ? projectsToShow.mobile.initial 
+                    : projectsToShow.desktop.initial;
+                
+                if (shownCount < itemsToShow) {
+                    item.style.display = 'block';
+                    shownCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+                matchingItems++;
             } else {
                 item.style.display = 'none';
             }
-            matchingItems++;
+        });
+
+        // تحديث العدادات
+        shownCountElement.textContent = shownCount;
+        totalCountElement.textContent = projects.length;
+
+        // التحكم في ظهور زر تحميل المزيد
+        const itemsConfig = window.innerWidth < 952 ? projectsToShow.mobile : projectsToShow.desktop;
+        const itemsToShow = itemsConfig.initial;
+            
+        if (matchingItems > itemsToShow) {
+            loadMoreBtn.style.display = 'flex';
+            loadMoreBtn.textContent = i18next.t('search.more');
+            loadMoreBtn.classList.remove('show-less');
         } else {
-            item.style.display = 'none';
+            loadMoreBtn.style.display = 'none';
         }
-    });
 
-    // تحديث العدادات
-shownCountElement.textContent = shownCount;
-totalCountElement.textContent = projects.length;
-
-    // التحكم في ظهور زر تحميل المزيد
-    const itemsConfig = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
-    const itemsToShow = itemsConfig.initial;
-        
-    if (matchingItems > itemsToShow) {
-        loadMoreBtn.style.display = 'flex';
-        loadMoreBtn.textContent = i18next.t('search.more');
-        loadMoreBtn.classList.remove('show-less');
-    } else {
-        loadMoreBtn.style.display = 'none';
-    }
-
-    // إظهار رسالة إذا لم توجد مشاريع مطابقة
-    if (matchingItems === 0) {
-        const noResultsHTML = `
-            <div class="empty-portfolio">
-                <i class="fas fa-search"></i>
-                <p>${i18next.t('search.title')}</p>
-            </div>
-        `;
-        
-        // إنشاء عنصر الرسالة فقط إذا لم يكن موجودًا بالفعل
-        if (!portfolioContainer.querySelector('.empty-portfolio')) {
-            portfolioContainer.insertAdjacentHTML('beforeend', noResultsHTML);
+        // إظهار رسالة إذا لم توجد مشاريع مطابقة
+        if (matchingItems === 0) {
+            const noResultsHTML = `
+                <div class="empty-portfolio">
+                    <i class="fas fa-search"></i>
+                    <p>${i18next.t('search.title')}</p>
+                </div>
+            `;
+            
+            // إنشاء عنصر الرسالة فقط إذا لم يكن موجودًا بالفعل
+            if (!portfolioContainer.querySelector('.empty-portfolio')) {
+                portfolioContainer.insertAdjacentHTML('beforeend', noResultsHTML);
+            }
+        } else {
+            // إزالة رسالة "لا توجد نتائج" إذا كانت موجودة
+            const emptyMsg = portfolioContainer.querySelector('.empty-portfolio');
+            if (emptyMsg) {
+                emptyMsg.remove();
+            }
         }
-    } else {
-        // إزالة رسالة "لا توجد نتائج" إذا كانت موجودة
-        const emptyMsg = portfolioContainer.querySelector('.empty-portfolio');
-        if (emptyMsg) {
-            emptyMsg.remove();
-        }
+    } catch (error) {
+        console.error('Error filtering portfolio items:', error);
     }
 }
 
@@ -2003,14 +2011,14 @@ async function loadMoreProjects() {
             return matchesFilter && matchesSearch;
         });
 
-            const itemsConfig = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
+            const itemsConfig = window.innerWidth < 952 ? projectsToShow.mobile : projectsToShow.desktop;
     const itemsToAdd = itemsConfig.loadMore;
 
         // حساب المشاريع المعروضة حالياً
         const currentlyShown = portfolioContainer.querySelectorAll('.portfolio-item[style*="display: block"], .portfolio-item:not([style])').length;
         
         // حساب عدد المشاريع الجديدة التي سيتم عرضها
-        const itemsToShow = Math.min(filteredProjects.length - currentlyShown, window.innerWidth < 768 ? 2 : 3);
+        const itemsToShow = Math.min(filteredProjects.length - currentlyShown, window.innerWidth < 952 ? 2 : 3);
 
         // عرض المشاريع الجديدة
         for (let i = currentlyShown; i < currentlyShown + itemsToAdd; i++) {
@@ -2076,7 +2084,7 @@ async function showLessProjects() {
         
 
         // تحديد عدد المشاريع الأولية المعروضة حسب حجم الشاشة
-    const itemsConfig = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
+    const itemsConfig = window.innerWidth < 952 ? projectsToShow.mobile : projectsToShow.desktop;
     const initialItemsToShow = itemsConfig.initial;        
         // إخفاء المشاريع الزائدة
         filteredProjects.forEach((project, index) => {
@@ -2123,9 +2131,9 @@ window.addEventListener('resize', function() {
         window.getComputedStyle(item).display !== 'none'
     );
 
-    const itemsConfig = window.innerWidth < 768 ? projectsToShow.mobile : projectsToShow.desktop;
+    const itemsConfig = window.innerWidth < 952 ? projectsToShow.mobile : projectsToShow.desktop;
     
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 952) {
         // في الجوال، نعرض العدد الأولي ونخفي الزر إذا لم يكن هناك عناصر مخفية
         allItems.forEach((item, index) => {
             item.style.display = index < itemsConfig.initial ? 'block' : 'none';
