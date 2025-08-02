@@ -2788,83 +2788,97 @@ let visitorData = {
 
 // دالة لإنشاء معرف فريد
 function generateUniqueId() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }
 
 // دالة لتحديد نوع الجهاز
 function getDeviceType() {
-  const parser = new UAParser();
-  const result = parser.getResult();
-  
-  if (result.device.type === 'mobile' || result.device.type === 'tablet') {
-    // إرجاع نموذج الجهاز إذا كان معروفًا (مثل iPhone 12)
-    return result.device.model || result.os.name + ' ' + (result.os.version || '');
-  }
-  
-  // للأجهزة المكتبية
-  return 'desktop';
+    const parser = new UAParser();
+    const result = parser.getResult();
+    
+    if (result.device.type === 'mobile' || result.device.type === 'tablet') {
+        return result.device.model || result.os.name + ' ' + (result.os.version || '');
+    }
+    
+    return 'desktop';
 }
 
 // دالة لتحديد المتصفح ونظام التشغيل
 function detectBrowserAndOS() {
-  const userAgent = navigator.userAgent;
-  let browser = 'Unknown';
-  let os = 'Unknown';
+    const userAgent = navigator.userAgent;
+    let browser = 'Unknown';
+    let os = 'Unknown';
 
-  // Detect Browser
-  if (userAgent.indexOf("Firefox") > -1) {
-    browser = "Firefox";
-  } else if (userAgent.indexOf("SamsungBrowser") > -1) {
-    browser = "Samsung Browser";
-  } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
-    browser = "Opera";
-  } else if (userAgent.indexOf("Trident") > -1) {
-    browser = "Internet Explorer";
-  } else if (userAgent.indexOf("Edge") > -1) {
-    browser = "Edge";
-  } else if (userAgent.indexOf("Chrome") > -1) {
-    browser = "Chrome";
-  } else if (userAgent.indexOf("Safari") > -1) {
-    browser = "Safari";
-  }
+    if (userAgent.indexOf("Firefox") > -1) {
+        browser = "Firefox";
+    } else if (userAgent.indexOf("SamsungBrowser") > -1) {
+        browser = "Samsung Browser";
+    } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+        browser = "Opera";
+    } else if (userAgent.indexOf("Trident") > -1) {
+        browser = "Internet Explorer";
+    } else if (userAgent.indexOf("Edge") > -1) {
+        browser = "Edge";
+    } else if (userAgent.indexOf("Chrome") > -1) {
+        browser = "Chrome";
+    } else if (userAgent.indexOf("Safari") > -1) {
+        browser = "Safari";
+    }
 
-  // Detect OS
-  if (userAgent.indexOf("Windows") > -1) {
-    os = "Windows";
-  } else if (userAgent.indexOf("Mac") > -1) {
-    os = "macOS";
-  } else if (userAgent.indexOf("Linux") > -1) {
-    os = "Linux";
-  } else if (userAgent.indexOf("Android") > -1) {
-    os = "Android";
-  } else if (userAgent.indexOf("like Mac") > -1) {
-    os = "iOS";
-  }
+    if (userAgent.indexOf("Windows") > -1) {
+        os = "Windows";
+    } else if (userAgent.indexOf("Mac") > -1) {
+        os = "macOS";
+    } else if (userAgent.indexOf("Linux") > -1) {
+        os = "Linux";
+    } else if (userAgent.indexOf("Android") > -1) {
+        os = "Android";
+    } else if (userAgent.indexOf("like Mac") > -1) {
+        os = "iOS";
+    }
 
-  return { browser, os };
+    return { browser, os };
 }
 
 // دالة لتسجيل بداية الجلسة
-// دالة لتسجيل بداية الجلسة
 async function startSession() {
-  const parser = new UAParser();
-  const result = parser.getResult();
-  
-  // تعيين نموذج الجهاز
-  visitorData.device_model = result.device.model || 
-                           `${result.os.name} ${result.os.version || ''}`.trim() || 
-                           getDeviceType();
-    // التحقق من وجود زائر سابق
+    const parser = new UAParser();
+    const result = parser.getResult();
+    
+    visitorData.device_model = result.device.model || 
+                             `${result.os.name} ${result.os.version || ''}`.trim() || 
+                             getDeviceType();
+
     const existingVisitorId = localStorage.getItem('visitor_id');
     
     if (existingVisitorId) {
         visitorData.visitor_id = existingVisitorId;
         visitorData.returning_visitor = true;
         visitorData.first_visit = false;
+        
+        // التحقق من وجود جلسة نشطة
+        const { data: activeSessions, error } = await supabaseClient
+            .from('visitors')
+            .select('*')
+            .eq('visitor_id', visitorData.visitor_id)
+            .is('session_end', null);
+            
+        if (!error && activeSessions && activeSessions.length > 0) {
+            // إنهاء الجلسات النشطة السابقة
+            for (const session of activeSessions) {
+                await supabaseClient
+                    .from('visitors')
+                    .update({ 
+                        session_end: new Date().toISOString(),
+                        session_duration: Math.floor((new Date() - new Date(session.session_start)) / 1000)
+                    })
+                    .eq('session_id', session.session_id);
+            }
+        }
     } else {
         visitorData.visitor_id = generateUniqueId();
         localStorage.setItem('visitor_id', visitorData.visitor_id);
@@ -2876,159 +2890,198 @@ async function startSession() {
     visitorData.os = os;
 
     // الحصول على بيانات الموقع الجغرافي
-// الحصول على بيانات الموقع الجغرافي
-const geoData = await getGeoLocationData();
-if (geoData) {
-    visitorData.ip_address = geoData.ip || '';
-    visitorData.country = geoData.country || '';
-    visitorData.country_name = geoData.country_name || geoData.country || '';
-    visitorData.region = geoData.region || '';
-    visitorData.city = geoData.city || '';
-    visitorData.timezone = geoData.timezone || '';
-    visitorData.location = geoData.loc || '';
-    
-    if (geoData.loc) {
-        const [lat, lon] = geoData.loc.split(',');
-        visitorData.latitude = parseFloat(lat) || null;
-        visitorData.longitude = parseFloat(lon) || null;
+    const geoData = await getGeoLocationData();
+    if (geoData) {
+        visitorData.ip_address = geoData.ip || '';
+        visitorData.country = geoData.country || '';
+        visitorData.country_name = geoData.country_name || geoData.country || '';
+        visitorData.region = geoData.region || '';
+        visitorData.city = geoData.city || '';
+        visitorData.timezone = geoData.timezone || '';
+        visitorData.location = geoData.loc || '';
+        
+        if (geoData.loc) {
+            const [lat, lon] = geoData.loc.split(',');
+            visitorData.latitude = parseFloat(lat) || null;
+            visitorData.longitude = parseFloat(lon) || null;
+        }
     }
-}
 
-    // تسجيل الأقسام المرئية عند البدء
+    visitorData.referral_source = getReferralSource();
     trackViewedSections();
+    visitorData.session_start = new Date().toISOString();
+    visitorData.session_end = null;
+    visitorData.session_duration = 0;
+    
     await recordVisitorData();
 }
 
 // دالة لتسجيل بيانات الزائر في Supabase
 async function recordVisitorData() {
-    if (window.isRecordingVisit) return; // ✅ منع التكرار أثناء التنفيذ
-    window.isRecordingVisit = true;
-
     try {
-        const updateData = {
-            ...visitorData,
-            referral_source: visitorData.referral_source,
-            viewed_projects: visitorData.viewed_projects,
-            project_interactions: visitorData.project_interactions,
-        };
-
-        // تحقق من وجود جلسة بنفس session_id
         const { data: existingRecords, error: queryError } = await supabaseClient
             .from('visitors')
-            .select('id')
+            .select('*')
             .eq('session_id', visitorData.session_id)
             .limit(1);
 
         if (queryError) throw queryError;
 
-        if (existingRecords && existingRecords.length > 0) {
-            // تم الحفظ مسبقًا، لا تفعل شيء
-            console.log('الزيارة مسجلة مسبقًا.');
-        } else {
-            // أول مرة - حفظ جديد
-            const { error } = await supabaseClient
+        const recordData = {
+            ...visitorData,
+            // تأكيد عدم إرسال قيم null للتاريخ والمدة
+            session_end: visitorData.session_end || null,
+            session_duration: visitorData.session_duration || 0
+        };
+
+        if (existingRecords?.length > 0) {
+            const { error: updateError } = await supabaseClient
                 .from('visitors')
-                .insert([updateData]);
+                .update(recordData)
+                .eq('session_id', visitorData.session_id);
 
-            if (error) throw error;
+            if (updateError) throw updateError;
+        } else {
+            const { error: insertError } = await supabaseClient
+                .from('visitors')
+                .insert([recordData]);
 
-            console.log('تم تسجيل الزيارة.');
+            if (insertError) throw insertError;
         }
     } catch (error) {
-        console.error('خطأ في حفظ بيانات الزائر:', error);
-    } finally {
-        window.isRecordingVisit = false; // ✅ إعادة الضبط
+        console.error('Error recording visitor data:', error);
     }
 }
 
-
 // دالة لتحديث بيانات الجلسة عند الخروج
 async function updateSessionOnExit() {
-  // حساب مدة الجلسة
-  const sessionEnd = new Date();
-  const sessionStart = new Date(visitorData.session_start);
-  visitorData.session_end = sessionEnd.toISOString();
-  visitorData.session_duration = Math.floor((sessionEnd - sessionStart) / 1000);
+    try {
+        const sessionEnd = new Date();
+        const sessionStart = new Date(visitorData.session_start);
+        const duration = Math.floor((sessionEnd - sessionStart) / 1000); // بالثواني
 
-  // تحديث البيانات في Supabase
-  try {
-    const { data, error } = await supabaseClient
-      .from('visitors')
-      .update(visitorData)
-      .eq('session_id', visitorData.session_id);
+        // تحديث البيانات المحلية أولاً
+        visitorData.session_end = sessionEnd.toISOString();
+        visitorData.session_duration = duration;
 
-    if (error) throw error;
-  } catch (error) {
-    console.error('Error updating session data:', error);
-  }
+        // تحديث السجل في Supabase
+        const { error } = await supabaseClient
+            .from('visitors')
+            .update({
+                session_end: visitorData.session_end,
+                session_duration: visitorData.session_duration,
+                scroll_depth: visitorData.scroll_depth,
+                viewed_sections: visitorData.viewed_sections,
+                viewed_projects: visitorData.viewed_projects,
+                project_interactions: visitorData.project_interactions
+            })
+            .eq('session_id', visitorData.session_id);
+
+        if (error) throw error;
+    } catch (error) {
+        console.error('Error updating session on exit:', error);
+        // محاولة بديلة باستخدام fetch إذا فشلت مع Supabase Client
+        await backupUpdateSession();
+    }
+}
+
+// دالة احتياطية في حالة فشل التحديث عبر Supabase Client
+async function backupUpdateSession() {
+    try {
+        const response = await fetch('https://txywqmxcynvofslqdlck.supabase.co/rest/v1/visitors', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4eXdxbXhjeW52b2ZzbHFkbGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMzY3MjksImV4cCI6MjA2NTcxMjcyOX0.ONwEYLhtDwZffyNZTiSYy3ZX5lx1tBVpCQoODrqfrK8',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4eXdxbXhjeW52b2ZzbHFkbGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMzY3MjksImV4cCI6MjA2NTcxMjcyOX0.ONwEYLhtDwZffyNZTiSYy3ZX5lx1tBVpCQoODrqfrK8'
+            },
+            body: JSON.stringify({
+                session_end: visitorData.session_end,
+                session_duration: visitorData.session_duration,
+                session_id: visitorData.session_id
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update session');
+        }
+    } catch (error) {
+        console.error('Backup update failed:', error);
+    }
 }
 
 // تتبع التمرير
 function trackScrollDepth() {
-  const scrollHeight = document.documentElement.scrollHeight;
-  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-  const clientHeight = document.documentElement.clientHeight;
-  const scrollPercentage = Math.round((scrollTop + clientHeight) / scrollHeight * 100);
-  
-  if (scrollPercentage > visitorData.scroll_depth) {
-    visitorData.scroll_depth = scrollPercentage;
-    recordVisitorData();
-  }
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const clientHeight = document.documentElement.clientHeight;
+    const scrollPercentage = Math.round((scrollTop + clientHeight) / scrollHeight * 100);
+    
+    if (scrollPercentage > visitorData.scroll_depth) {
+        visitorData.scroll_depth = scrollPercentage;
+    }
 }
 
 // إعداد مستمعات الأحداث
 function setupTrackingEventListeners() {
-  // تتبع التمرير
+    const updateVisitorData = _.throttle(recordVisitorData, 5000);
+
     window.addEventListener('scroll', _.throttle(() => {
-    trackScrollDepth();
-    trackViewedSections(); // إضافة تتبع الأقسام
-  }, 1000));
-  
-  // تتبع إغلاق الصفحة
-  window.addEventListener('beforeunload', updateSessionOnExit);
-  
-  // تتبع تحميل السيرة الذاتية
-document.getElementById('downloadCV')?.addEventListener('click', () => {
-    visitorData.downloaded_cv = true;
-    recordVisitorData();
-});
-  
-  // تتبع إرسال نموذج التواصل
-document.getElementById('enhancedContactForm')?.addEventListener('submit', () => {
-    visitorData.contact_form_submitted = true;
-    recordVisitorData();
-});
-  
-  // تتبع تغيير اللغة
-document.querySelectorAll('[onclick^="changeLang"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-        recordVisitorData();
+        trackScrollDepth();
+        trackViewedSections();
+        updateVisitorData();
+    }, 1000));
+
+    window.addEventListener('beforeunload', updateSessionOnExit);
+
+    document.getElementById('downloadCV')?.addEventListener('click', () => {
+        visitorData.downloaded_cv = true;
+        updateVisitorData();
     });
-});
+
+    document.getElementById('enhancedContactForm')?.addEventListener('submit', () => {
+        visitorData.contact_form_submitted = true;
+        updateVisitorData();
+    });
+
+    document.querySelectorAll('[onclick^="changeLang"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            updateVisitorData();
+        });
+    });
+
     i18next.on('languageChanged', (lng) => {
         visitorData.preferred_language = lng;
-        recordVisitorData();
+        updateVisitorData();
     });
+    // تتبع تغيير علامة التبويب/النافذة
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+            updateSessionOnExit();
+        }
+    });
+
+    // تتبع إغلاق الصفحة بشكل أكثر موثوقية
+    window.addEventListener('pagehide', updateSessionOnExit);
 }
 
 function trackViewedSections() {
-  const sections = document.querySelectorAll('section[id]');
-  const newSections = [];
-  
-  sections.forEach(section => {
-    const rect = section.getBoundingClientRect();
-    const isVisible = (rect.top <= window.innerHeight / 2) && 
-                     (rect.bottom >= window.innerHeight / 2);
+    const sections = document.querySelectorAll('section[id]');
+    const newSections = [];
     
-    if (isVisible && !visitorData.viewed_sections.includes(section.id)) {
-      newSections.push(section.id);
+    sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        const isVisible = (rect.top <= window.innerHeight / 2) && 
+                         (rect.bottom >= window.innerHeight / 2);
+        
+        if (isVisible && !visitorData.viewed_sections.includes(section.id)) {
+            newSections.push(section.id);
+        }
+    });
+    
+    if (newSections.length > 0) {
+        visitorData.viewed_sections = [...visitorData.viewed_sections, ...newSections];
     }
-  });
-  
-  if (newSections.length > 0) {
-    visitorData.viewed_sections = [...visitorData.viewed_sections, ...newSections];
-    recordVisitorData();
-  }
 }
 
 function checkInitialSections() {
@@ -3061,21 +3114,18 @@ async function getGeoLocationData() {
 
 // تحديد مصدر الزائر
 function getReferralSource() {
-    // التحقق من معلمات UTM في URL
     const urlParams = new URLSearchParams(window.location.search);
     const utmSource = urlParams.get('utm_source');
     
     if (utmSource) {
-        return utmSource; // مثل: 'google', 'facebook', 'twitter'
+        return utmSource;
     }
     
-    // التحقق من المرجع (referrer)
     const referrer = document.referrer;
     if (!referrer) {
-        return 'direct'; // زيارة مباشرة (بدون مصدر)
+        return 'direct';
     }
     
-    // تحديد المصدر بناءً على النطاق
     try {
         const referrerUrl = new URL(referrer);
         const hostname = referrerUrl.hostname;
@@ -3091,7 +3141,7 @@ function getReferralSource() {
         } else if (hostname.includes('youtube')) {
             return 'youtube';
         } else {
-            return hostname; // نطاق آخر غير معروف
+            return hostname;
         }
     } catch (e) {
         return 'unknown';

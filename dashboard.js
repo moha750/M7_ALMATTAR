@@ -1039,19 +1039,6 @@ projectsTableBody.addEventListener('click', async function (e) {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // أحداث قلب الصورة
 if (document.getElementById('flipHorizontal')) {
     document.getElementById('flipHorizontal').addEventListener('click', () => {
@@ -1134,55 +1121,6 @@ function updateSizeIndicator(width, height) {
     sizeIndicator.textContent = `${roundedWidth} × ${roundedHeight} بكسل`;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // أضف هذه الدوال في قسم المتغيرات العامة
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
@@ -1228,54 +1166,6 @@ document.getElementById('cropBtn').addEventListener('click', function (e) {
     };
     reader.readAsDataURL(currentImageFile);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // دالة لمعالجة سحب وإفلات الصور
 function setupDragAndDrop() {
@@ -1348,61 +1238,6 @@ document.addEventListener('DOMContentLoaded', function () {
     setupDragAndDrop();
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // أضف هذه الدوال في قسم المتغيرات العامة
 function isValidUrl(url) {
     try {
@@ -1473,62 +1308,6 @@ document.getElementById('externalLink').addEventListener('input', function() {
         testBtn.disabled = !url;
     }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // دالة لجلب بيانات الزوار من Supabase
 async function fetchVisitorsData(filter = {}) {
@@ -1768,7 +1547,7 @@ document.getElementById('detailDeviceModel').textContent =
         
         // الإحصائيات
         document.getElementById('detailScrollDepth').textContent = 
-            latestSession.scroll_depth ? `${latestSession.scroll_depth}%` : 'غير معروف';
+            latestSession.scroll_depth ? `${latestSession.scroll_depth}%` : 'لم يتحرك';
             // داخل دالة showVisitorDetails بعد تعبئة البيانات الأساسية
 document.getElementById('detailReferralSource').textContent = 
     latestSession.referral_source || 'مباشر';
