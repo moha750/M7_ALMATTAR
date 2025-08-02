@@ -119,6 +119,8 @@ function initTypingEffect() {
     typingText.typingInterval = setTimeout(type, 1000);
 }
 
+
+
 // ==================== قسم معرض الأعمال مع Firebase ====================
 
 async function loadPortfolio() {
@@ -508,31 +510,47 @@ function initPortfolioLightbox(projectsData) {
         return lb;
     }
 
-document.querySelectorAll('.portfolio-item').forEach(item => {
-    item.addEventListener('click', function (e) {
-        e.preventDefault();
+    // دالة لتسجيل تفاعل المستخدم مع المشروع
+function recordProjectInteraction(projectIndex) {
+    const projectTitle = projectsData[projectIndex].title;
+    
+    // تجنب التكرار
+    if (!visitorData.viewed_projects.includes(projectTitle)) {
+        visitorData.viewed_projects.push(projectTitle);
+        visitorData.project_interactions += 1;
+        recordVisitorData(); // تحديث البيانات في Supabase
+    }
+}
 
-        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-        const searchTerm = document.querySelector('.search-input').value.trim().toLowerCase();
+    document.querySelectorAll('.portfolio-item').forEach(item => {
+        item.addEventListener('click', function (e) {
+            e.preventDefault();
 
-        // تصفية العناصر المعروضة حالياً
-        filteredItems = Array.from(document.querySelectorAll('.portfolio-item')).filter(item => {
-            const isVisible = window.getComputedStyle(item).display !== 'none';
-            const matchesFilter = activeFilter === 'all' || item.dataset.category.split(',').includes(activeFilter);
-            const matchesSearch = searchTerm === '' ||
-                item.dataset.title.includes(searchTerm) ||
-                item.dataset.client.includes(searchTerm) ||
-                (item.dataset.tags && item.dataset.tags.includes(searchTerm));
-            return isVisible && matchesFilter && matchesSearch;
-        });
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+            const searchTerm = document.querySelector('.search-input').value.trim().toLowerCase();
 
-        currentIndex = filteredItems.findIndex(el => el === this);
-        if (currentIndex === -1) {
-            console.error('Could not find clicked item in filtered items');
-            return;
-        }
+            // تصفية العناصر المعروضة حالياً
+            filteredItems = Array.from(document.querySelectorAll('.portfolio-item')).filter(item => {
+                const isVisible = window.getComputedStyle(item).display !== 'none';
+                const matchesFilter = activeFilter === 'all' || item.dataset.category.split(',').includes(activeFilter);
+                const matchesSearch = searchTerm === '' ||
+                    item.dataset.title.includes(searchTerm) ||
+                    item.dataset.client.includes(searchTerm) ||
+                    (item.dataset.tags && item.dataset.tags.includes(searchTerm));
+                return isVisible && matchesFilter && matchesSearch;
+            });
 
-        showProjectInLightbox(currentIndex, projectsData);
+            currentIndex = filteredItems.findIndex(el => el === this);
+            if (currentIndex === -1) {
+                console.error('Could not find clicked item in filtered items');
+                return;
+            }
+
+            // تسجيل تفاعل المستخدم مع المشروع
+            const projectIndex = parseInt(this.dataset.index);
+            recordProjectInteraction(projectIndex);
+
+            showProjectInLightbox(currentIndex, projectsData);
 
             lightbox.classList.add('active');
             document.body.classList.add('no-scroll');
@@ -548,128 +566,131 @@ document.querySelectorAll('.portfolio-item').forEach(item => {
         });
     });
 
-function showProjectInLightbox(index, projects) {
-    // التحقق من وجود العناصر والبيانات الأساسية
-    if (!filteredItems || !filteredItems.length || !projects || !Array.isArray(projects)) {
-        console.error('Invalid data: filteredItems or projects array is missing or empty');
-        return;
-    }
+    function showProjectInLightbox(index, projects) {
+        // التحقق من وجود العناصر والبيانات الأساسية
+        if (!filteredItems || !filteredItems.length || !projects || !Array.isArray(projects)) {
+            console.error('Invalid data: filteredItems or projects array is missing or empty');
+            return;
+        }
 
-    if (index < 0 || index >= filteredItems.length) {
-        console.error('Invalid index:', index);
-        return;
-    }
+        if (index < 0 || index >= filteredItems.length) {
+            console.error('Invalid index:', index);
+            return;
+        }
 
-    const projectItem = filteredItems[index];
-    if (!projectItem || !projectItem.dataset || !projectItem.dataset.index) {
-        console.error('Invalid project item:', projectItem);
-        return;
-    }
+        const projectItem = filteredItems[index];
+        if (!projectItem || !projectItem.dataset || !projectItem.dataset.index) {
+            console.error('Invalid project item:', projectItem);
+            return;
+        }
 
-    const projectIndex = parseInt(projectItem.dataset.index);
-    if (isNaN(projectIndex) || projectIndex < 0 || projectIndex >= projects.length) {
-        console.error('Invalid project index:', projectIndex);
-        return;
-    }
+        const projectIndex = parseInt(projectItem.dataset.index);
+        if (isNaN(projectIndex) || projectIndex < 0 || projectIndex >= projects.length) {
+            console.error('Invalid project index:', projectIndex);
+            return;
+        }
 
-    const project = projects[projectIndex];
-    if (!project) {
-        console.error('Project not found at index:', projectIndex);
-        return;
-    }
+        const project = projects[projectIndex];
+        if (!project) {
+            console.error('Project not found at index:', projectIndex);
+            return;
+        }
 
-    // التحقق من وجود عناصر lightbox
-    const lightbox = document.querySelector('.portfolio-lightbox');
-    if (!lightbox) {
-        console.error('Lightbox element not found');
-        return;
-    }
+        // تسجيل تفاعل المستخدم مع المشروع عند التنقل
+        recordProjectInteraction(projectIndex);
 
-    const lightboxImg = lightbox.querySelector('.lightbox-image');
-    const lightboxTitle = lightbox.querySelector('h3');
-    const lightboxDesc = lightbox.querySelector('.info-description');
-    const lightboxClient = lightbox.querySelector('.info-client');
-    const lightboxDate = lightbox.querySelector('.info-date');
-    const lightboxCategory = lightbox.querySelector('.info-category');
-    const tagsContainer = lightbox.querySelector('.project-tags');
-    const viewProjectBtn = lightbox.querySelector('.btn-contact');
+        // التحقق من وجود عناصر lightbox
+        const lightbox = document.querySelector('.portfolio-lightbox');
+        if (!lightbox) {
+            console.error('Lightbox element not found');
+            return;
+        }
 
-    if (!lightboxImg || !lightboxTitle || !lightboxDesc || !lightboxClient || 
-        !lightboxDate || !lightboxCategory || !tagsContainer || !viewProjectBtn) {
-        console.error('One or more lightbox elements not found');
-        return;
-    }
+        const lightboxImg = lightbox.querySelector('.lightbox-image');
+        const lightboxTitle = lightbox.querySelector('h3');
+        const lightboxDesc = lightbox.querySelector('.info-description');
+        const lightboxClient = lightbox.querySelector('.info-client');
+        const lightboxDate = lightbox.querySelector('.info-date');
+        const lightboxCategory = lightbox.querySelector('.info-category');
+        const tagsContainer = lightbox.querySelector('.project-tags');
+        const viewProjectBtn = lightbox.querySelector('.btn-contact');
 
-    // تعبئة بيانات المشروع
-    if (project.external_link) {
-        viewProjectBtn.href = project.external_link;
-        viewProjectBtn.target = '_blank';
-        viewProjectBtn.style.display = 'inline-flex';
-    } else {
-        viewProjectBtn.style.display = 'none';
-    }
+        if (!lightboxImg || !lightboxTitle || !lightboxDesc || !lightboxClient || 
+            !lightboxDate || !lightboxCategory || !tagsContainer || !viewProjectBtn) {
+            console.error('One or more lightbox elements not found');
+            return;
+        }
 
-    // تحميل الصورة مع التحقق من وجودها
-    if (project.image) {
-        gsap.to(lightboxImg, {
-            opacity: 0,
-            duration: 0.3
-        });
-        lightboxImg.src = project.image;
-        lightboxImg.alt = project.title || '';
-        lightboxImg.onload = () => {
+        // تعبئة بيانات المشروع
+        if (project.external_link) {
+            viewProjectBtn.href = project.external_link;
+            viewProjectBtn.target = '_blank';
+            viewProjectBtn.style.display = 'inline-flex';
+        } else {
+            viewProjectBtn.style.display = 'none';
+        }
+
+        // تحميل الصورة مع التحقق من وجودها
+        if (project.image) {
             gsap.to(lightboxImg, {
-                opacity: 1,
-                duration: 0.5
+                opacity: 0,
+                duration: 0.3
             });
+            lightboxImg.src = project.image;
+            lightboxImg.alt = project.title || '';
+            lightboxImg.onload = () => {
+                gsap.to(lightboxImg, {
+                    opacity: 1,
+                    duration: 0.5
+                });
+            };
+        }
+
+        // تعبئة النصوص مع قيم افتراضية في حالة عدم وجود البيانات
+        lightboxTitle.textContent = project.title || 'لا يوجد عنوان';
+        lightboxDesc.textContent = project.description || 'لا يوجد وصف';
+        lightboxClient.textContent = project.client || 'غير معروف';
+        lightboxDate.textContent = project.date || 'غير محدد';
+
+        // معالجة التصنيفات المتعددة
+        const categoryNames = {
+            'graphic': 'تصميم جرافيك',
+            'motion': 'موشن جرافيك',
+            'video': 'مونتاج فيديو',
+            'voice': 'تعليق صوتي',
+            'web': 'تطوير ويب'
         };
-    }
 
-    // تعبئة النصوص مع قيم افتراضية في حالة عدم وجود البيانات
-    lightboxTitle.textContent = project.title || 'لا يوجد عنوان';
-    lightboxDesc.textContent = project.description || 'لا يوجد وصف';
-    lightboxClient.textContent = project.client || 'غير معروف';
-    lightboxDate.textContent = project.date || 'غير محدد';
+        const projectCategories = Array.isArray(project.category) ? 
+            project.category : 
+            (project.category ? [project.category] : []);
+        
+        lightboxCategory.textContent = projectCategories.length > 0 ?
+            projectCategories.map(cat => categoryNames[cat] || cat).join('، ') :
+            'غير مصنف';
 
-    // معالجة التصنيفات المتعددة
-    const categoryNames = {
-        'graphic': 'تصميم جرافيك',
-        'motion': 'موشن جرافيك',
-        'video': 'مونتاج فيديو',
-        'voice': 'تعليق صوتي',
-        'web': 'تطوير ويب'
-    };
+        // معالجة الكلمات المفتاحية
+        tagsContainer.innerHTML = '';
+        if (project.tags && project.tags.length > 0) {
+            project.tags.forEach(tag => {
+                if (tag) { // التحقق من وجود قيمة للكلمة المفتاحية
+                    const tagElement = document.createElement('span');
+                    tagElement.className = 'tag';
+                    tagElement.textContent = tag;
+                    tagsContainer.appendChild(tagElement);
+                }
+            });
+        }
 
-    const projectCategories = Array.isArray(project.category) ? 
-        project.category : 
-        (project.category ? [project.category] : []);
-    
-    lightboxCategory.textContent = projectCategories.length > 0 ?
-        projectCategories.map(cat => categoryNames[cat] || cat).join('، ') :
-        'غير مصنف';
-
-    // معالجة الكلمات المفتاحية
-    tagsContainer.innerHTML = '';
-    if (project.tags && project.tags.length > 0) {
-        project.tags.forEach(tag => {
-            if (tag) { // التحقق من وجود قيمة للكلمة المفتاحية
-                const tagElement = document.createElement('span');
-                tagElement.className = 'tag';
-                tagElement.textContent = tag;
-                tagsContainer.appendChild(tagElement);
-            }
+        // تأثيرات الحركة
+        gsap.from([lightboxTitle, lightboxDesc, lightbox.querySelector('.info-meta'), tagsContainer], {
+            opacity: 0,
+            y: 20,
+            duration: 0.3,
+            stagger: 0.1,
+            delay: 0.3
         });
     }
-
-    // تأثيرات الحركة
-    gsap.from([lightboxTitle, lightboxDesc, lightbox.querySelector('.info-meta'), tagsContainer], {
-        opacity: 0,
-        y: 20,
-        duration: 0.3,
-        stagger: 0.1,
-        delay: 0.3
-    });
-}
 
     lightbox.querySelector('.prev-btn').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -2252,8 +2273,12 @@ function changeLang(lang) {
   i18next.changeLanguage(lang, () => {
     updateContent();
     loadPortfolio();
-    initTypingEffect(); // إعادة تحميل تأثير الكتابة
-    initHeroAnimations(); // إعادة تحميل تأثيرات القسم الرئيسي
+    initTypingEffect();
+    initHeroAnimations();
+    
+    // تحديث preferred_language في visitorData
+    visitorData.preferred_language = lang;
+    recordVisitorData();
   });
 }
 
@@ -2732,4 +2757,387 @@ function showLanguageWelcome(lang) {
   
   document.head.appendChild(style);
 }
+
+// تهيئة بيانات الزائر
+let visitorData = {
+  visitor_id: '',
+  session_id: generateUniqueId(),
+  session_start: new Date().toISOString(),
+  viewed_sections: [],
+  scroll_depth: 0,
+  device_type: getDeviceType(),
+  viewed_projects: [],
+  project_interactions: 0,
+  screen_resolution: `${window.screen.width}x${window.screen.height}`,
+  preferred_language: i18next.language || 'ar',
+  first_visit: true,
+  returning_visitor: false,
+  browser: '',
+  os: '',
+  ip_address: '',
+  country: '',
+  country_name: '',
+  region: '',
+  city: '',
+  timezone: '',
+  location: '',
+  latitude: null,
+  longitude: null,
+  device_model: '',
+};
+
+// دالة لإنشاء معرف فريد
+function generateUniqueId() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// دالة لتحديد نوع الجهاز
+function getDeviceType() {
+  const parser = new UAParser();
+  const result = parser.getResult();
+  
+  if (result.device.type === 'mobile' || result.device.type === 'tablet') {
+    // إرجاع نموذج الجهاز إذا كان معروفًا (مثل iPhone 12)
+    return result.device.model || result.os.name + ' ' + (result.os.version || '');
+  }
+  
+  // للأجهزة المكتبية
+  return 'desktop';
+}
+
+// دالة لتحديد المتصفح ونظام التشغيل
+function detectBrowserAndOS() {
+  const userAgent = navigator.userAgent;
+  let browser = 'Unknown';
+  let os = 'Unknown';
+
+  // Detect Browser
+  if (userAgent.indexOf("Firefox") > -1) {
+    browser = "Firefox";
+  } else if (userAgent.indexOf("SamsungBrowser") > -1) {
+    browser = "Samsung Browser";
+  } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+    browser = "Opera";
+  } else if (userAgent.indexOf("Trident") > -1) {
+    browser = "Internet Explorer";
+  } else if (userAgent.indexOf("Edge") > -1) {
+    browser = "Edge";
+  } else if (userAgent.indexOf("Chrome") > -1) {
+    browser = "Chrome";
+  } else if (userAgent.indexOf("Safari") > -1) {
+    browser = "Safari";
+  }
+
+  // Detect OS
+  if (userAgent.indexOf("Windows") > -1) {
+    os = "Windows";
+  } else if (userAgent.indexOf("Mac") > -1) {
+    os = "macOS";
+  } else if (userAgent.indexOf("Linux") > -1) {
+    os = "Linux";
+  } else if (userAgent.indexOf("Android") > -1) {
+    os = "Android";
+  } else if (userAgent.indexOf("like Mac") > -1) {
+    os = "iOS";
+  }
+
+  return { browser, os };
+}
+
+// دالة لتسجيل بداية الجلسة
+// دالة لتسجيل بداية الجلسة
+async function startSession() {
+  const parser = new UAParser();
+  const result = parser.getResult();
+  
+  // تعيين نموذج الجهاز
+  visitorData.device_model = result.device.model || 
+                           `${result.os.name} ${result.os.version || ''}`.trim() || 
+                           getDeviceType();
+    // التحقق من وجود زائر سابق
+    const existingVisitorId = localStorage.getItem('visitor_id');
+    
+    if (existingVisitorId) {
+        visitorData.visitor_id = existingVisitorId;
+        visitorData.returning_visitor = true;
+        visitorData.first_visit = false;
+    } else {
+        visitorData.visitor_id = generateUniqueId();
+        localStorage.setItem('visitor_id', visitorData.visitor_id);
+    }
+
+    // الكشف عن المتصفح ونظام التشغيل
+    const { browser, os } = detectBrowserAndOS();
+    visitorData.browser = browser;
+    visitorData.os = os;
+
+    // الحصول على بيانات الموقع الجغرافي
+// الحصول على بيانات الموقع الجغرافي
+const geoData = await getGeoLocationData();
+if (geoData) {
+    visitorData.ip_address = geoData.ip || '';
+    visitorData.country = geoData.country || '';
+    visitorData.country_name = geoData.country_name || geoData.country || '';
+    visitorData.region = geoData.region || '';
+    visitorData.city = geoData.city || '';
+    visitorData.timezone = geoData.timezone || '';
+    visitorData.location = geoData.loc || '';
+    
+    if (geoData.loc) {
+        const [lat, lon] = geoData.loc.split(',');
+        visitorData.latitude = parseFloat(lat) || null;
+        visitorData.longitude = parseFloat(lon) || null;
+    }
+}
+
+    // تسجيل الأقسام المرئية عند البدء
+    trackViewedSections();
+    await recordVisitorData();
+}
+
+// دالة لتسجيل بيانات الزائر في Supabase
+async function recordVisitorData() {
+    if (window.isRecordingVisit) return; // ✅ منع التكرار أثناء التنفيذ
+    window.isRecordingVisit = true;
+
+    try {
+        const updateData = {
+            ...visitorData,
+            referral_source: visitorData.referral_source,
+            viewed_projects: visitorData.viewed_projects,
+            project_interactions: visitorData.project_interactions,
+        };
+
+        // تحقق من وجود جلسة بنفس session_id
+        const { data: existingRecords, error: queryError } = await supabaseClient
+            .from('visitors')
+            .select('id')
+            .eq('session_id', visitorData.session_id)
+            .limit(1);
+
+        if (queryError) throw queryError;
+
+        if (existingRecords && existingRecords.length > 0) {
+            // تم الحفظ مسبقًا، لا تفعل شيء
+            console.log('الزيارة مسجلة مسبقًا.');
+        } else {
+            // أول مرة - حفظ جديد
+            const { error } = await supabaseClient
+                .from('visitors')
+                .insert([updateData]);
+
+            if (error) throw error;
+
+            console.log('تم تسجيل الزيارة.');
+        }
+    } catch (error) {
+        console.error('خطأ في حفظ بيانات الزائر:', error);
+    } finally {
+        window.isRecordingVisit = false; // ✅ إعادة الضبط
+    }
+}
+
+
+// دالة لتحديث بيانات الجلسة عند الخروج
+async function updateSessionOnExit() {
+  // حساب مدة الجلسة
+  const sessionEnd = new Date();
+  const sessionStart = new Date(visitorData.session_start);
+  visitorData.session_end = sessionEnd.toISOString();
+  visitorData.session_duration = Math.floor((sessionEnd - sessionStart) / 1000);
+
+  // تحديث البيانات في Supabase
+  try {
+    const { data, error } = await supabaseClient
+      .from('visitors')
+      .update(visitorData)
+      .eq('session_id', visitorData.session_id);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error('Error updating session data:', error);
+  }
+}
+
+// تتبع التمرير
+function trackScrollDepth() {
+  const scrollHeight = document.documentElement.scrollHeight;
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const clientHeight = document.documentElement.clientHeight;
+  const scrollPercentage = Math.round((scrollTop + clientHeight) / scrollHeight * 100);
+  
+  if (scrollPercentage > visitorData.scroll_depth) {
+    visitorData.scroll_depth = scrollPercentage;
+    recordVisitorData();
+  }
+}
+
+// إعداد مستمعات الأحداث
+function setupTrackingEventListeners() {
+  // تتبع التمرير
+    window.addEventListener('scroll', _.throttle(() => {
+    trackScrollDepth();
+    trackViewedSections(); // إضافة تتبع الأقسام
+  }, 1000));
+  
+  // تتبع إغلاق الصفحة
+  window.addEventListener('beforeunload', updateSessionOnExit);
+  
+  // تتبع تحميل السيرة الذاتية
+document.getElementById('downloadCV')?.addEventListener('click', () => {
+    visitorData.downloaded_cv = true;
+    recordVisitorData();
+});
+  
+  // تتبع إرسال نموذج التواصل
+document.getElementById('enhancedContactForm')?.addEventListener('submit', () => {
+    visitorData.contact_form_submitted = true;
+    recordVisitorData();
+});
+  
+  // تتبع تغيير اللغة
+document.querySelectorAll('[onclick^="changeLang"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        recordVisitorData();
+    });
+});
+    i18next.on('languageChanged', (lng) => {
+        visitorData.preferred_language = lng;
+        recordVisitorData();
+    });
+}
+
+function trackViewedSections() {
+  const sections = document.querySelectorAll('section[id]');
+  const newSections = [];
+  
+  sections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+    const isVisible = (rect.top <= window.innerHeight / 2) && 
+                     (rect.bottom >= window.innerHeight / 2);
+    
+    if (isVisible && !visitorData.viewed_sections.includes(section.id)) {
+      newSections.push(section.id);
+    }
+  });
+  
+  if (newSections.length > 0) {
+    visitorData.viewed_sections = [...visitorData.viewed_sections, ...newSections];
+    recordVisitorData();
+  }
+}
+
+function checkInitialSections() {
+  const sections = document.querySelectorAll('section[id]');
+  sections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+    if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+      if (!visitorData.viewed_sections.includes(section.id)) {
+        visitorData.viewed_sections.push(section.id);
+      }
+    }
+  });
+}
+
+// دالة للحصول على بيانات الموقع الجغرافي من ipinfo
+async function getGeoLocationData() {
+    try {
+        const IPINFO_TOKEN = 'a3d7af54705cf9';
+        const response = await fetch(`https://ipinfo.io/json?token=${IPINFO_TOKEN}`);
+        if (!response.ok) {
+            console.error('Failed to fetch location data: Server returned an error');
+            return null;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching location data:', error.message);
+        return null;
+    }
+}
+
+// تحديد مصدر الزائر
+function getReferralSource() {
+    // التحقق من معلمات UTM في URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmSource = urlParams.get('utm_source');
+    
+    if (utmSource) {
+        return utmSource; // مثل: 'google', 'facebook', 'twitter'
+    }
+    
+    // التحقق من المرجع (referrer)
+    const referrer = document.referrer;
+    if (!referrer) {
+        return 'direct'; // زيارة مباشرة (بدون مصدر)
+    }
+    
+    // تحديد المصدر بناءً على النطاق
+    try {
+        const referrerUrl = new URL(referrer);
+        const hostname = referrerUrl.hostname;
+        
+        if (hostname.includes('google')) {
+            return 'google';
+        } else if (hostname.includes('facebook')) {
+            return 'facebook';
+        } else if (hostname.includes('twitter')) {
+            return 'twitter';
+        } else if (hostname.includes('linkedin')) {
+            return 'linkedin';
+        } else if (hostname.includes('youtube')) {
+            return 'youtube';
+        } else {
+            return hostname; // نطاق آخر غير معروف
+        }
+    } catch (e) {
+        return 'unknown';
+    }
+}
+
+// في دالة startSession، أضف:
+visitorData.referral_source = getReferralSource();
+
+// استدعاء الدالة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+  startSession();
+  checkInitialSections();
+  setupTrackingEventListeners();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

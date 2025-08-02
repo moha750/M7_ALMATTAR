@@ -232,19 +232,311 @@
                 <p>ابدأ بإضافة مشروعك الأول باستخدام النموذج أعلاه</p>
             </div>
         </div>
+
+        <div class="table-actions">
+            <button id="selectAllBtn" class="action-btn select-btn">
+                <i class="fas fa-check-square"></i> تحديد الكل
+            </button>
+            <button id="deleteSelectedBtn" class="action-btn delete-btn" disabled>
+                <i class="fas fa-trash"></i> حذف المحدد
+            </button>
+            <button id="deleteAllBtn" class="action-btn delete-all-btn">
+                <i class="fas fa-trash-alt"></i> حذف الكل
+            </button>
+        </div>
+
+        <div class="visitors-section">
+            <h2><i class="fas fa-users"></i> إحصائيات الزوار</h2>
+
+            <div class="visitors-filter">
+                <div class="filter-group">
+                    <label for="visitorDateFilter"><i class="fas fa-calendar"></i> الفترة الزمنية:</label>
+                    <select id="visitorDateFilter">
+                        <option value="today">اليوم</option>
+                        <option value="week">الأسبوع</option>
+                        <option value="month">الشهر</option>
+                        <option value="all" selected>الكل</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="visitorTypeFilter"><i class="fas fa-user"></i> نوع الزائر:</label>
+                    <select id="visitorTypeFilter">
+                        <option value="all" selected>الكل</option>
+                        <option value="new">زائر جديد</option>
+                        <option value="returning">زائر عائد</option>
+                    </select>
+                </div>
+
+                <button id="refreshVisitors" class="refresh-btn">
+                    <i class="fas fa-sync-alt"></i> تحديث
+                </button>
+            </div>
+
+            <div class="visitors-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalVisitors">0</h3>
+                        <p>إجمالي الزوار</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="newVisitors">0</h3>
+                        <p>زوار جدد</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="returningVisitors">0</h3>
+                        <p>زوار عائدون</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="projectInteractions">0</h3>
+                        <p>تفاعلات المشاريع</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="avgSessionDuration">0</h3>
+                        <p>متوسط مدة الزيارة</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-download"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="cvDownloads">0</h3>
+                        <p>تحميلات السيرة الذاتية</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="contactSubmissions">0</h3>
+                        <p>إرسالات نموذج الاتصال</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="countriesCount">0</h3>
+                        <p>عدد الدول</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visitors-table-container">
+                <table class="visitors-table">
+                    <thead>
+                        <tr>
+                            <th>معرف الزائر</th>
+                            <th>البلد</th>
+                            <th>الجهاز</th>
+                            <th>عدد الجلسات</th>
+                            <th>مدة الجلسة</th>
+                            <th>التفاصيل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visitorsTableBody">
+                        <!-- سيتم ملء البيانات هنا -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="visitorDetailsModal" class="visitor-modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h3 id="visitorModalTitle">تفاصيل الزائر</h3>
+
+                    <div class="visitor-details-grid">
+                        <div id="row1-col1" class="detail-section">
+                            <h4><i class="fas fa-info-circle"></i> المعلومات الأساسية</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">معرف الزائر:</span>
+                                <span id="detailVisitorId" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">نوع الزائر:</span>
+                                <span id="detailVisitorType" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">أول زيارة:</span>
+                                <span id="detailFirstVisit" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">آخر زيارة:</span>
+                                <span id="detailLastVisit" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">عدد الزيارات:</span>
+                                <span id="detailVisitCount" class="detail-value"></span>
+                            </div>
+                        </div>
+
+                        <div id="row1-col2" class="detail-section">
+                            <h4><i class="fas fa-globe"></i> الموقع الجغرافي</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">البلد:</span>
+                                <span id="detailCountry" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">المنطقة:</span>
+                                <span id="detailRegion" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">المدينة:</span>
+                                <span id="detailCity" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">المنطقة الزمنية:</span>
+                                <span id="detailTimezone" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">عنوان IP:</span>
+                                <span id="detailIp" class="detail-value"></span>
+                            </div>
+                        </div>
+
+                        <div  id="row2-col1" class="detail-section">
+                            <h4><i class="fas fa-desktop"></i> معلومات الجهاز</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">نوع الجهاز:</span>
+                                <span id="detailDevice" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">نظام التشغيل:</span>
+                                <span id="detailOs" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">طراز الجهاز:</span>
+                                <span id="detailDeviceModel" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">المتصفح:</span>
+                                <span id="detailBrowser" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">دقة الشاشة:</span>
+                                <span id="detailResolution" class="detail-value"></span>
+                            </div>
+                        </div>
+
+                        <div id="row2-col2" class="detail-section">
+                            <h4><i class="fas fa-chart-line"></i> الإحصائيات</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">معدل التمرير:</span>
+                                <span id="detailScrollDepth" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">اللغة المفضلة:</span>
+                                <span id="detailLanguage" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">مدة الجلسة:</span>
+                                <span id="detailSessionDuration" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">
+                                    تحميلات السيرة الذاتية:
+                                </span>
+                                <span id="detailCvDownloads" class="detail-value">0</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">
+                                    إرسالات نموذج الاتصال:
+                                </span>
+                                <span id="detailContactSubmissions" class="detail-value">0</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">مصدر الزيارة:</span>
+                                <span id="detailReferralSource" class="detail-value"></span>
+                            </div>
+                        </div>
+
+                        <div id="row3-col1" class="detail-section">
+                            <h4><i class="fas fa-file-alt"></i> الأقسام والأعمال</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">الأقسام المطالعة:</span>
+                                <span id="detailViewedSections" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">عدد المشاريع المطالعة:</span>
+                                <span id="detailProjectInteractions" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">المشاريع المطالعة:</span>
+                                <span id="detailProjectsViewed" class="detail-value"></span>
+                            </div>
+                        </div>
+
+                        <div class="detail-section full-width">
+                            <h4><i class="fas fa-history"></i> سجل الجلسات</h4>
+                            <div class="sessions-table-container">
+                                <table class="sessions-table">
+                                    <thead>
+                                        <tr>
+                                            <th>تاريخ الجلسة</th>
+                                            <th>مدة الجلسة</th>
+                                            <th>معدل التمرير</th>
+                                            <th>المشاريع المطالعة</th>
+                                            <th>عدد المشاريع المطالعة</th>
+                                            <th>الأقسام المطالعة</th>
+                                            <th>تحميلات السيرة الذاتية</th>
+                                            <th>إرسال نوذج التواصل</th>
+                                            <th>مصدر الزيارة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="visitorSessionsBody">
+                                        <!-- سيتم ملء البيانات هنا -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="visitor-actions">
+                        <button id="exportVisitorData" class="export-btn">
+                            <i class="fas fa-download"></i> تصدير البيانات
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="table-actions">
-        <button id="selectAllBtn" class="action-btn select-btn">
-            <i class="fas fa-check-square"></i> تحديد الكل
-        </button>
-        <button id="deleteSelectedBtn" class="action-btn delete-btn" disabled>
-            <i class="fas fa-trash"></i> حذف المحدد
-        </button>
-        <button id="deleteAllBtn" class="action-btn delete-all-btn">
-            <i class="fas fa-trash-alt"></i> حذف الكل
-        </button>
-    </div>
+
 
 
     <!-- زر العودة للصفحة الرئيسية - تصميم مطوّر -->
@@ -316,6 +608,7 @@
 
 
     <script src="dashboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </body>
 
 </html>

@@ -1530,3 +1530,488 @@ document.getElementById('externalLink').addEventListener('input', function() {
 
 
 
+// دالة لجلب بيانات الزوار من Supabase
+async function fetchVisitorsData(filter = {}) {
+    try {
+        let query = supabaseClient
+            .from('visitors')
+            .select('*')
+            .order('session_start', { ascending: false });
+
+        // تطبيق الفلاتر
+        if (filter.dateRange) {
+            const date = new Date();
+            switch (filter.dateRange) {
+                case 'today':
+                    date.setDate(date.getDate() - 1);
+                    break;
+                case 'week':
+                    date.setDate(date.getDate() - 7);
+                    break;
+                case 'month':
+                    date.setMonth(date.getMonth() - 1);
+                    break;
+                default:
+                    // لا يوجد فلتر زمني
+            }
+            
+            if (filter.dateRange !== 'all') {
+                query = query.gte('session_start', date.toISOString());
+            }
+        }
+
+        if (filter.visitorType === 'new') {
+            query = query.eq('first_visit', true);
+        } else if (filter.visitorType === 'returning') {
+            query = query.eq('returning_visitor', true);
+        }
+
+        const { data, error } = await query;
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error('Error fetching visitors data:', error);
+        showAlert('error', 'خطأ', 'حدث خطأ أثناء جلب بيانات الزوار');
+        return [];
+    }
+}
+
+// دالة لعرض بيانات الزوار في الجدول
+async function renderVisitorsTable() {
+    const dateFilter = document.getElementById('visitorDateFilter').value;
+    const typeFilter = document.getElementById('visitorTypeFilter').value;
+    
+    const visitors = await fetchVisitorsData({
+        dateRange: dateFilter,
+        visitorType: typeFilter
+    });
+
+    // تجميع الزوار وحساب عدد الجلسات لكل زائر
+    const visitorSessions = {};
+    visitors.forEach(visitor => {
+        if (!visitorSessions[visitor.visitor_id]) {
+            visitorSessions[visitor.visitor_id] = {
+                sessions: [],
+                count: 0
+            };
+        }
+        visitorSessions[visitor.visitor_id].sessions.push(visitor);
+        visitorSessions[visitor.visitor_id].count++;
+    });
+
+    // تحضير البيانات للعرض (آخر جلسة لكل زائر مع عدد الجلسات)
+    const latestSessions = Object.keys(visitorSessions).map(visitorId => {
+        const sessions = visitorSessions[visitorId].sessions;
+        const lastSession = sessions.reduce((latest, current) => {
+            return new Date(current.session_start) > new Date(latest.session_start) ? current : latest;
+        }, sessions[0]);
+        
+        return {
+            ...lastSession,
+            session_count: visitorSessions[visitorId].count
+        };
+    });
+
+    // تحديث الإحصائيات (نستخدم جميع الزيارات)
+    updateVisitorStats(visitors);
+
+    const tableBody = document.getElementById('visitorsTableBody');
+    tableBody.innerHTML = '';
+
+    if (latestSessions.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="no-visitors">
+                    <i class="fas fa-users-slash"></i>
+                    لا توجد بيانات للزوار في الفترة المحددة
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    latestSessions.forEach(visitor => {
+        const row = document.createElement('tr');
+        row.dataset.visitorId = visitor.visitor_id;
+        
+        const lastVisit = new Date(visitor.session_start);
+        const formattedDate = lastVisit.toLocaleDateString('ar-SA', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        row.innerHTML = `
+            <td>${visitor.visitor_id.substring(0, 5)}...</td>
+            <td>
+                <span class="country-flag" data-country="${visitor.country}">
+                    ${visitor.country_name || visitor.country || 'غير معروف'}
+                </span>
+            </td>
+            <td>${getDeviceIcon(visitor.device_type)} ${visitor.device_type}</td>
+            <td>${visitor.session_count}</td>
+            <td class="session-duration-cell">${visitor.session_duration ? formatDuration(visitor.session_duration) : 'غير معروف'}</td>
+            <td>
+                <button class="view-details-btn" data-visitor-id="${visitor.visitor_id}">
+                    <i class="fas fa-eye"></i> عرض التفاصيل
+                </button>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+
+    // إضافة مستمعات الأحداث لأزرار التفاصيل
+    document.querySelectorAll('.view-details-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const visitorId = btn.dataset.visitorId;
+            showVisitorDetails(visitorId);
+        });
+    });
+}
+
+// دالة لتحديث الإحصائيات
+function updateVisitorStats(visitors) {
+    const totalVisitors = visitors.length;
+    const newVisitors = visitors.filter(v => v.first_visit).length;
+    const returningVisitors = visitors.filter(v => v.returning_visitor).length;
+    const projectInteractions = visitors.reduce((sum, v) => sum + (v.project_interactions || 0), 0);
+    const cvDownloads = visitors.reduce((sum, v) => sum + (v.downloaded_cv || 0), 0);
+    const contactSubmissions = visitors.reduce((sum, v) => sum + (v.contact_form_submitted || 0), 0);
+    
+    // حساب عدد الدول المختلفة
+    const uniqueCountries = new Set();
+    visitors.forEach(visitor => {
+        if (visitor.country) {
+            uniqueCountries.add(visitor.country);
+        }
+    });
+    const countriesCount = uniqueCountries.size;
+
+    const validSessions = visitors.filter(v => v.session_duration > 0);
+    const avgSessionDuration = validSessions.length > 0 
+        ? validSessions.reduce((sum, v) => sum + v.session_duration, 0) / validSessions.length 
+        : 0;
+
+    document.getElementById('totalVisitors').textContent = totalVisitors;
+    document.getElementById('newVisitors').textContent = newVisitors;
+    document.getElementById('returningVisitors').textContent = returningVisitors;
+    document.getElementById('projectInteractions').textContent = projectInteractions;
+    document.getElementById('cvDownloads').textContent = cvDownloads;
+    document.getElementById('contactSubmissions').textContent = contactSubmissions;
+    document.getElementById('avgSessionDuration').textContent = formatDuration(avgSessionDuration);
+    document.getElementById('countriesCount').textContent = countriesCount; // تحديث عدد الدول
+}
+
+// دالة لعرض تفاصيل الزائر
+// دالة لعرض تفاصيل الزائر
+async function showVisitorDetails(visitorId) {
+    try {
+        // جلب جميع جلسات هذا الزائر
+        const { data: visitorSessions, error } = await supabaseClient
+            .from('visitors')
+            .select('*')
+            .eq('visitor_id', visitorId)
+            .order('session_start', { ascending: false });
+
+        if (error) throw error;
+
+        if (!visitorSessions || visitorSessions.length === 0) {
+            showAlert('error', 'خطأ', 'لا توجد بيانات لهذا الزائر');
+            return;
+        }
+
+        // جلب بيانات المشاريع من قاعدة البيانات لربطها مع المشاريع التي رآها الزائر
+        const { data: allProjects, error: projectsError } = await supabaseClient
+            .from('portfolio')
+            .select('id, title');
+        
+        if (projectsError) throw projectsError;
+
+        const projectsMap = {};
+        allProjects.forEach(project => {
+            projectsMap[project.id] = project.title;
+        });
+
+        const latestSession = visitorSessions[0];
+        const modal = document.getElementById('visitorDetailsModal');
+        
+        // تعبئة البيانات الأساسية (كما كانت)
+        document.getElementById('detailVisitorId').textContent = visitorId;
+        document.getElementById('detailVisitorType').textContent = 
+            latestSession.first_visit ? 'زائر جديد' : 'زائر عائد';
+        document.getElementById('detailFirstVisit').textContent = 
+            new Date(visitorSessions[visitorSessions.length - 1].session_start).toLocaleString('ar-SA');
+        document.getElementById('detailLastVisit').textContent = 
+            new Date(latestSession.session_start).toLocaleString('ar-SA');
+        document.getElementById('detailVisitCount').textContent = visitorSessions.length;
+
+        // معلومات الموقع
+        document.getElementById('detailCountry').textContent = 
+            latestSession.country_name || latestSession.country || 'غير معروف';
+        document.getElementById('detailCity').textContent = latestSession.city || 'غير معروف';
+        document.getElementById('detailTimezone').textContent = latestSession.timezone || 'غير معروف';
+        document.getElementById('detailIp').textContent = latestSession.ip_address || 'غير معروف';
+        document.getElementById('detailRegion').textContent = latestSession.region || 'غير معروف';
+
+        // معلومات الجهاز
+        document.getElementById('detailDevice').textContent = 
+            getDeviceName(latestSession.device_type) || 'غير معروف';
+        document.getElementById('detailOs').textContent = latestSession.os || 'غير معروف';
+        document.getElementById('detailBrowser').textContent = latestSession.browser || 'غير معروف';
+        document.getElementById('detailResolution').textContent = latestSession.screen_resolution || 'غير معروف';
+document.getElementById('detailDeviceModel').textContent = 
+    latestSession.device_model || 'غير معروف';
+        
+        // الإحصائيات
+        document.getElementById('detailScrollDepth').textContent = 
+            latestSession.scroll_depth ? `${latestSession.scroll_depth}%` : 'غير معروف';
+            // داخل دالة showVisitorDetails بعد تعبئة البيانات الأساسية
+document.getElementById('detailReferralSource').textContent = 
+    latestSession.referral_source || 'مباشر';
+
+                    const cvDownloads = visitorSessions.reduce((sum, v) => sum + (v.downloaded_cv || 0), 0);
+        const contactSubmissions = visitorSessions.reduce((sum, v) => sum + (v.contact_form_submitted || 0), 0);
+        
+        const cvElement = document.getElementById('detailCvDownloads');
+        const contactElement = document.getElementById('detailContactSubmissions');
+        
+        if (cvElement) cvElement.textContent = cvDownloads;
+        if (contactElement) contactElement.textContent = contactSubmissions;
+        
+const projectsCount = latestSession.project_interactions || 0;
+const projectsText = projectsCount > 1 ? 'مشاريع' : 'مشروع';
+
+document.getElementById('detailProjectInteractions').textContent = 
+    projectsCount + " " + projectsText;
+
+        // عرض المشاريع التي رآها الزائر بدلاً من العدد فقط
+        const viewedProjects = latestSession.viewed_projects || [];
+        const projectsList = viewedProjects.map(projectId => {
+            return projectsMap[projectId] || projectId;
+        }).join(', ');
+
+
+// داخل قسم الإحصائيات في المودال
+document.getElementById('detailCvDownloads').textContent = cvDownloads;
+document.getElementById('detailContactSubmissions').textContent = contactSubmissions;
+        
+        document.getElementById('detailProjectsViewed').textContent = 
+            viewedProjects.length > 0 ? projectsList : 'لا يوجد';
+
+        document.getElementById('detailLanguage').textContent = 
+            latestSession.preferred_language === 'ar' ? 'العربية' : 'الإنجليزية';
+        document.getElementById('detailSessionDuration').textContent = 
+            latestSession.session_duration ? formatDuration(latestSession.session_duration) : 'غير معروف';
+        
+        // تعبئة جدول الجلسات مع عرض المشاريع التي تمت مشاهدتها
+        const sessionsBody = document.getElementById('visitorSessionsBody');
+        sessionsBody.innerHTML = '';
+
+        visitorSessions.forEach(session => {
+            const row = document.createElement('tr');
+            
+            const viewedPages = session.viewed_pages ? session.viewed_pages.length : 0;
+            const viewedProjects = session.viewed_projects || [];
+            
+            // إنشاء قائمة بالمشاريع التي تمت مشاهدتها في هذه الجلسة
+            const projectsList = viewedProjects.map(projectId => {
+                return projectsMap[projectId] || projectId;
+            }).join(', ');
+            
+row.innerHTML = `
+    <td>${new Date(session.session_start).toLocaleString('ar-SA')}</td>
+    <td>${session.session_duration ? formatDuration(session.session_duration) : 'غير معروف'}</td>
+    <td>${session.scroll_depth ? `${session.scroll_depth}%` : 'غير معروف'}</td>
+    <td>${viewedProjects.length > 0 ? projectsList : 'لا يوجد'}</td>
+    <td>${viewedProjects.length}</td>
+    <td>${session.viewed_sections ? session.viewed_sections.join(', ') : 'لا يوجد'}</td>
+    <td>${session.downloaded_cv || 0}</td>
+    <td>${session.contact_form_submitted || 0}</td>
+    <td>${session.referral_source || 'مباشر'}</td>
+`;
+            
+            sessionsBody.appendChild(row);
+        });
+
+        // عرض المودال
+        modal.style.display = 'block';
+        
+        // إضافة مستمعات الأحداث للأزرار
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        document.getElementById('exportVisitorData').addEventListener('click', () => {
+            // تصدير جميع جلسات الزائر وليس فقط الأخيرة
+            exportVisitorData(visitorSessions, projectsMap);
+        });
+
+        // إغلاق المودال عند النقر خارج المحتوى
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        const viewedSections = latestSession.viewed_sections || [];
+        
+        document.getElementById('detailViewedSections').textContent = 
+            viewedSections.length > 0 ? viewedSections.join(', ') : 'لا يوجد';
+    } catch (error) {
+        console.error('Error fetching visitor details:', error);
+        showAlert('error', 'خطأ', 'حدث خطأ أثناء جلب تفاصيل الزائر');
+    }
+}
+
+// تعديل دالة التصدير لتشمل أسماء المشاريع
+function exportVisitorData(sessions, projectsMap = {}) {
+    const data = sessions.map(session => {
+        const viewedProjects = session.viewed_projects || [];
+        const projectsList = viewedProjects.map(projectId => {
+            return projectsMap[projectId] || projectId;
+        }).join(', ');
+        
+        return {
+            'معرف الجلسة': session.session_id,
+            'تاريخ الجلسة': new Date(session.session_start).toLocaleString('ar-SA'),
+            'مدة الجلسة': session.session_duration ? formatDuration(session.session_duration) : 'غير معروف',
+            'البلد': session.country_name || session.country || 'غير معروف',
+            'المدينة': session.city || 'غير معروف',
+            'نوع الجهاز': getDeviceName(session.device_type),
+            'طراز الجهاز': session.device_model || 'غير معروف',
+            'المتصفح': session.browser,
+            'نظام التشغيل': session.os,
+            'دقة الشاشة': session.screen_resolution,
+            'معدل التمرير': session.scroll_depth ? `${session.scroll_depth}%` : 'غير معروف',
+            'المشاريع المطالعة': viewedProjects.length > 0 ? projectsList : 'لا يوجد',
+            'عدد المشاريع المطالعة': viewedProjects.length,
+            'عدد التفاعلات': session.project_interactions || 0,
+            'اللغة المفضلة': session.preferred_language === 'ar' ? 'العربية' : 'الإنجليزية',
+            'تحميلات السيرة الذاتية': session.downloaded_cv || 0,
+            'إرسالات نموذج الاتصال': session.contact_form_submitted || 0,
+            'مصدر الزيارة': session.referral_source || 'مباشر',
+        };
+    });
+
+    const csv = Papa.unparse(data);
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `visitor_data_${sessions[0].visitor_id.substring(0, 8)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// دالة مساعدة للحصول على أيقونة الجهاز
+function getDeviceIcon(deviceType) {
+    switch (deviceType) {
+        case 'mobile': return '<i class="fas fa-mobile-alt"></i>';
+        case 'tablet': return '<i class="fas fa-tablet-alt"></i>';
+        default: return '<i class="fas fa-desktop"></i>';
+    }
+}
+
+// دالة مساعدة للحصول على اسم الجهاز
+function getDeviceName(deviceType) {
+    switch (deviceType) {
+        case 'mobile': return 'هاتف محمول';
+        case 'tablet': return 'جهاز لوحي';
+        default: return 'كمبيوتر';
+    }
+}
+
+// دالة لتصدير بيانات الزائر
+function exportVisitorData(sessions) {
+    const data = sessions.map(session => ({
+        'معرف الجلسة': session.session_id,
+        'تاريخ الجلسة': new Date(session.session_start).toLocaleString('ar-SA'),
+        'مدة الجلسة (ثانية)': session.session_duration || 'غير معروف',
+        'البلد': session.country_name || session.country || 'غير معروف',
+        'المنطقة': session.region || 'غير معروف',
+        'المدينة': session.city || 'غير معروف',
+        'نوع الجهاز': getDeviceName(session.device_type),
+        'المتصفح': session.browser,
+        'نظام التشغيل': session.os,
+                'مدة الجلسة': session.session_duration ? formatDuration(session.session_duration) : 'غير معروف',
+        'متوسط مدة الزيارة': calculateAvgDuration(sessions),
+        'دقة الشاشة': session.screen_resolution,
+        'معدل التمرير': session.scroll_depth ? `${session.scroll_depth}%` : 'غير معروف',
+        'المشاريع المطالعة': session.viewed_projects ? session.viewed_projects.join(', ') : 'لا يوجد',
+        'عدد التفاعلات': session.project_interactions || 0,
+        'اللغة المفضلة': session.preferred_language === 'ar' ? 'العربية' : 'الإنجليزية'
+    }));
+
+    const csv = Papa.unparse(data);
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `visitor_data_${sessions[0].visitor_id.substring(0, 8)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function calculateAvgDuration(sessions) {
+    const validSessions = sessions.filter(s => s.session_duration > 0);
+    if (validSessions.length === 0) return '0 ثانية';
+    
+    const total = validSessions.reduce((sum, s) => sum + s.session_duration, 0);
+    const avg = total / validSessions.length;
+    return formatDuration(avg);
+}
+
+// تهيئة قسم الزوار عند تحميل الصفحة
+function initVisitorsSection() {
+    // إضافة مستمعات الأحداث للفلاتر
+    document.getElementById('visitorDateFilter').addEventListener('change', renderVisitorsTable);
+    document.getElementById('visitorTypeFilter').addEventListener('change', renderVisitorsTable);
+    document.getElementById('refreshVisitors').addEventListener('click', renderVisitorsTable);
+    
+    // جلب البيانات الأولية
+    renderVisitorsTable();
+}
+
+// استدعاء الدالة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    initVisitorsSection();
+    
+    // تأكد من أن مكتبة Papa Parse موجودة لتصدير CSV
+    if (typeof Papa === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js';
+        script.onload = initVisitorsSection;
+        document.head.appendChild(script);
+    }
+});
+
+// دالة لتنسيق المدة من الثواني إلى صيغة مقروءة (دقائق:ثواني)
+function formatDuration(seconds) {
+    if (!seconds || seconds <= 0) return '0 ثانية';
+    
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    if (mins > 0) {
+        return `${mins} دقيقة و ${secs} ثانية`;
+    } else {
+        return `${secs} ثانية`;
+    }
+}
+
+function formatViewedData(viewedPages = [], viewedSections = []) {
+    const pagesCount = viewedPages?.length || 0;
+    const sectionsCount = viewedSections?.length || 0;
+    
+    return `${pagesCount} صفحة، ${sectionsCount} قسم`;
+}
