@@ -1167,7 +1167,7 @@ function initContactForm() {
         contactForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            // التحقق من جميع الحقول باستثناء nameError
+            // التحقق من صحة الحقول
             const isEmailValid = validateEmail();
             const isMessageValid = validateMessage();
             const isPhoneValid = validatePhone();
@@ -1178,73 +1178,68 @@ function initContactForm() {
 
             const submitBtn = contactForm.querySelector('.submit-btn');
             const submitText = submitBtn.querySelector('span');
+            const originalText = submitText.textContent;
 
-            submitText.textContent = i18next.t('con.sending'); // 'جاري الإرسال...'
+            submitText.textContent = i18next.t('con.sending');
             submitBtn.disabled = true;
 
-            const formData = {
-                "الاسم": document.getElementById('contactName').value.trim(),
-                "البريد الإلكتروني": document.getElementById('contactEmail').value.trim(),
-                "رقم الهاتف": document.getElementById('contactPhone').value.trim() || '',
-                "الموضوع": document.getElementById('contactSubject').value.trim() || '',
-                "الرسالة": document.getElementById('contactMessage').value.trim(),
-                "التاريخ": new Date().toLocaleString('ar-SA')
-            };
-
             try {
-                const sheetDbUrl = 'https://sheetdb.io/api/v1/dnr96icde5zgz';
+                const formData = {
+                    name: document.getElementById('contactName').value.trim(),
+                    email: document.getElementById('contactEmail').value.trim(),
+                    phone: document.getElementById('contactPhone').value.trim() || null,
+                    subject: document.getElementById('contactSubject').value.trim() || null,
+                    message: document.getElementById('contactMessage').value.trim(),
+                };
 
-                const response = await fetch(sheetDbUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        data: [formData]
-                    })
-                });
+                // إرسال البيانات إلى Supabase
+                const { data, error } = await supabaseClient
+                    .from('contact_submissions')
+                    .insert([formData]);
 
-                const result = await response.json();
+                if (error) throw error;
 
-                if (result.created > 0) {
-                    // استخدام SweetAlert2 مع تصميم مخصص
-                    Swal.fire({
-                        title: i18next.t('contact.success.title'), // 'تم الإرسال بنجاح!'
-                        html: `
-                            <div class="success-alert">
-                                <i class="fas fa-check-circle"></i>
-                                <p>${i18next.t('contact.success.message')}</p> <!-- 'شكراً لك على رسالتك! سأتواصل معك قريباً' -->
-                            </div>
-                        `,
-                        showConfirmButton: true,
-                        confirmButtonText: i18next.t('contact.success.button'), // 'حسناً'
-                        customClass: {
-                            popup: 'custom-swal-popup',
-                            title: 'custom-swal-title',
-                            content: 'custom-swal-content',
-                            actions: 'custom-swal-actions',
-                            confirmButton: 'custom-swal-confirm'
-                        },
-                        buttonsStyling: false
-                    });
-                    contactForm.reset();
-                } else {
-                    throw new Error(i18next.t('errorsSend.contact.save_failed')); // 'فشل في حفظ البيانات'
-                }
-
-            } catch (error) {
-                console.error('Error:', error);
-                // استخدام SweetAlert2 مع تصميم مخصص للخطأ
+                // عرض رسالة النجاح
                 Swal.fire({
-                    title: i18next.t('errorsSend.contact.title'), // 'حدث خطأ!'
+                    title: i18next.t('contact.success.title'),
                     html: `
-                        <div class="error-alert">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <p>${i18next.t('errorsSend.contact.message')}</p> <!-- 'حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى' -->
+                        <div class="success-alert">
+                            <i class="fas fa-check-circle"></i>
+                            <p>${i18next.t('contact.success.message')}</p>
                         </div>
                     `,
                     showConfirmButton: true,
-                    confirmButtonText: i18next.t('errorsSend.contact.retry'), // 'حاول مجدداً'
+                    confirmButtonText: i18next.t('contact.success.button'),
+                    customClass: {
+                        popup: 'custom-swal-popup',
+                        title: 'custom-swal-title',
+                        content: 'custom-swal-content',
+                        actions: 'custom-swal-actions',
+                        confirmButton: 'custom-swal-confirm'
+                    },
+                    buttonsStyling: false
+                });
+
+                // إعادة تعيين النموذج
+                contactForm.reset();
+
+                // تسجيل الحدث في بيانات الزائر
+                visitorData.contact_form_submitted = true;
+                recordVisitorData();
+
+            } catch (error) {
+                console.error('Error submitting contact form:', error);
+                
+                Swal.fire({
+                    title: i18next.t('errorsSend.contact.title'),
+                    html: `
+                        <div class="error-alert">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>${i18next.t('errorsSend.contact.message')}</p>
+                        </div>
+                    `,
+                    showConfirmButton: true,
+                    confirmButtonText: i18next.t('errorsSend.contact.retry'),
                     customClass: {
                         popup: 'custom-swal-popup',
                         title: 'custom-swal-title',
@@ -1255,11 +1250,12 @@ function initContactForm() {
                     buttonsStyling: false
                 });
             } finally {
-                submitText.textContent = i18next.t('con.send-btn'); // 'إرسال الرسالة'
+                submitText.textContent = originalText;
                 submitBtn.disabled = false;
             }
         });
 
+        // دوال التحقق من الصحة تبقى كما هي
         const emailInput = document.getElementById('contactEmail');
         const messageInput = document.getElementById('contactMessage');
         const phoneInput = document.getElementById('contactPhone');
@@ -1267,6 +1263,50 @@ function initContactForm() {
         emailInput.addEventListener('input', validateEmail);
         messageInput.addEventListener('input', validateMessage);
         phoneInput.addEventListener('input', validatePhone);
+    }
+}
+
+// دوال التحقق من الصحة تبقى كما هي (لا تتغير)
+function validateEmail() {
+    const email = document.getElementById('contactEmail').value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const errorElement = document.getElementById('emailError');
+
+    if (!emailRegex.test(email)) {
+        errorElement.textContent = i18next.t('errorsSend.contact.invalid_email');
+        errorElement.style.display = 'block';
+        return false;
+    } else {
+        errorElement.style.display = 'none';
+        return true;
+    }
+}
+
+function validateMessage() {
+    const message = document.getElementById('contactMessage').value.trim();
+    const errorElement = document.getElementById('messageError');
+
+    if (message.length < 10) {
+        errorElement.textContent = i18next.t('errorsSend.contact.short_message');
+        errorElement.style.display = 'block';
+        return false;
+    } else {
+        errorElement.style.display = 'none';
+        return true;
+    }
+}
+
+function validatePhone() {
+    const phone = document.getElementById('contactPhone').value.trim();
+    const errorElement = document.getElementById('phoneError');
+
+    if (phone && phone.length !== 10) {
+        errorElement.textContent = i18next.t('errorsSend.contact.invalid_phone');
+        errorElement.style.display = 'block';
+        return false;
+    } else {
+        errorElement.style.display = 'none';
+        return true;
     }
 }
 
@@ -3157,26 +3197,6 @@ document.addEventListener('DOMContentLoaded', () => {
   checkInitialSections();
   setupTrackingEventListeners();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

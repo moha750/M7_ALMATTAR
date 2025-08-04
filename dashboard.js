@@ -1,3 +1,4 @@
+
 // متغيرات عامة
 let cropper = null;
 let currentImageFile = null;
@@ -1604,7 +1605,7 @@ document.getElementById('detailContactSubmissions').textContent = contactSubmiss
 row.innerHTML = `
     <td>${new Date(session.session_start).toLocaleString('ar-SA')}</td>
     <td>${session.session_duration ? formatDuration(session.session_duration) : 'غير معروف'}</td>
-    <td>${session.scroll_depth ? `${session.scroll_depth}%` : 'غير معروف'}</td>
+    <td>${session.scroll_depth ? `${session.scroll_depth}%` : 'لم يتحرك'}</td>
     <td>${viewedProjects.length > 0 ? projectsList : 'لا يوجد'}</td>
     <td>${viewedProjects.length}</td>
     <td>${session.viewed_sections ? session.viewed_sections.join(', ') : 'لا يوجد'}</td>
@@ -1761,6 +1762,30 @@ function initVisitorsSection() {
     renderVisitorsTable();
 }
 
+// التحكم في عرض الأقسام
+document.addEventListener('DOMContentLoaded', function() {
+    const showProjectsBtn = document.getElementById('showProjectsBtn');
+    const showVisitorsBtn = document.getElementById('showVisitorsBtn');
+    const projectsSection = document.getElementById('projectsSection');
+    const visitorsSection = document.getElementById('visitorsSection');
+
+    if (showProjectsBtn && showVisitorsBtn) {
+        showProjectsBtn.addEventListener('click', function() {
+            projectsSection.style.display = 'block';
+            visitorsSection.style.display = 'none';
+            showProjectsBtn.classList.add('active');
+            showVisitorsBtn.classList.remove('active');
+        });
+
+        showVisitorsBtn.addEventListener('click', function() {
+            projectsSection.style.display = 'none';
+            visitorsSection.style.display = 'block';
+            showVisitorsBtn.classList.add('active');
+            showProjectsBtn.classList.remove('active');
+        });
+    }
+});
+
 // استدعاء الدالة عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', function() {
     initVisitorsSection();
@@ -1794,3 +1819,681 @@ function formatViewedData(viewedPages = [], viewedSections = []) {
     
     return `${pagesCount} صفحة، ${sectionsCount} قسم`;
 }
+
+// دالة لجلب بيانات الطلبات من Supabase
+async function fetchRequestsData(filter = {}) {
+    try {
+        let query = supabaseClient
+            .from('cv_requests')
+            .select('*')
+            .order('request_date', { ascending: false });
+
+        // تطبيق الفلاتر
+        if (filter.status && filter.status !== 'all') {
+            query = query.eq('status', filter.status);
+        }
+
+        if (filter.dateRange && filter.dateRange !== 'all') {
+            const date = new Date();
+            switch (filter.dateRange) {
+                case 'today':
+                    date.setDate(date.getDate() - 1);
+                    break;
+                case 'week':
+                    date.setDate(date.getDate() - 7);
+                    break;
+                case 'month':
+                    date.setMonth(date.getMonth() - 1);
+                    break;
+            }
+            query = query.gte('request_date', date.toISOString());
+        }
+
+        const { data, error } = await query;
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error('Error fetching requests data:', error);
+        showAlert('error', 'خطأ', 'حدث خطأ أثناء جلب بيانات الطلبات');
+        return [];
+    }
+}
+
+// دالة لعرض بيانات الطلبات في الجدول
+async function renderRequestsTable() {
+    const statusFilter = document.getElementById('requestStatusFilter').value;
+    const dateFilter = document.getElementById('requestDateFilter').value;
+    
+    const requests = await fetchRequestsData({
+        status: statusFilter,
+        dateRange: dateFilter
+    });
+
+    updateRequestsStats(requests);
+
+    const tableBody = document.getElementById('requestsTableBody');
+    tableBody.innerHTML = '';
+
+    if (requests.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="no-requests">
+                    <i class="fas fa-inbox"></i>
+                    لا توجد طلبات في الفترة الحالية
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+requests.forEach(request => {
+    const row = document.createElement('tr');
+    row.dataset.requestId = request.id;
+    
+    const requestDate = new Date(request.request_date);
+    const formattedDate = requestDate.toLocaleDateString('ar-SA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    row.innerHTML = `
+        <td>${request.id.toString().slice(0, 5)}...</td>
+        <td>${getContactMethodName(request.contact_method)}</td>
+        <td>${request.contact_info}</td>
+        <td>${formattedDate}</td>
+        <td><span class="status-badge status-${request.status}">${getStatusName(request.status)}</span></td>
+        <td>
+            <button class="complete-btn ${request.status === 'completed' ? 'completed' : ''}" 
+                data-request-id="${request.id}"
+                data-current-status="${request.status}">
+                <i class="fas fa-${request.status === 'completed' ? 'check-circle' : 'circle'}"></i>
+            </button>
+        </td>
+    `;
+    
+    tableBody.appendChild(row);
+});
+
+    // إضافة مستمعات الأحداث لأزرار الإكمال
+    document.querySelectorAll('.complete-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const requestId = this.dataset.requestId;
+            const isCompleted = this.classList.contains('completed');
+            const newStatus = isCompleted ? 'pending' : 'completed';
+            
+            try {
+                const { error: updateError } = await supabaseClient
+                    .from('cv_requests')
+                    .update({ 
+                        status: newStatus,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', requestId);
+
+                if (updateError) throw updateError;
+
+                // تحديث الواجهة دون إعادة تحميل كامل الجدول
+                this.classList.toggle('completed');
+                this.innerHTML = `<i class="fas fa-${newStatus === 'completed' ? 'check-circle' : 'circle'}"></i>`;
+                
+                // تحديث حالة الطلب في الخلية المجاورة
+                const statusCell = this.closest('tr').querySelector('.status-badge');
+                statusCell.className = `status-badge status-${newStatus}`;
+                statusCell.textContent = getStatusName(newStatus);
+                
+                // تحديث الإحصائيات
+                updateRequestsStats(await fetchRequestsData({
+                    status: document.getElementById('requestStatusFilter').value,
+                    dateRange: document.getElementById('requestDateFilter').value
+                }));
+                
+            } catch (error) {
+                console.error('Error updating request status:', error);
+                showAlert('error', 'خطأ', 'حدث خطأ أثناء تحديث حالة الطلب');
+            }
+        });
+    });
+}
+
+// دالة لتحديث إحصائيات الطلبات
+function updateRequestsStats(requests) {
+    const totalRequests = requests.length;
+    const pendingRequests = requests.filter(r => r.status === 'pending').length;
+    const completedRequests = requests.filter(r => r.status === 'completed').length;
+
+    document.getElementById('totalRequests').textContent = totalRequests;
+    document.getElementById('pendingRequests').textContent = pendingRequests;
+    document.getElementById('completedRequests').textContent = completedRequests;
+}
+
+// دالة لتحديث حالة الطلب
+async function updateRequestStatus(requestId, newStatus) {
+    try {
+        // تحقق من أن الحالة الجديدة مسموح بها
+        const allowedStatuses = ['pending', 'completed'];
+        if (!allowedStatuses.includes(newStatus)) {
+            throw new Error('حالة الطلب غير مسموح بها');
+        }
+
+        const { error: updateError } = await supabaseClient
+            .from('cv_requests')
+            .update({ 
+                status: newStatus,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', requestId);
+
+        if (updateError) throw updateError;
+
+        // عرض رسالة نجاح
+        Swal.fire({
+            icon: 'success',
+            title: 'تم التحديث',
+            text: 'تم تحديث حالة الطلب بنجاح',
+            confirmButtonText: 'حسناً'
+        });
+
+        renderRequestsTable();
+    } catch (error) {
+        console.error('Error updating request status:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'خطأ',
+            text: 'حدث خطأ أثناء تحديث حالة الطلب: ' + error.message,
+            confirmButtonText: 'حسناً'
+        });
+    }
+}
+
+// دالة لتصدير بيانات الطلبات
+function exportRequestsData() {
+    const statusFilter = document.getElementById('requestStatusFilter').value;
+    const dateFilter = document.getElementById('requestDateFilter').value;
+
+    fetchRequestsData({
+        status: statusFilter,
+        dateRange: dateFilter
+    }).then(requests => {
+        const data = requests.map(request => ({
+            'رقم الطلب': request.id,
+            'طريقة التواصل': getContactMethodName(request.contact_method),
+            'معلومات التواصل': request.contact_info,
+            'تاريخ الطلب': new Date(request.request_date).toLocaleString('ar-SA'),
+            'الحالة': getStatusName(request.status),
+            'تاريخ الإنشاء': new Date(request.created_at).toLocaleString('ar-SA'),
+            'تاريخ التحديث': request.updated_at ? 
+                new Date(request.updated_at).toLocaleString('ar-SA') : 'لم يتم التحديث'
+        }));
+
+        const csv = Papa.unparse(data);
+        const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cv_requests_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+}
+
+// دوال مساعدة
+function getStatusName(status) {
+    const statusNames = {
+        'pending': 'قيد الانتظار',
+        'completed': 'مكتمل'
+    };
+    return statusNames[status] || status;
+}
+
+function getContactMethodName(method) {
+    const methodNames = {
+        'email': 'البريد الإلكتروني',
+        'phone': 'الهاتف',
+        'whatsapp': 'واتساب',
+        'linkedin': 'لينكدإن',
+        'other': 'أخرى'
+    };
+    return methodNames[method] || method;
+}
+
+// تهيئة قسم الطلبات
+function initRequestsSection() {
+    // إضافة مستمعات الأحداث للفلاتر
+    document.getElementById('requestStatusFilter').addEventListener('change', renderRequestsTable);
+    document.getElementById('requestDateFilter').addEventListener('change', renderRequestsTable);
+    document.getElementById('refreshRequests').addEventListener('click', renderRequestsTable);
+    document.getElementById('exportRequestsBtn').addEventListener('click', exportRequestsData);
+    
+    // جلب البيانات الأولية
+    renderRequestsTable();
+}
+
+// تحديث التحكم في عرض الأقسام
+document.addEventListener('DOMContentLoaded', function() {
+    const showProjectsBtn = document.getElementById('showProjectsBtn');
+    const showVisitorsBtn = document.getElementById('showVisitorsBtn');
+    const showRequestsBtn = document.getElementById('showRequestsBtn');
+    const projectsSection = document.getElementById('projectsSection');
+    const visitorsSection = document.getElementById('visitorsSection');
+    const requestsSection = document.getElementById('requestsSection');
+
+    if (showProjectsBtn && showVisitorsBtn && showRequestsBtn) {
+        showProjectsBtn.addEventListener('click', function() {
+            projectsSection.style.display = 'block';
+            visitorsSection.style.display = 'none';
+            requestsSection.style.display = 'none';
+            showProjectsBtn.classList.add('active');
+            showVisitorsBtn.classList.remove('active');
+            showRequestsBtn.classList.remove('active');
+        });
+
+        showVisitorsBtn.addEventListener('click', function() {
+            projectsSection.style.display = 'none';
+            visitorsSection.style.display = 'block';
+            requestsSection.style.display = 'none';
+            showVisitorsBtn.classList.add('active');
+            showProjectsBtn.classList.remove('active');
+            showRequestsBtn.classList.remove('active');
+        });
+
+        showRequestsBtn.addEventListener('click', function() {
+            projectsSection.style.display = 'none';
+            visitorsSection.style.display = 'none';
+            requestsSection.style.display = 'block';
+            showRequestsBtn.classList.add('active');
+            showProjectsBtn.classList.remove('active');
+            showVisitorsBtn.classList.remove('active');
+            initRequestsSection();
+        });
+    }
+});
+
+// دالة لجلب بيانات التواصل من Supabase
+async function fetchContactsData(filter = {}) {
+    try {
+        let query = supabaseClient
+            .from('contact_submissions')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        // تطبيق الفلاتر
+        if (filter.dateRange && filter.dateRange !== 'all') {
+            const date = new Date();
+            switch (filter.dateRange) {
+                case 'today':
+                    date.setDate(date.getDate() - 1);
+                    break;
+                case 'week':
+                    date.setDate(date.getDate() - 7);
+                    break;
+                case 'month':
+                    date.setMonth(date.getMonth() - 1);
+                    break;
+            }
+            query = query.gte('created_at', date.toISOString());
+        }
+
+        const { data, error } = await query;
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error('Error fetching contacts data:', error);
+        showAlert('error', 'خطأ', 'حدث خطأ أثناء جلب بيانات التواصل');
+        return [];
+    }
+}
+
+// دالة لعرض بيانات التواصل في الجدول
+async function renderContactsTable() {
+    const dateFilter = document.getElementById('contactDateFilter').value;
+    
+    const contacts = await fetchContactsData({
+        dateRange: dateFilter
+    });
+
+    updateContactsStats(contacts);
+
+    const tableBody = document.getElementById('contactsTableBody');
+    tableBody.innerHTML = '';
+
+    if (contacts.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="no-contacts">
+                    <i class="fas fa-inbox"></i>
+                    لا توجد رسائل في الفترة الحالية
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    contacts.forEach(contact => {
+        const row = document.createElement('tr');
+        row.dataset.contactId = contact.id;
+        
+        const contactDate = new Date(contact.created_at);
+        const formattedDate = contactDate.toLocaleDateString('ar-SA', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // إضافة كلاس للصفوف التي لم يتم الرد عليها
+        if (!contact.replied) {
+            row.classList.add('not-replied');
+        }
+
+        row.innerHTML = `
+            <td>${contact.id.toString().slice(0, 5)}...</td>
+            <td>${contact.name || 'غير معروف'}</td>
+            <td>${contact.email || 'غير معروف'}</td>
+            <td>${contact.phone || 'لم يضع رقم هاتف'}</td>
+            <td>${contact.subject || 'بدون موضوع'}</td>
+            <td>${formattedDate}</td>
+            <td><span class="status-badge ${contact.replied ? 'status-replied' : 'status-not-replied'}">
+                ${contact.replied ? 'تم الرد' : 'لم يتم الرد'}
+            </span></td>
+            <td>
+                <button class="view-details-btn" data-contact-id="${contact.id}">
+                    <i class="fas fa-eye"></i> عرض التفاصيل
+                </button>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+
+    // إضافة مستمعات الأحداث لأزرار التفاصيل
+    document.querySelectorAll('.view-details-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const contactId = btn.dataset.contactId;
+            showContactDetails(contactId);
+        });
+    });
+}
+
+// دالة لتحديث إحصائيات التواصل
+function updateContactsStats(contacts) {
+    const totalContacts = contacts.length;
+    const repliedContacts = contacts.filter(c => c.replied).length;
+    const notRepliedContacts = contacts.filter(c => !c.replied).length;
+
+    document.getElementById('totalContacts').textContent = totalContacts;
+    document.getElementById('unreadContacts').textContent = notRepliedContacts;
+    document.getElementById('readContacts').textContent = repliedContacts;
+    
+    // تحديث عناصر واجهة المستخدم لتعكس التغيير
+    document.getElementById('unreadContacts').parentElement.querySelector('p').textContent = 'لم يتم الرد';
+    document.getElementById('readContacts').parentElement.querySelector('p').textContent = 'تم الرد';
+}
+
+// دالة لعرض تفاصيل الرسالة
+async function showContactDetails(contactId) {
+    try {
+        const { data: contact, error } = await supabaseClient
+            .from('contact_submissions')
+            .select('*')
+            .eq('id', contactId)
+            .single();
+
+        if (error) throw error;
+
+        if (!contact) {
+            showAlert('error', 'خطأ', 'لا توجد بيانات لهذه الرسالة');
+            return;
+        }
+
+        const modal = document.getElementById('contactDetailsModal');
+        const contactDate = new Date(contact.created_at);
+        const formattedDate = contactDate.toLocaleDateString('ar-SA', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // تعبئة البيانات في المودال
+        document.getElementById('detailContactId').textContent = contact.id;
+        document.getElementById('detailContactDate').textContent = formattedDate;
+        document.getElementById('detailContactStatus').textContent = 
+            contact.replied ? 'تم الرد' : 'لم يتم الرد';
+        document.getElementById('detailContactName').textContent = contact.name || 'غير معروف';
+        document.getElementById('detailContactEmail').textContent = contact.email || 'غير معروف';
+        document.getElementById('detailContactPhone').textContent = contact.phone || 'غير معروف';
+        document.getElementById('detailContactMessage').textContent = contact.message || 'لا يوجد محتوى';
+
+        // تحديث زر الرد عبر الإيميل
+        const replyEmailBtn = document.getElementById('replyEmailBtn');
+        if (replyEmailBtn) {
+            replyEmailBtn.dataset.contactId = contact.id;
+            replyEmailBtn.dataset.contactEmail = contact.email;
+            replyEmailBtn.dataset.contactSubject = contact.subject || 'طلب تواصل';
+        }
+
+        // تحديث زر الرد عبر الواتساب
+        const replyWhatsappBtn = document.getElementById('replyWhatsappBtn');
+        if (replyWhatsappBtn) {
+            replyWhatsappBtn.dataset.contactId = contact.id;
+            replyWhatsappBtn.dataset.contactPhone = contact.phone;
+            replyWhatsappBtn.style.display = contact.phone ? 'block' : 'none'; // إخفاء الزر إذا لم يكن هناك رقم
+        }
+
+        // عرض المودال
+        modal.style.display = 'block';
+        
+        // إضافة مستمع الأحداث لإغلاق المودال
+        const closeModalBtn = modal.querySelector('.close-modal');
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+        }
+        
+        // إضافة مستمع الأحداث لزر الرد عبر الإيميل
+        if (replyEmailBtn) {
+            replyEmailBtn.addEventListener('click', async () => {
+                // فتح نافذة البريد الإلكتروني
+                window.location.href = `mailto:${contact.email}?subject=Re: ${contact.subject || 'طلب تواصل'}`;
+                
+                // تحديث الحالة في قاعدة البيانات
+                await updateContactStatus(contact.id);
+            });
+        }
+
+        // إضافة مستمع الأحداث لزر الرد عبر الواتساب
+        if (replyWhatsappBtn && contact.phone) {
+            replyWhatsappBtn.addEventListener('click', async () => {
+                // تنظيف رقم الهاتف (إزالة أي أحرف غير رقمية)
+                const cleanPhone = contact.phone.replace(/\D/g, '');
+                // فتح رابط الواتساب مع الرسالة الافتراضية
+                const whatsappUrl = `https://wa.me/${cleanPhone}?text=مرحباً ${contact.name || ''}، شكراً لتواصلك معنا بخصوص: ${contact.subject || 'طلب تواصل'}`;
+                window.open(whatsappUrl, '_blank');
+                
+                // تحديث الحالة في قاعدة البيانات
+                await updateContactStatus(contact.id);
+            });
+        }
+
+        // إغلاق المودال عند النقر خارج المحتوى
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+    } catch (error) {
+        console.error('Error fetching contact details:', error);
+        showAlert('error', 'خطأ', 'حدث خطأ أثناء جلب تفاصيل الرسالة');
+    }
+}
+
+// دالة مساعدة لتحديث حالة الرسالة
+async function updateContactStatus(contactId) {
+    try {
+        const { error: updateError } = await supabaseClient
+            .from('contact_submissions')
+            .update({ 
+                replied: true,
+                replied_at: new Date().toISOString()
+            })
+            .eq('id', contactId);
+
+        if (updateError) throw updateError;
+
+        // تحديث الواجهة
+        document.getElementById('detailContactStatus').textContent = 'تم الرد';
+        
+        // إعادة تحميل الجدول لتحديث الحالة
+        renderContactsTable();
+        
+        showAlert('success', 'تم التحديث', 'تم تحديث حالة الرسالة إلى "تم الرد"');
+    } catch (error) {
+        console.error('Error updating contact status:', error);
+        showAlert('error', 'خطأ', 'حدث خطأ أثناء تحديث حالة الرسالة');
+    }
+}
+
+// دالة لتصدير بيانات التواصل
+function exportContactsData() {
+    const dateFilter = document.getElementById('contactDateFilter').value;
+
+    fetchContactsData({
+        dateRange: dateFilter
+    }).then(contacts => {
+        const data = contacts.map(contact => ({
+            'رقم الطلب': contact.id,
+            'الاسم': contact.name || 'غير معروف',
+            'البريد الإلكتروني': contact.email || 'غير معروف',
+            'الهاتف': contact.phone || 'غير معروف',
+            'الموضوع': contact.subject || 'بدون موضوع',
+            'الرسالة': contact.message || 'لا يوجد محتوى',
+            'تاريخ الإرسال': new Date(contact.created_at).toLocaleString('ar-SA'),
+            'الحالة': contact.replied ? 'تم الرد' : 'لم يتم الرد',
+            'تاريخ الرد': contact.replied_at ? 
+                new Date(contact.replied_at).toLocaleString('ar-SA') : 'لم يتم الرد'
+        }));
+
+        const csv = Papa.unparse(data);
+        const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `contact_messages_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+}
+
+// دالة لتصدير بيانات رسالة واحدة
+function exportContactData(contacts) {
+    const data = contacts.map(contact => ({
+        'رقم الطلب': contact.id,
+        'الاسم': contact.name || 'غير معروف',
+        'البريد الإلكتروني': contact.email || 'غير معروف',
+        'الهاتف': contact.phone || 'غير معروف',
+        'الموضوع': contact.subject || 'بدون موضوع',
+        'الرسالة': contact.message || 'لا يوجد محتوى',
+        'تاريخ الإرسال': new Date(contact.created_at).toLocaleString('ar-SA'),
+        'الحالة': contact.read ? 'مقروءة' : 'غير مقروءة',
+        'تاريخ التحديث': contact.updated_at ? 
+            new Date(contact.updated_at).toLocaleString('ar-SA') : 'لم يتم التحديث'
+    }));
+
+    const csv = Papa.unparse(data);
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `contact_message_${contacts[0].id}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// تهيئة قسم التواصل
+function initContactsSection() {
+    // إضافة مستمعات الأحداث للفلاتر
+    document.getElementById('contactDateFilter').addEventListener('change', renderContactsTable);
+    document.getElementById('refreshContacts').addEventListener('click', renderContactsTable);
+    document.getElementById('exportContactsBtn').addEventListener('click', exportContactsData);
+    
+    // جلب البيانات الأولية
+    renderContactsTable();
+}
+
+// تحديث التحكم في عرض الأقسام
+document.addEventListener('DOMContentLoaded', function() {
+    const showProjectsBtn = document.getElementById('showProjectsBtn');
+    const showVisitorsBtn = document.getElementById('showVisitorsBtn');
+    const showRequestsBtn = document.getElementById('showRequestsBtn');
+    const showContactsBtn = document.getElementById('showContactsBtn');
+    const projectsSection = document.getElementById('projectsSection');
+    const visitorsSection = document.getElementById('visitorsSection');
+    const requestsSection = document.getElementById('requestsSection');
+    const contactsSection = document.getElementById('contactsSection');
+
+    if (showProjectsBtn && showVisitorsBtn && showRequestsBtn && showContactsBtn) {
+        showProjectsBtn.addEventListener('click', function() {
+            projectsSection.style.display = 'block';
+            visitorsSection.style.display = 'none';
+            requestsSection.style.display = 'none';
+            contactsSection.style.display = 'none';
+            showProjectsBtn.classList.add('active');
+            showVisitorsBtn.classList.remove('active');
+            showRequestsBtn.classList.remove('active');
+            showContactsBtn.classList.remove('active');
+        });
+
+        showVisitorsBtn.addEventListener('click', function() {
+            projectsSection.style.display = 'none';
+            visitorsSection.style.display = 'block';
+            requestsSection.style.display = 'none';
+            contactsSection.style.display = 'none';
+            showVisitorsBtn.classList.add('active');
+            showProjectsBtn.classList.remove('active');
+            showRequestsBtn.classList.remove('active');
+            showContactsBtn.classList.remove('active');
+        });
+
+        showRequestsBtn.addEventListener('click', function() {
+            projectsSection.style.display = 'none';
+            visitorsSection.style.display = 'none';
+            requestsSection.style.display = 'block';
+            contactsSection.style.display = 'none';
+            showRequestsBtn.classList.add('active');
+            showProjectsBtn.classList.remove('active');
+            showVisitorsBtn.classList.remove('active');
+            showContactsBtn.classList.remove('active');
+            initRequestsSection();
+        });
+
+        showContactsBtn.addEventListener('click', function() {
+            projectsSection.style.display = 'none';
+            visitorsSection.style.display = 'none';
+            requestsSection.style.display = 'none';
+            contactsSection.style.display = 'block';
+            showContactsBtn.classList.add('active');
+            showProjectsBtn.classList.remove('active');
+            showVisitorsBtn.classList.remove('active');
+            showRequestsBtn.classList.remove('active');
+            initContactsSection();
+        });
+    }
+});

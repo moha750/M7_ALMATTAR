@@ -24,187 +24,198 @@
 </head>
 
 <body>
-    <div class="dashboard-container">
-        <h1><i class="fas fa-palette"></i> لوحة تحكم معرض الأعمال</h1>
 
-        <div class="form-container">
-            <div class="form-header">
-                <h2 id="formTitle"><i class="fas fa-plus-circle"></i> إضافة مشروع جديد</h2>
-                <p id="formSubtitle">املأ النموذج لإضافة مشروع جديد إلى المعرض</p>
+    <div class="dashboard-controls">
+        <button id="showProjectsBtn" class="control-btn active" title="المشاريع">
+            <i class="fa-solid fa-circle-plus"></i>
+        </button>
+        <button id="showVisitorsBtn" class="control-btn" title="إحصائيات الزوار">
+            <i class="fas fa-users"></i>
+        </button>
+        <button id="showRequestsBtn" class="control-btn" title="طلبات السيرة الذاتية">
+            <i class="fa-solid fa-file-arrow-down"></i>
+        </button>
+        <!-- في قسم dashboard-controls -->
+        <button id="showContactsBtn" class="control-btn" title="طلبات التواصل">
+            <i class="fa-solid fa-envelope"></i>
+        </button>
+    </div>
+
+    <div class="form-container" id="projectsSection">
+        <div class="form-header">
+            <h2 id="formTitle"><i class="fas fa-plus-circle"></i> إضافة مشروع جديد</h2>
+            <p id="formSubtitle">املأ النموذج لإضافة مشروع جديد إلى المعرض</p>
+        </div>
+
+        <form id="projectForm">
+            <input type="hidden" id="editIndex" value="-1" />
+
+            <!-- استبدال قسم التصنيفات الحالي بهذا الكود -->
+            <div class="form-group">
+                <label><i class="fas fa-tags"></i> التصنيفات</label>
+                <div class="categories-grid">
+                    <div class="category-option">
+                        <input type="checkbox" id="categoryGraphic" name="categories" value="graphic"
+                            class="category-checkbox">
+                        <label for="categoryGraphic" class="category-label">
+                            <i class="fas fa-paint-brush"></i>
+                            <span>جرافيك</span>
+                        </label>
+                    </div>
+                    <div class="category-option">
+                        <input type="checkbox" id="categoryMotion" name="categories" value="motion"
+                            class="category-checkbox">
+                        <label for="categoryMotion" class="category-label">
+                            <i class="fas fa-film"></i>
+                            <span>موشن</span>
+                        </label>
+                    </div>
+                    <div class="category-option">
+                        <input type="checkbox" id="categoryVideo" name="categories" value="video"
+                            class="category-checkbox">
+                        <label for="categoryVideo" class="category-label">
+                            <i class="fas fa-video"></i>
+                            <span>فيديو</span>
+                        </label>
+                    </div>
+                    <div class="category-option">
+                        <input type="checkbox" id="categoryVoice" name="categories" value="voice"
+                            class="category-checkbox">
+                        <label for="categoryVoice" class="category-label">
+                            <i class="fas fa-microphone"></i>
+                            <span>صوت</span>
+                        </label>
+                    </div>
+                    <div class="category-option">
+                        <input type="checkbox" id="categoryWeb" name="categories" value="web" class="category-checkbox">
+                        <label for="categoryWeb" class="category-label">
+                            <i class="fas fa-globe"></i>
+                            <span>ويب</span>
+                        </label>
+                    </div>
+                    <div class="category-option">
+                        <input type="checkbox" id="categoryWeb" name="categories" value="web" class="category-checkbox">
+                        <label for="categoryWeb" class="category-label">
+                            <i class="fas fa-globe"></i>
+                            <span>كتابة المحتوى</span>
+                        </label>
+                    </div>
+                </div>
+                <small class="category-hint">يمكنك اختيار أكثر من تصنيف للمشروع</small>
             </div>
 
-            <form id="projectForm">
-                <input type="hidden" id="editIndex" value="-1" />
+            <div class="form-group">
+                <label for="imageUpload">
+                    <i class="fas fa-image"></i> رفع صورة المشروع
+                    <span class="upload-hint">(الحد الأقصى 10MB، الصيغ المقبولة: JPG, PNG)</span>
+                </label>
 
-                <!-- استبدال قسم التصنيفات الحالي بهذا الكود -->
-                <div class="form-group">
-                    <label><i class="fas fa-tags"></i> التصنيفات</label>
-                    <div class="categories-grid">
-                        <div class="category-option">
-                            <input type="checkbox" id="categoryGraphic" name="categories" value="graphic"
-                                class="category-checkbox">
-                            <label for="categoryGraphic" class="category-label">
-                                <i class="fas fa-paint-brush"></i>
-                                <span>جرافيك</span>
-                            </label>
-                        </div>
-                        <div class="category-option">
-                            <input type="checkbox" id="categoryMotion" name="categories" value="motion"
-                                class="category-checkbox">
-                            <label for="categoryMotion" class="category-label">
-                                <i class="fas fa-film"></i>
-                                <span>موشن</span>
-                            </label>
-                        </div>
-                        <div class="category-option">
-                            <input type="checkbox" id="categoryVideo" name="categories" value="video"
-                                class="category-checkbox">
-                            <label for="categoryVideo" class="category-label">
-                                <i class="fas fa-video"></i>
-                                <span>فيديو</span>
-                            </label>
-                        </div>
-                        <div class="category-option">
-                            <input type="checkbox" id="categoryVoice" name="categories" value="voice"
-                                class="category-checkbox">
-                            <label for="categoryVoice" class="category-label">
-                                <i class="fas fa-microphone"></i>
-                                <span>صوت</span>
-                            </label>
-                        </div>
-                        <div class="category-option">
-                            <input type="checkbox" id="categoryWeb" name="categories" value="web"
-                                class="category-checkbox">
-                            <label for="categoryWeb" class="category-label">
-                                <i class="fas fa-globe"></i>
-                                <span>ويب</span>
-                            </label>
-                        </div>
-                        <div class="category-option">
-                            <input type="checkbox" id="categoryWeb" name="categories" value="web"
-                                class="category-checkbox">
-                            <label for="categoryWeb" class="category-label">
-                                <i class="fas fa-globe"></i>
-                                <span>كتابة المحتوى</span>
-                            </label>
-                        </div>
-                    </div>
-                    <small class="category-hint">يمكنك اختيار أكثر من تصنيف للمشروع</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="imageUpload">
-                        <i class="fas fa-image"></i> رفع صورة المشروع
-                        <span class="upload-hint">(الحد الأقصى 10MB، الصيغ المقبولة: JPG, PNG)</span>
+                <div class="upload-container">
+                    <label for="imageUpload" class="upload-area">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>انقر لاختيار صورة أو اسحبها هنا</span>
                     </label>
+                    <input type="file" id="imageUpload" accept="image/*" hidden />
 
-                    <div class="upload-container">
-                        <label for="imageUpload" class="upload-area">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <span>انقر لاختيار صورة أو اسحبها هنا</span>
-                        </label>
-                        <input type="file" id="imageUpload" accept="image/*" hidden />
-
-                        <div id="imagePreview" class="preview-container">
-                            <div class="preview-wrapper">
-                                <img id="previewImage" src="#" alt="معاينة الصورة" />
-                                <div class="preview-actions">
-                                    <button id="cropBtn" class="preview-action-btn">
-                                        <i class="fas fa-crop"></i>
-                                    </button>
-                                    <button id="removeImageBtn" class="preview-action-btn">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="preview-info">
-                                <span id="fileName"></span>
-                                <span id="fileSize"></span>
+                    <div id="imagePreview" class="preview-container">
+                        <div class="preview-wrapper">
+                            <img id="previewImage" src="#" alt="معاينة الصورة" />
+                            <div class="preview-actions">
+                                <button id="cropBtn" class="preview-action-btn">
+                                    <i class="fas fa-crop"></i>
+                                </button>
+                                <button id="removeImageBtn" class="preview-action-btn">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="title"><i class="fas fa-heading"></i> عنوان المشروع</label>
-                        <input type="text" id="title" placeholder="عنوان المشروع" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="client"><i class="fas fa-user-tie"></i> اسم العميل</label>
-                        <input type="text" id="client" placeholder="العميل" required />
-                    </div>
-                </div>
-
-
-
-                <div class="form-group">
-                    <label for="description"><i class="fas fa-align-right"></i> وصف المشروع</label>
-                    <textarea id="description" placeholder="وصف مختصر للمشروع وأهدافه" required></textarea>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="date"><i class="fas fa-calendar"></i> تاريخ المشروع</label>
-                        <div class="date-fields">
-                            <select id="month" required>
-                                <option value="">الشهر</option>
-                                <option value="يناير">يناير</option>
-                                <option value="فبراير">فبراير</option>
-                                <option value="مارس">مارس</option>
-                                <option value="أبريل">أبريل</option>
-                                <option value="مايو">مايو</option>
-                                <option value="يونيو">يونيو</option>
-                                <option value="يوليو">يوليو</option>
-                                <option value="أغسطس">أغسطس</option>
-                                <option value="سبتمبر">سبتمبر</option>
-                                <option value="أكتوبر">أكتوبر</option>
-                                <option value="نوفمبر">نوفمبر</option>
-                                <option value="ديسمبر">ديسمبر</option>
-                            </select>
-                            <select id="year" required>
-                                <option value="">السنة</option>
-                            </select>
+                        <div class="preview-info">
+                            <span id="fileName"></span>
+                            <span id="fileSize"></span>
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <div class="form-grid">
                 <div class="form-group">
-                    <label for="tags"><i class="fas fa-tags"></i> الكلمات المفتاحية</label>
-                    <div class="tags-input-container">
-                        <div class="tags-display" id="tagsDisplay"></div>
-                        <div class="tags-input-wrapper">
-                            <input type="text" id="tagsInput" placeholder="اكتب الكلمة ثم اضغط Enter أو زر الإضافة" />
-                            <button type="button" id="addTagBtn" class="add-tag-btn">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <input type="hidden" id="tags" name="tags" />
+                    <label for="title"><i class="fas fa-heading"></i> عنوان المشروع</label>
+                    <input type="text" id="title" placeholder="عنوان المشروع" required />
+                </div>
+                <div class="form-group">
+                    <label for="client"><i class="fas fa-user-tie"></i> اسم العميل</label>
+                    <input type="text" id="client" placeholder="العميل" required />
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="description"><i class="fas fa-align-right"></i> وصف المشروع</label>
+                <textarea id="description" placeholder="وصف مختصر للمشروع وأهدافه" required></textarea>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="date"><i class="fas fa-calendar"></i> تاريخ المشروع</label>
+                    <div class="date-fields">
+                        <select id="month" required>
+                            <option value="">الشهر</option>
+                            <option value="يناير">يناير</option>
+                            <option value="فبراير">فبراير</option>
+                            <option value="مارس">مارس</option>
+                            <option value="أبريل">أبريل</option>
+                            <option value="مايو">مايو</option>
+                            <option value="يونيو">يونيو</option>
+                            <option value="يوليو">يوليو</option>
+                            <option value="أغسطس">أغسطس</option>
+                            <option value="سبتمبر">سبتمبر</option>
+                            <option value="أكتوبر">أكتوبر</option>
+                            <option value="نوفمبر">نوفمبر</option>
+                            <option value="ديسمبر">ديسمبر</option>
+                        </select>
+                        <select id="year" required>
+                            <option value="">السنة</option>
+                        </select>
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="externalLink"><i class="fas fa-link"></i> رابط المشروع</label>
-                    <div class="url-input-container">
-                        <input type="url" id="externalLink" placeholder="https://example.com" pattern="https?://.+"
-                            required />
-                        <button type="button" id="testLinkBtn" class="test-link-btn" title="اختبار الرابط">
-                            <i class="fas fa-external-link-alt"></i>
+            <div class="form-group">
+                <label for="tags"><i class="fas fa-tags"></i> الكلمات المفتاحية</label>
+                <div class="tags-input-container">
+                    <div class="tags-display" id="tagsDisplay"></div>
+                    <div class="tags-input-wrapper">
+                        <input type="text" id="tagsInput" placeholder="اكتب الكلمة ثم اضغط Enter أو زر الإضافة" />
+                        <button type="button" id="addTagBtn" class="add-tag-btn">
+                            <i class="fas fa-plus"></i>
                         </button>
                     </div>
-                    <small class="url-hint">يجب أن يبدأ الرابط بـ http:// أو https://</small>
+                    <input type="hidden" id="tags" name="tags" />
                 </div>
+            </div>
 
-                <div class="form-actions">
-                    <button type="submit" id="submitBtn" class="submit-btn">
-                        <i class="fas fa-plus"></i> إضافة مشروع
-                    </button>
-                    <button type="button" id="resetBtn" class="reset-btn">
-                        <i class="fas fa-redo"></i> إعادة تعيين
+            <div class="form-group">
+                <label for="externalLink"><i class="fas fa-link"></i> رابط المشروع</label>
+                <div class="url-input-container">
+                    <input type="url" id="externalLink" placeholder="https://example.com" pattern="https?://.+"
+                        required />
+                    <button type="button" id="testLinkBtn" class="test-link-btn" title="اختبار الرابط">
+                        <i class="fas fa-external-link-alt"></i>
                     </button>
                 </div>
-            </form>
-        </div>
+                <small class="url-hint">يجب أن يبدأ الرابط بـ http:// أو https://</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" id="submitBtn" class="submit-btn">
+                    <i class="fas fa-plus"></i> إضافة مشروع
+                </button>
+                <button type="button" id="resetBtn" class="reset-btn">
+                    <i class="fas fa-redo"></i> إعادة تعيين
+                </button>
+            </div>
+        </form>
 
         <div class="projects-table-container">
 
@@ -244,297 +255,526 @@
                 <i class="fas fa-trash-alt"></i> حذف الكل
             </button>
         </div>
+    </div>
 
-        <div class="visitors-section">
-            <h2><i class="fas fa-users"></i> إحصائيات الزوار</h2>
+    <div class="visitors-section" id="visitorsSection" style="display: none;">
+        <h2><i class="fas fa-users"></i> إحصائيات الزوار</h2>
 
-            <div class="visitors-filter">
-                <div class="filter-group">
-                    <label for="visitorDateFilter"><i class="fas fa-calendar"></i> الفترة الزمنية:</label>
-                    <select id="visitorDateFilter">
-                        <option value="today">اليوم</option>
-                        <option value="week">الأسبوع</option>
-                        <option value="month">الشهر</option>
-                        <option value="all" selected>الكل</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="visitorTypeFilter"><i class="fas fa-user"></i> نوع الزائر:</label>
-                    <select id="visitorTypeFilter">
-                        <option value="all" selected>الكل</option>
-                        <option value="new">زائر جديد</option>
-                        <option value="returning">زائر عائد</option>
-                    </select>
-                </div>
-
-                <button id="refreshVisitors" class="refresh-btn">
-                    <i class="fas fa-sync-alt"></i> تحديث
-                </button>
+        <div class="visitors-filter">
+            <div class="filter-group">
+                <label for="visitorDateFilter"><i class="fas fa-calendar"></i> الفترة الزمنية:</label>
+                <select id="visitorDateFilter">
+                    <option value="today">اليوم</option>
+                    <option value="week">الأسبوع</option>
+                    <option value="month">الشهر</option>
+                    <option value="all" selected>الكل</option>
+                </select>
             </div>
 
-            <div class="visitors-stats">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="totalVisitors">0</h3>
-                        <p>إجمالي الزوار</p>
-                    </div>
-                </div>
+            <div class="filter-group">
+                <label for="visitorTypeFilter"><i class="fas fa-user"></i> نوع الزائر:</label>
+                <select id="visitorTypeFilter">
+                    <option value="all" selected>الكل</option>
+                    <option value="new">زائر جديد</option>
+                    <option value="returning">زائر عائد</option>
+                </select>
+            </div>
 
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="newVisitors">0</h3>
-                        <p>زوار جدد</p>
-                    </div>
-                </div>
+            <button id="refreshVisitors" class="refresh-btn">
+                <i class="fas fa-sync-alt"></i> تحديث
+            </button>
+        </div>
 
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-undo"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="returningVisitors">0</h3>
-                        <p>زوار عائدون</p>
-                    </div>
+        <div class="visitors-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
                 </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="projectInteractions">0</h3>
-                        <p>تفاعلات المشاريع</p>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="avgSessionDuration">0</h3>
-                        <p>متوسط مدة الزيارة</p>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-file-download"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="cvDownloads">0</h3>
-                        <p>تحميلات السيرة الذاتية</p>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="contactSubmissions">0</h3>
-                        <p>إرسالات نموذج الاتصال</p>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-globe-asia"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="countriesCount">0</h3>
-                        <p>عدد الدول</p>
-                    </div>
+                <div class="stat-content">
+                    <h3 id="totalVisitors">0</h3>
+                    <p>إجمالي الزوار</p>
                 </div>
             </div>
 
-            <div class="visitors-table-container">
-                <table class="visitors-table">
-                    <thead>
-                        <tr>
-                            <th>معرف الزائر</th>
-                            <th>البلد</th>
-                            <th>الجهاز</th>
-                            <th>عدد الجلسات</th>
-                            <th>مدة الجلسة</th>
-                            <th>التفاصيل</th>
-                        </tr>
-                    </thead>
-                    <tbody id="visitorsTableBody">
-                        <!-- سيتم ملء البيانات هنا -->
-                    </tbody>
-                </table>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="newVisitors">0</h3>
+                    <p>زوار جدد</p>
+                </div>
             </div>
 
-            <div id="visitorDetailsModal" class="visitor-modal">
-                <div class="modal-content">
-                    <span class="close-modal">&times;</span>
-                    <h3 id="visitorModalTitle">تفاصيل الزائر</h3>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="returningVisitors">0</h3>
+                    <p>زوار عائدون</p>
+                </div>
+            </div>
 
-                    <div class="visitor-details-grid">
-                        <div id="row1-col1" class="detail-section">
-                            <h4><i class="fas fa-info-circle"></i> المعلومات الأساسية</h4>
-                            <div class="detail-item">
-                                <span class="detail-label">معرف الزائر:</span>
-                                <span id="detailVisitorId" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">نوع الزائر:</span>
-                                <span id="detailVisitorType" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">أول زيارة:</span>
-                                <span id="detailFirstVisit" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">آخر زيارة:</span>
-                                <span id="detailLastVisit" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">عدد الزيارات:</span>
-                                <span id="detailVisitCount" class="detail-value"></span>
-                            </div>
-                        </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="projectInteractions">0</h3>
+                    <p>تفاعلات المشاريع</p>
+                </div>
+            </div>
 
-                        <div id="row1-col2" class="detail-section">
-                            <h4><i class="fas fa-globe"></i> الموقع الجغرافي</h4>
-                            <div class="detail-item">
-                                <span class="detail-label">البلد:</span>
-                                <span id="detailCountry" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">المنطقة:</span>
-                                <span id="detailRegion" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">المدينة:</span>
-                                <span id="detailCity" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">المنطقة الزمنية:</span>
-                                <span id="detailTimezone" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">عنوان IP:</span>
-                                <span id="detailIp" class="detail-value"></span>
-                            </div>
-                        </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="avgSessionDuration">0</h3>
+                    <p>متوسط مدة الزيارة</p>
+                </div>
+            </div>
 
-                        <div  id="row2-col1" class="detail-section">
-                            <h4><i class="fas fa-desktop"></i> معلومات الجهاز</h4>
-                            <div class="detail-item">
-                                <span class="detail-label">نوع الجهاز:</span>
-                                <span id="detailDevice" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">نظام التشغيل:</span>
-                                <span id="detailOs" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">طراز الجهاز:</span>
-                                <span id="detailDeviceModel" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">المتصفح:</span>
-                                <span id="detailBrowser" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">دقة الشاشة:</span>
-                                <span id="detailResolution" class="detail-value"></span>
-                            </div>
-                        </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-file-download"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="cvDownloads">0</h3>
+                    <p>تحميلات السيرة الذاتية</p>
+                </div>
+            </div>
 
-                        <div id="row2-col2" class="detail-section">
-                            <h4><i class="fas fa-chart-line"></i> الإحصائيات</h4>
-                            <div class="detail-item">
-                                <span class="detail-label">معدل التمرير:</span>
-                                <span id="detailScrollDepth" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">اللغة المفضلة:</span>
-                                <span id="detailLanguage" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">مدة الجلسة:</span>
-                                <span id="detailSessionDuration" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">
-                                    تحميلات السيرة الذاتية:
-                                </span>
-                                <span id="detailCvDownloads" class="detail-value">0</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">
-                                    إرسالات نموذج الاتصال:
-                                </span>
-                                <span id="detailContactSubmissions" class="detail-value">0</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">مصدر الزيارة:</span>
-                                <span id="detailReferralSource" class="detail-value"></span>
-                            </div>
-                        </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="contactSubmissions">0</h3>
+                    <p>إرسالات نموذج الاتصال</p>
+                </div>
+            </div>
 
-                        <div id="row3-col1" class="detail-section">
-                            <h4><i class="fas fa-file-alt"></i> الأقسام والأعمال</h4>
-                            <div class="detail-item">
-                                <span class="detail-label">الأقسام المطالعة:</span>
-                                <span id="detailViewedSections" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">عدد المشاريع المطالعة:</span>
-                                <span id="detailProjectInteractions" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">المشاريع المطالعة:</span>
-                                <span id="detailProjectsViewed" class="detail-value"></span>
-                            </div>
-                        </div>
-
-                        <div class="detail-section full-width">
-                            <h4><i class="fas fa-history"></i> سجل الجلسات</h4>
-                            <div class="sessions-table-container">
-                                <table class="sessions-table">
-                                    <thead>
-                                        <tr>
-                                            <th>تاريخ الجلسة</th>
-                                            <th>مدة الجلسة</th>
-                                            <th>معدل التمرير</th>
-                                            <th>المشاريع المطالعة</th>
-                                            <th>عدد المشاريع المطالعة</th>
-                                            <th>الأقسام المطالعة</th>
-                                            <th>تحميلات السيرة الذاتية</th>
-                                            <th>إرسال نوذج التواصل</th>
-                                            <th>مصدر الزيارة</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="visitorSessionsBody">
-                                        <!-- سيتم ملء البيانات هنا -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="visitor-actions">
-                        <button id="exportVisitorData" class="export-btn">
-                            <i class="fas fa-download"></i> تصدير البيانات
-                        </button>
-                    </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-globe-asia"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="countriesCount">0</h3>
+                    <p>عدد الدول</p>
                 </div>
             </div>
         </div>
 
+        <div class="visitors-table-container">
+            <table class="visitors-table">
+                <thead>
+                    <tr>
+                        <th>معرف الزائر</th>
+                        <th>البلد</th>
+                        <th>الجهاز</th>
+                        <th>عدد الجلسات</th>
+                        <th>مدة الجلسة</th>
+                        <th>التفاصيل</th>
+                    </tr>
+                </thead>
+                <tbody id="visitorsTableBody">
+                    <!-- سيتم ملء البيانات هنا -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="visitorDetailsModal" class="visitor-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3 id="visitorModalTitle">تفاصيل الزائر</h3>
+
+                <div class="visitor-details-grid">
+                    <div id="row1-col1" class="detail-section">
+                        <h4><i class="fas fa-info-circle"></i> المعلومات الأساسية</h4>
+                        <div class="detail-item">
+                            <span class="detail-label">معرف الزائر:</span>
+                            <span id="detailVisitorId" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">نوع الزائر:</span>
+                            <span id="detailVisitorType" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">أول زيارة:</span>
+                            <span id="detailFirstVisit" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">آخر زيارة:</span>
+                            <span id="detailLastVisit" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">عدد الزيارات:</span>
+                            <span id="detailVisitCount" class="detail-value"></span>
+                        </div>
+                    </div>
+
+                    <div id="row1-col2" class="detail-section">
+                        <h4><i class="fas fa-globe"></i> الموقع الجغرافي</h4>
+                        <div class="detail-item">
+                            <span class="detail-label">البلد:</span>
+                            <span id="detailCountry" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">المنطقة:</span>
+                            <span id="detailRegion" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">المدينة:</span>
+                            <span id="detailCity" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">المنطقة الزمنية:</span>
+                            <span id="detailTimezone" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">عنوان IP:</span>
+                            <span id="detailIp" class="detail-value"></span>
+                        </div>
+                    </div>
+
+                    <div id="row2-col1" class="detail-section">
+                        <h4><i class="fas fa-desktop"></i> معلومات الجهاز</h4>
+                        <div class="detail-item">
+                            <span class="detail-label">نوع الجهاز:</span>
+                            <span id="detailDevice" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">نظام التشغيل:</span>
+                            <span id="detailOs" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">طراز الجهاز:</span>
+                            <span id="detailDeviceModel" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">المتصفح:</span>
+                            <span id="detailBrowser" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">دقة الشاشة:</span>
+                            <span id="detailResolution" class="detail-value"></span>
+                        </div>
+                    </div>
+
+                    <div id="row2-col2" class="detail-section">
+                        <h4><i class="fas fa-chart-line"></i> الإحصائيات</h4>
+                        <div class="detail-item">
+                            <span class="detail-label">معدل التمرير:</span>
+                            <span id="detailScrollDepth" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">اللغة المفضلة:</span>
+                            <span id="detailLanguage" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">مدة الجلسة:</span>
+                            <span id="detailSessionDuration" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                تحميلات السيرة الذاتية:
+                            </span>
+                            <span id="detailCvDownloads" class="detail-value">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                إرسالات نموذج الاتصال:
+                            </span>
+                            <span id="detailContactSubmissions" class="detail-value">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">مصدر الزيارة:</span>
+                            <span id="detailReferralSource" class="detail-value"></span>
+                        </div>
+                    </div>
+
+                    <div id="row3-col1" class="detail-section">
+                        <h4><i class="fas fa-file-alt"></i> الأقسام والأعمال</h4>
+                        <div class="detail-item">
+                            <span class="detail-label">الأقسام المطالعة:</span>
+                            <span id="detailViewedSections" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">عدد المشاريع المطالعة:</span>
+                            <span id="detailProjectInteractions" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">المشاريع المطالعة:</span>
+                            <span id="detailProjectsViewed" class="detail-value"></span>
+                        </div>
+                    </div>
+
+                    <div class="detail-section full-width">
+                        <h4><i class="fas fa-history"></i> سجل الجلسات</h4>
+                        <div class="sessions-table-container">
+                            <table class="sessions-table">
+                                <thead>
+                                    <tr>
+                                        <th>تاريخ الجلسة</th>
+                                        <th>مدة الجلسة</th>
+                                        <th>معدل التمرير</th>
+                                        <th>المشاريع المطالعة</th>
+                                        <th>عدد المشاريع المطالعة</th>
+                                        <th>الأقسام المطالعة</th>
+                                        <th>تحميلات السيرة الذاتية</th>
+                                        <th>إرسال نوذج التواصل</th>
+                                        <th>مصدر الزيارة</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="visitorSessionsBody">
+                                    <!-- سيتم ملء البيانات هنا -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="visitor-actions">
+                    <button id="exportVisitorData" class="export-btn">
+                        <i class="fas fa-download"></i> تصدير البيانات
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div class="requests-section" id="requestsSection" style="display: none;">
+        <h2><i class="fas fa-file-download"></i> طلبات السيرة الذاتية</h2>
+
+        <div class="requests-filter">
+            <div class="filter-group">
+                <label for="requestStatusFilter"><i class="fas fa-filter"></i> حالة الطلب:</label>
+                <select id="requestStatusFilter">
+                    <option value="all" selected>الكل</option>
+                    <option value="pending">قيد الانتظار</option>
+                    <option value="completed">مكتمل</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="requestDateFilter"><i class="fas fa-calendar"></i> الفترة:</label>
+                <select id="requestDateFilter">
+                    <option value="today">اليوم</option>
+                    <option value="week">الأسبوع</option>
+                    <option value="month">الشهر</option>
+                    <option value="all" selected>الكل</option>
+                </select>
+            </div>
+
+            <button id="refreshRequests" class="refresh-btn">
+                <i class="fas fa-sync-alt"></i> تحديث
+            </button>
+        </div>
+
+        <div class="requests-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-file-download"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="totalRequests">0</h3>
+                    <p>إجمالي الطلبات</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="pendingRequests">0</h3>
+                    <p>طلبات قيد الانتظار</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="completedRequests">0</h3>
+                    <p>طلبات مكتملة</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="requests-table-container">
+            <table class="requests-table">
+                <thead>
+                    <tr>
+                        <th>رقم الطلب</th>
+                        <th>طريقة التواصل</th>
+                        <th>معلومات التواصل</th>
+                        <th>تاريخ الطلب</th>
+                        <th>الحالة</th>
+                        <th>تم الإكمال</th>
+                    </tr>
+                </thead>
+                <tbody id="requestsTableBody">
+                    <!-- سيتم ملء البيانات هنا -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-actions">
+            <button id="exportRequestsBtn" class="action-btn export-btn">
+                <i class="fas fa-download"></i> تصدير البيانات
+            </button>
+        </div>
+    </div>
+
+    <!-- بعد قسم requests-section -->
+    <div class="contacts-section" id="contactsSection" style="display: none;">
+        <h2><i class="fas fa-envelope"></i> طلبات التواصل</h2>
+
+        <div class="contacts-filter">
+            <div class="filter-group">
+                <label for="contactDateFilter"><i class="fas fa-calendar"></i> الفترة:</label>
+                <select id="contactDateFilter">
+                    <option value="today">اليوم</option>
+                    <option value="week">الأسبوع</option>
+                    <option value="month">الشهر</option>
+                    <option value="all" selected>الكل</option>
+                </select>
+            </div>
+
+            <button id="refreshContacts" class="refresh-btn">
+                <i class="fas fa-sync-alt"></i> تحديث
+            </button>
+        </div>
+
+        <div class="contacts-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="totalContacts">0</h3>
+                    <p>إجمالي الطلبات</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="unreadContacts">0</h3>
+                    <p>طلبات غير مقروءة</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="readContacts">0</h3>
+                    <p>تمت القراءة</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contacts-table-container">
+            <table class="contacts-table">
+                <thead>
+                    <tr>
+                        <th>رقم الطلب</th>
+                        <th>الاسم</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>الهاتف</th>
+                        <th>الموضوع</th>
+                        <th>تاريخ الإرسال</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="contactsTableBody">
+                    <!-- سيتم ملء البيانات هنا -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-actions">
+            <button id="exportContactsBtn" class="action-btn export-btn">
+                <i class="fas fa-download"></i> تصدير البيانات
+            </button>
+        </div>
+
+        <!-- نافذة عرض تفاصيل الرسالة -->
+        <div id="contactDetailsModal" class="contact-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3 id="contactModalTitle">تفاصيل الرسالة</h3>
+
+                <div class="contact-details-grid">
+                    <div class="detail-section">
+                        <h4><i class="fas fa-info-circle"></i> المعلومات الأساسية</h4>
+                        <div class="detail-item">
+                            <span class="detail-label">رقم الطلب:</span>
+                            <span id="detailContactId" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">تاريخ الإرسال:</span>
+                            <span id="detailContactDate" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">الحالة:</span>
+                            <span id="detailContactStatus" class="detail-value"></span>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4><i class="fas fa-user"></i> معلومات المرسل</h4>
+                        <div class="detail-item">
+                            <span class="detail-label">الاسم:</span>
+                            <span id="detailContactName" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">البريد الإلكتروني:</span>
+                            <span id="detailContactEmail" class="detail-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">الهاتف:</span>
+                            <span id="detailContactPhone" class="detail-value"></span>
+                        </div>
+                    </div>
+
+                    <div class="detail-section full-width">
+                        <h4><i class="fas fa-envelope-open-text"></i> محتوى الرسالة</h4>
+                        <div class="message-content" id="detailContactMessage"></div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="replyEmailBtn" class="btn btn-email">
+                        <i class="fas fa-envelope"></i> رد عبر الإيميل
+                    </button>
+                    <button id="replyWhatsappBtn" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> رد عبر الواتساب
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="dashboard-container">
+        <h1><i class="fas fa-palette"></i> لوحة تحكم معرض الأعمال</h1>
+
+
+
+
+
+    </div> -->
 
 
 
@@ -608,6 +848,7 @@
 
 
     <script src="dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </body>
 
