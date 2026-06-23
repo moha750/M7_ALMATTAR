@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
+/* ===========================================================================
+   نظام التصميم — «الهوية الواحدة بخمسة أوجه»
+   ألوان مستوحاة مباشرةً من شعار العميل الذهبي وصورته والخلفية الكريمية.
+   =========================================================================== */
+@theme {
+  /* --- لوحة الألوان --- */
+  --color-gold: #d2a45c; /* الذهبي العتيق (الشعار، الأكسنت، الأزرار) */
+  --color-gold-deep: #b07e3a; /* كراميل محروق (تدرّجات، نص ذهبي صغير) */
+  --color-cream: #e9e3d7; /* الكريمي الدافئ (خلفية فاتحة أساسية) */
+  --color-parchment: #f4efe6; /* كريمي فاتح (بطاقات، أسطح مرتفعة) */
+  --color-espresso: #1c1a17; /* فحمي بنّي (النص، خلفية الوضع الداكن) */
+  --color-walnut: #2a2621; /* بنّي دخاني (أسطح داكنة مرفوعة، حدود) */
+  --color-taupe: #8a8073; /* رمادي طيني (نص ثانوي، تواريخ) */
+
+  /* --- نبضات التخصصات الخمسة (ألوان فرعية متناغمة مع الدفء) --- */
+  --color-craft-graphic: #d2a45c; /* جرافيك — ذهبي */
+  --color-craft-editing: #c0703c; /* مونتاج — نحاسي محروق */
+  --color-craft-motion: #d98e44; /* موشن — برتقالي عنبري */
+  --color-craft-code: #7c8a6a; /* برمجة — زيتوني هادئ */
+  --color-craft-voice: #a8744f; /* تعليق صوتي — بنّي دافئ */
+
+  /* --- الخطوط (المتغيّرات تأتي من next/font في layout.tsx) --- */
+  --font-display: var(--font-aref), "Aref Ruqaa", serif; /* عناوين كبرى */
+  --font-heading: var(--font-tajawal), "Tajawal", sans-serif; /* عناوين فرعية */
+  --font-sans: var(--font-plex), "IBM Plex Sans Arabic", sans-serif; /* المتن */
+  --font-tech: var(--font-grotesk), "Space Grotesk", monospace; /* لاتيني/تقني */
+}
+
+/* ===========================================================================
+   الأساس
+   =========================================================================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-cream);
+  --foreground: var(--color-espresso);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 1.125rem; /* 18px أساس مريح للعربية */
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: var(--color-espresso);
+  }
+
+  /* احترام تفضيل تقليل الحركة */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ===========================================================================
+   أدوات مساعدة للهوية
+   =========================================================================== */
+@layer utilities {
+  /* نص بتدرّج ذهبي */
+  .text-gold-gradient {
+    background: linear-gradient(
+      135deg,
+      var(--color-gold) 0%,
+      var(--color-gold-deep) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* قسم داكن غامر (الشوريل + التعليق الصوتي) */
+  .section-dark {
+    background-color: var(--color-espresso);
+    color: var(--color-cream);
+  }
+
+  /* حبيبات خفيفة تعطي إحساس الورق/الفيلم */
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
 }
