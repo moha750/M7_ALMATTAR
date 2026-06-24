@@ -7,6 +7,7 @@ import {
   FolderKanban,
   Settings,
   Mail,
+  KeyRound,
   type LucideIcon,
 } from "lucide-react";
 
@@ -15,6 +16,7 @@ const ITEMS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/admin/projects", label: "المشاريع", icon: FolderKanban },
   { href: "/admin/messages", label: "الرسائل", icon: Mail },
   { href: "/admin/settings", label: "إعدادات الموقع", icon: Settings },
+  { href: "/admin/account", label: "الحساب", icon: KeyRound },
 ];
 
 export function AdminNav() {
