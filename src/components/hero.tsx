@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Download } from "lucide-react";
 import { DISCIPLINES } from "@/lib/disciplines";
+import { HeroThread } from "@/components/hero-thread";
 
 export function Hero({ bio }: { bio?: string | null }) {
   return (
@@ -78,21 +79,8 @@ export function Hero({ bio }: { bio?: string | null }) {
 
         {/* عمود الصورة */}
         <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
-          {/* الخيط الذهبي */}
-          <svg
-            aria-hidden
-            viewBox="0 0 400 480"
-            className="pointer-events-none absolute -inset-6 h-[calc(100%+3rem)] w-[calc(100%+3rem)]"
-            fill="none"
-          >
-            <path
-              d="M40 120 C 120 40, 320 60, 360 200 S 120 380, 200 460"
-              stroke="var(--color-gold)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              opacity="0.55"
-            />
-          </svg>
+          {/* الخيط الذهبي (يرسم نفسه) */}
+          <HeroThread />
 
           {/* الإطار + الصورة */}
           <div className="relative overflow-hidden rounded-[2rem] border border-gold/30 bg-parchment shadow-[0_30px_80px_-30px_rgba(28,26,23,0.45)]">

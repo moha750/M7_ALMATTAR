@@ -1,13 +1,20 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Mail, MessageCircle } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { Hero } from "@/components/hero";
 import { SiteFooter } from "@/components/site-footer";
+import { Section } from "@/components/section";
+import { Reveal } from "@/components/reveal";
+import { WorkGallery } from "@/components/sections/work-gallery";
+import { Showreel } from "@/components/sections/showreel";
+import { VoiceReel } from "@/components/sections/voice-reel";
+import { ContactForm } from "@/components/sections/contact-form";
 import { DISCIPLINES } from "@/lib/disciplines";
 import {
   getCategories,
   getSiteSettings,
   getPublishedProjects,
+  getTestimonials,
 } from "@/lib/queries";
 import { resolveIcon } from "@/lib/icons";
 import { publicUrl } from "@/lib/storage";
@@ -21,46 +28,21 @@ type Craft = {
   color: string;
 };
 
-/** قسم نائب مؤقت — يُستبدل بالمحتوى الكامل في المرحلة الثالثة */
-function PlaceholderSection({
-  id,
-  eyebrow,
-  title,
-  children,
-  dark = false,
-}: {
-  id: string;
-  eyebrow: string;
-  title: string;
-  children?: React.ReactNode;
-  dark?: boolean;
-}) {
-  return (
-    <section
-      id={id}
-      className={`${dark ? "section-dark" : ""} scroll-mt-24 border-t border-espresso/5`}
-    >
-      <div className="mx-auto max-w-6xl px-6 py-20">
-        <p
-          className={`font-[family-name:var(--font-tech)] text-sm font-medium tracking-widest ${dark ? "text-gold" : "text-gold-deep"}`}
-        >
-          {eyebrow}
-        </p>
-        <h2 className="mt-3 font-[family-name:var(--font-heading)] text-4xl font-bold">
-          {title}
-        </h2>
-        <div className="mt-8">{children}</div>
-      </div>
-    </section>
-  );
-}
+const SOCIAL_LABELS: Record<string, string> = {
+  instagram: "إنستغرام",
+  x: "إكس",
+  behance: "بيهانس",
+  youtube: "يوتيوب",
+  tiktok: "تيك توك",
+  linkedin: "لينكدإن",
+};
 
 export default async function Home() {
-  // قراءة من Supabase (مع تراجع آمن إلى البيانات الثابتة إن لم تتوفّر)
-  const [categories, settings, projects] = await Promise.all([
+  const [categories, settings, projects, testimonials] = await Promise.all([
     getCategories(),
     getSiteSettings(),
     getPublishedProjects(),
+    getTestimonials(),
   ]);
 
   const crafts: Craft[] =
@@ -80,147 +62,169 @@ export default async function Home() {
           color: d.color,
         }));
 
-  const craftLabel = (slug: string) =>
-    crafts.find((c) => c.slug === slug)?.title ?? slug;
+  const avatar = publicUrl(settings?.avatar_path) ?? "/brand/profile.jpg";
+  const bio = settings?.bio_ar;
+  const socials = (settings?.socials ?? {}) as Record<string, string>;
+  const socialEntries = Object.entries(socials).filter(([, v]) => v);
 
   return (
     <>
       <SiteHeader />
       <main className="flex-1">
-        <Hero bio={settings?.bio_ar} />
+        <Hero bio={bio} />
 
-        <PlaceholderSection id="services" eyebrow="ما أقدّمه" title="خمسُ حِرَف">
+        {/* التخصصات الخمسة */}
+        <Section id="services" eyebrow="ما أقدّمه" title="خمسُ حِرَف">
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {crafts.map((d) => {
+            {crafts.map((d, i) => {
               const Icon = d.Icon;
               return (
-                <li
-                  key={d.slug}
-                  className="rounded-2xl border border-espresso/10 bg-parchment p-6"
-                >
-                  <span
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-xl"
-                    style={{
-                      backgroundColor:
-                        "color-mix(in srgb, var(--pulse) 16%, transparent)",
-                      ["--pulse" as string]: d.color,
-                    }}
-                  >
-                    <Icon className="h-5 w-5" style={{ color: d.color }} />
-                  </span>
-                  <h3 className="mt-4 font-[family-name:var(--font-heading)] text-lg font-bold">
-                    {d.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-espresso/70">{d.tagline}</p>
+                <li key={d.slug}>
+                  <Reveal delay={i * 0.06}>
+                    <div className="h-full rounded-2xl border border-espresso/10 bg-parchment p-6">
+                      <span
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-xl"
+                        style={{
+                          backgroundColor:
+                            "color-mix(in srgb, var(--pulse) 16%, transparent)",
+                          ["--pulse" as string]: d.color,
+                        }}
+                      >
+                        <Icon className="h-5 w-5" style={{ color: d.color }} />
+                      </span>
+                      <h3 className="mt-4 font-[family-name:var(--font-heading)] text-lg font-bold">
+                        {d.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-espresso/70">
+                        {d.tagline}
+                      </p>
+                    </div>
+                  </Reveal>
                 </li>
               );
             })}
           </ul>
-        </PlaceholderSection>
+        </Section>
 
-        <PlaceholderSection id="work" eyebrow="مختارات" title="معرض الأعمال">
+        {/* معرض الأعمال */}
+        <Section id="work" eyebrow="مختارات" title="معرض الأعمال">
           {projects.length > 0 ? (
-            <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {projects.map((p) => {
-                const cover = publicUrl(p.cover_path);
-                const Wrapper = p.project_url ? "a" : "div";
-                return (
-                  <li key={p.id}>
-                    <Wrapper
-                      {...(p.project_url
-                        ? {
-                            href: p.project_url,
-                            target: "_blank",
-                            rel: "noopener noreferrer",
-                          }
-                        : {})}
-                      className="group block overflow-hidden rounded-2xl border border-espresso/10 bg-parchment transition-shadow hover:shadow-lg"
-                    >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-cream">
-                        {cover ? (
-                          <Image
-                            src={cover}
-                            alt={p.title_ar}
-                            fill
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center text-espresso/30">
-                            بلا غلاف
-                          </div>
-                        )}
-                        {p.is_featured && (
-                          <span className="absolute end-3 top-3 rounded-full bg-gold px-2.5 py-1 text-xs font-semibold text-espresso">
-                            مميّز
-                          </span>
-                        )}
-                      </div>
-                      <div className="p-5">
-                        <span className="font-[family-name:var(--font-tech)] text-xs font-medium tracking-wide text-gold-deep">
-                          {craftLabel(p.category)}
-                        </span>
-                        <h3 className="mt-1.5 font-[family-name:var(--font-heading)] text-lg font-bold">
-                          {p.title_ar}
-                        </h3>
-                        {p.summary_ar && (
-                          <p className="mt-1 line-clamp-2 text-sm text-espresso/65">
-                            {p.summary_ar}
-                          </p>
-                        )}
-                      </div>
-                    </Wrapper>
-                  </li>
-                );
-              })}
-            </ul>
+            <WorkGallery
+              projects={projects}
+              crafts={crafts.map((c) => ({ slug: c.slug, title: c.title }))}
+            />
           ) : (
             <p className="text-espresso/70">
               قريبًا — تُضاف الأعمال من لوحة التحكم لتظهر هنا تلقائيًّا.
             </p>
           )}
-        </PlaceholderSection>
+        </Section>
 
-        <PlaceholderSection
-          id="showreel"
-          eyebrow="بانوراما"
-          title="الشوريل"
-          dark
-        >
-          <p className="text-cream/70">
-            قريبًا — فيديو ملخّص يبدأ وينتهي بالشعار الذهبي. (المرحلة ٣)
-          </p>
-        </PlaceholderSection>
+        {/* الشوريل */}
+        <Section id="showreel" eyebrow="بانوراما" title="الشوريل" dark>
+          <Showreel url={settings?.showreel_url} />
+        </Section>
 
-        <PlaceholderSection
-          id="voice"
-          eyebrow="استمع"
-          title="ريل التعليق الصوتي"
-          dark
-        >
-          <p className="text-cream/70">
-            قريبًا — مشغّل بموجة صوتية ذهبية وقائمة مقاطع بنبرات متنوعة. (المرحلة
-            ٣)
-          </p>
-        </PlaceholderSection>
+        {/* ريل التعليق الصوتي */}
+        <Section id="voice" eyebrow="استمع" title="ريل التعليق الصوتي" dark>
+          <VoiceReel url={settings?.voicereel_url} />
+        </Section>
 
-        <PlaceholderSection id="about" eyebrow="من أنا" title="نبذة عنّي">
-          <p className="max-w-2xl text-espresso/70">
-            {settings?.bio_ar ??
-              "قريبًا — قصة شخصية دافئة مع الصورة الكاملة بأسلوب يكشف النص تدريجيًا عند التمرير. (المرحلة ٣)"}
-          </p>
-        </PlaceholderSection>
+        {/* نبذة عنّي */}
+        <Section id="about" eyebrow="من أنا" title="نبذة عنّي">
+          <Reveal>
+            <div className="grid items-center gap-8 sm:grid-cols-[260px_1fr]">
+              <div className="relative mx-auto aspect-[3/4] w-52 overflow-hidden rounded-2xl border border-gold/30 bg-parchment sm:mx-0 sm:w-full">
+                <Image
+                  src={avatar}
+                  alt={settings?.name_ar ?? "الصورة الشخصية"}
+                  fill
+                  sizes="260px"
+                  className="object-cover"
+                />
+              </div>
+              <p className="text-lg leading-loose text-espresso/80">
+                {bio ??
+                  "مبدع خليجي متعدّد التخصصات: أصمّم، وأُحرّك، وأروي بصوتي. حِسٌّ إبداعي واحد يجمع التصميم الجرافيكي والمونتاج والموشن جرافيك والبرمجة والتعليق الصوتي."}
+              </p>
+            </div>
+          </Reveal>
+        </Section>
 
-        <PlaceholderSection
-          id="contact"
-          eyebrow="لنبدأ"
-          title="تواصل / اطلب خدمة"
-        >
-          <p className="max-w-2xl text-espresso/70">
-            قريبًا — نموذج تواصل يُرسل الرسائل إلى لوحة التحكم، مع زر واتساب مباشر
-            وروابط التواصل. (المرحلة ٤)
-          </p>
-        </PlaceholderSection>
+        {/* آراء العملاء */}
+        {testimonials.length > 0 && (
+          <Section id="testimonials" eyebrow="ثقة" title="آراء العملاء">
+            <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {testimonials.map((t, i) => (
+                <li key={t.id}>
+                  <Reveal delay={i * 0.06}>
+                    <figure className="h-full rounded-2xl border border-espresso/10 bg-parchment p-6">
+                      <blockquote className="text-espresso/80">
+                        “{t.quote_ar}”
+                      </blockquote>
+                      <figcaption className="mt-4 text-sm">
+                        <span className="font-semibold">{t.client_name}</span>
+                        {t.client_role && (
+                          <span className="text-espresso/55">
+                            {" "}
+                            — {t.client_role}
+                          </span>
+                        )}
+                      </figcaption>
+                    </figure>
+                  </Reveal>
+                </li>
+              ))}
+            </ul>
+          </Section>
+        )}
+
+        {/* تواصل */}
+        <Section id="contact" eyebrow="لنبدأ" title="تواصل / اطلب خدمة">
+          <div className="grid gap-10 lg:grid-cols-2">
+            <ContactForm />
+            <div className="space-y-6">
+              <p className="text-espresso/70">
+                عندك فكرة أو مشروع؟ راسلني عبر النموذج أو مباشرةً:
+              </p>
+              {settings?.email && (
+                <a
+                  href={`mailto:${settings.email}`}
+                  className="flex items-center gap-3 text-espresso hover:text-gold-deep"
+                >
+                  <Mail className="h-5 w-5 text-gold-deep" />
+                  <span dir="ltr">{settings.email}</span>
+                </a>
+              )}
+              {settings?.whatsapp && (
+                <a
+                  href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 font-semibold text-espresso transition-transform hover:scale-[1.03]"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  تواصل عبر واتساب
+                </a>
+              )}
+              {socialEntries.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {socialEntries.map(([key, url]) => (
+                    <a
+                      key={key}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-full border border-espresso/15 px-4 py-2 text-sm font-medium text-espresso/75 transition-colors hover:bg-espresso/5"
+                    >
+                      {SOCIAL_LABELS[key] ?? key}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </Section>
       </main>
       <SiteFooter />
     </>

@@ -2,11 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 const NAV_LINKS = [
-  { href: "#work", label: "الأعمال" },
-  { href: "#services", label: "الخدمات" },
-  { href: "#about", label: "عنّي" },
-  { href: "#voice", label: "التعليق الصوتي" },
-  { href: "#contact", label: "تواصل" },
+  { href: "/#work", label: "الأعمال" },
+  { href: "/#services", label: "الخدمات" },
+  { href: "/#about", label: "عنّي" },
+  { href: "/#voice", label: "التعليق الصوتي" },
+  { href: "/#contact", label: "تواصل" },
 ];
 
 export function SiteHeader() {
@@ -40,7 +40,7 @@ export function SiteHeader() {
 
         {/* زر التواصل */}
         <Link
-          href="#contact"
+          href="/#contact"
           className="hidden rounded-full bg-espresso px-5 py-2.5 text-sm font-semibold text-cream transition-transform hover:scale-[1.03] sm:inline-flex"
         >
           لنعمل معًا
