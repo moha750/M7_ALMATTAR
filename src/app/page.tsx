@@ -1,9 +1,16 @@
+import Image from "next/image";
+import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Hero } from "@/components/hero";
 import { SiteFooter } from "@/components/site-footer";
 import { DISCIPLINES } from "@/lib/disciplines";
-import { getCategories, getSiteSettings } from "@/lib/queries";
+import {
+  getCategories,
+  getSiteSettings,
+  getPublishedProjects,
+} from "@/lib/queries";
 import { resolveIcon } from "@/lib/icons";
+import { publicUrl } from "@/lib/storage";
 import type { LucideIcon } from "lucide-react";
 
 type Craft = {
@@ -50,9 +57,10 @@ function PlaceholderSection({
 
 export default async function Home() {
   // قراءة من Supabase (مع تراجع آمن إلى البيانات الثابتة إن لم تتوفّر)
-  const [categories, settings] = await Promise.all([
+  const [categories, settings, projects] = await Promise.all([
     getCategories(),
     getSiteSettings(),
+    getPublishedProjects(),
   ]);
 
   const crafts: Craft[] =
@@ -71,6 +79,9 @@ export default async function Home() {
           Icon: d.icon,
           color: d.color,
         }));
+
+  const craftLabel = (slug: string) =>
+    crafts.find((c) => c.slug === slug)?.title ?? slug;
 
   return (
     <>
@@ -108,10 +119,66 @@ export default async function Home() {
         </PlaceholderSection>
 
         <PlaceholderSection id="work" eyebrow="مختارات" title="معرض الأعمال">
-          <p className="text-espresso/70">
-            قريبًا — شبكة أعمال قابلة للتصفية حسب التخصص، تُدار بالكامل من لوحة
-            التحكم. (المرحلة ٣)
-          </p>
+          {projects.length > 0 ? (
+            <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {projects.map((p) => {
+                const cover = publicUrl(p.cover_path);
+                const Wrapper = p.project_url ? "a" : "div";
+                return (
+                  <li key={p.id}>
+                    <Wrapper
+                      {...(p.project_url
+                        ? {
+                            href: p.project_url,
+                            target: "_blank",
+                            rel: "noopener noreferrer",
+                          }
+                        : {})}
+                      className="group block overflow-hidden rounded-2xl border border-espresso/10 bg-parchment transition-shadow hover:shadow-lg"
+                    >
+                      <div className="relative aspect-[4/3] overflow-hidden bg-cream">
+                        {cover ? (
+                          <Image
+                            src={cover}
+                            alt={p.title_ar}
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-espresso/30">
+                            بلا غلاف
+                          </div>
+                        )}
+                        {p.is_featured && (
+                          <span className="absolute end-3 top-3 rounded-full bg-gold px-2.5 py-1 text-xs font-semibold text-espresso">
+                            مميّز
+                          </span>
+                        )}
+                      </div>
+                      <div className="p-5">
+                        <span className="font-[family-name:var(--font-tech)] text-xs font-medium tracking-wide text-gold-deep">
+                          {craftLabel(p.category)}
+                        </span>
+                        <h3 className="mt-1.5 font-[family-name:var(--font-heading)] text-lg font-bold">
+                          {p.title_ar}
+                        </h3>
+                        {p.summary_ar && (
+                          <p className="mt-1 line-clamp-2 text-sm text-espresso/65">
+                            {p.summary_ar}
+                          </p>
+                        )}
+                      </div>
+                    </Wrapper>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="text-espresso/70">
+              قريبًا — تُضاف الأعمال من لوحة التحكم لتظهر هنا تلقائيًّا.
+            </p>
+          )}
         </PlaceholderSection>
 
         <PlaceholderSection
