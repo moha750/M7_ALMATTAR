@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, Download } from "lucide-react";
 import { DISCIPLINES } from "@/lib/disciplines";
 
-export function Hero() {
+export function Hero({ bio }: { bio?: string | null }) {
   return (
     <section className="grain relative overflow-hidden bg-cream">
       {/* توهّج ذهبي ناعم في الخلفية */}
@@ -31,9 +31,8 @@ export function Hero() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-lg text-espresso/75 lg:mx-0">
-            أصمّم، وأُحرّك، وأروي بصوتي. حِسٌّ إبداعي واحد يجمع التصميم الجرافيكي
-            والمونتاج والموشن جرافيك والبرمجة والتعليق الصوتي — لأحوّل فكرتك إلى
-            أثرٍ يُرى ويُسمع.
+            {bio ??
+              "أصمّم، وأُحرّك، وأروي بصوتي. حِسٌّ إبداعي واحد يجمع التصميم الجرافيكي والمونتاج والموشن جرافيك والبرمجة والتعليق الصوتي — لأحوّل فكرتك إلى أثرٍ يُرى ويُسمع."}
           </p>
 
           {/* سويتشر التخصصات */}

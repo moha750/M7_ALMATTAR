@@ -2,6 +2,17 @@ import { SiteHeader } from "@/components/site-header";
 import { Hero } from "@/components/hero";
 import { SiteFooter } from "@/components/site-footer";
 import { DISCIPLINES } from "@/lib/disciplines";
+import { getCategories, getSiteSettings } from "@/lib/queries";
+import { resolveIcon } from "@/lib/icons";
+import type { LucideIcon } from "lucide-react";
+
+type Craft = {
+  slug: string;
+  title: string;
+  tagline: string;
+  Icon: LucideIcon;
+  color: string;
+};
 
 /** قسم نائب مؤقت — يُستبدل بالمحتوى الكامل في المرحلة الثالثة */
 function PlaceholderSection({
@@ -37,17 +48,40 @@ function PlaceholderSection({
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  // قراءة من Supabase (مع تراجع آمن إلى البيانات الثابتة إن لم تتوفّر)
+  const [categories, settings] = await Promise.all([
+    getCategories(),
+    getSiteSettings(),
+  ]);
+
+  const crafts: Craft[] =
+    categories.length > 0
+      ? categories.map((c) => ({
+          slug: c.slug,
+          title: c.title_ar,
+          tagline: c.description_ar ?? "",
+          Icon: resolveIcon(c.icon),
+          color: c.color ?? "var(--color-gold)",
+        }))
+      : DISCIPLINES.map((d) => ({
+          slug: d.slug,
+          title: d.title,
+          tagline: d.tagline,
+          Icon: d.icon,
+          color: d.color,
+        }));
+
   return (
     <>
       <SiteHeader />
       <main className="flex-1">
-        <Hero />
+        <Hero bio={settings?.bio_ar} />
 
         <PlaceholderSection id="services" eyebrow="ما أقدّمه" title="خمسُ حِرَف">
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {DISCIPLINES.map((d) => {
-              const Icon = d.icon;
+            {crafts.map((d) => {
+              const Icon = d.Icon;
               return (
                 <li
                   key={d.slug}
@@ -55,7 +89,11 @@ export default function Home() {
                 >
                   <span
                     className="inline-flex h-11 w-11 items-center justify-center rounded-xl"
-                    style={{ backgroundColor: "color-mix(in srgb, var(--pulse) 16%, transparent)", ["--pulse" as string]: d.color }}
+                    style={{
+                      backgroundColor:
+                        "color-mix(in srgb, var(--pulse) 16%, transparent)",
+                      ["--pulse" as string]: d.color,
+                    }}
                   >
                     <Icon className="h-5 w-5" style={{ color: d.color }} />
                   </span>
@@ -101,8 +139,8 @@ export default function Home() {
 
         <PlaceholderSection id="about" eyebrow="من أنا" title="نبذة عنّي">
           <p className="max-w-2xl text-espresso/70">
-            قريبًا — قصة شخصية دافئة مع الصورة الكاملة بأسلوب يكشف النص تدريجيًا
-            عند التمرير. (المرحلة ٣)
+            {settings?.bio_ar ??
+              "قريبًا — قصة شخصية دافئة مع الصورة الكاملة بأسلوب يكشف النص تدريجيًا عند التمرير. (المرحلة ٣)"}
           </p>
         </PlaceholderSection>
 
