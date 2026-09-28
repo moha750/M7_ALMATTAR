@@ -44,13 +44,9 @@ create table if not exists public.site_settings (
   id            smallint primary key default 1,
   name_ar       text not null default 'محمد بن إسماعيل',
   title_ar      text default 'مُبدِعٌ واحد، خمسُ حِرَف',
-  bio_ar        text,
-  avatar_path   text,
   email         text,
   whatsapp      text,
   socials       jsonb not null default '{}'::jsonb,
-  showreel_url  text,
-  voicereel_url text,
   cv_url        text,
   updated_at    timestamptz not null default now(),
   constraint site_settings_singleton check (id = 1)

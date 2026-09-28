@@ -41,17 +41,20 @@ export async function signOut() {
 // ---------------------------------------------------------------------------
 export async function saveProject(formData: FormData) {
   const id = str(formData, "id");
+  const newId = str(formData, "new_id");
   const title_ar = str(formData, "title_ar");
   if (!title_ar) throw new Error("العنوان مطلوب");
 
   const fields = {
     title_ar,
-    slug: str(formData, "slug") ?? slugify(title_ar),
+    slug: slugify(str(formData, "slug") ?? title_ar),
     category: (str(formData, "category") ?? "graphic") as Discipline,
     summary_ar: str(formData, "summary_ar"),
     description_ar: str(formData, "description_ar"),
     client_name: str(formData, "client_name"),
     project_url: str(formData, "project_url"),
+    // الصورة تُرفع من المتصفّح مباشرةً إلى التخزين، ونستقبل مسارها فقط
+    cover_path: str(formData, "cover_path"),
     is_published: bool(formData, "is_published"),
     is_featured: bool(formData, "is_featured"),
     sort_order: Number(str(formData, "sort_order") ?? "0") || 0,
@@ -59,34 +62,15 @@ export async function saveProject(formData: FormData) {
 
   const supabase = await createClient();
 
-  let projectId = id;
   if (id) {
     const { error } = await supabase.from("projects").update(fields).eq("id", id);
     if (error) throw new Error(error.message);
   } else {
-    const { data, error } = await supabase
+    // معرّف مُولّد من العميل ليطابق مجلد الرفع؛ وإلا تتكفّل قاعدة البيانات به
+    const { error } = await supabase
       .from("projects")
-      .insert(fields)
-      .select("id")
-      .single();
+      .insert({ ...fields, ...(newId ? { id: newId } : {}) });
     if (error) throw new Error(error.message);
-    projectId = data.id;
-  }
-
-  // رفع صورة الغلاف إن وُجدت
-  const cover = formData.get("cover");
-  if (cover instanceof File && cover.size > 0 && projectId) {
-    const ext = (cover.name.split(".").pop() || "jpg").toLowerCase();
-    const path = `projects/${projectId}/cover-${crypto.randomUUID().slice(0, 8)}.${ext}`;
-    const { error: upErr } = await supabase.storage
-      .from("images")
-      .upload(path, cover, { contentType: cover.type, upsert: true });
-    if (upErr) throw new Error("فشل رفع الصورة: " + upErr.message);
-    const { error: setErr } = await supabase
-      .from("projects")
-      .update({ cover_path: path })
-      .eq("id", projectId);
-    if (setErr) throw new Error(setErr.message);
   }
 
   revalidatePath("/admin/projects");
@@ -144,13 +128,10 @@ export async function updateSettings(formData: FormData) {
   const { error } = await supabase
     .from("site_settings")
     .update({
-      name_ar: str(formData, "name_ar") ?? "محمد بن إسماعيل",
+      name_ar: str(formData, "name_ar") ?? "محمد المطر",
       title_ar: str(formData, "title_ar"),
-      bio_ar: str(formData, "bio_ar"),
       email: str(formData, "email"),
       whatsapp: str(formData, "whatsapp"),
-      showreel_url: str(formData, "showreel_url"),
-      voicereel_url: str(formData, "voicereel_url"),
       socials,
     })
     .eq("id", 1);

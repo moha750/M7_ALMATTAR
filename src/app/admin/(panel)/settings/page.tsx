@@ -24,7 +24,7 @@ export default async function SettingsPage() {
         إعدادات الموقع
       </h1>
       <p className="mb-6 text-espresso/60">
-        تتحكّم هذه الحقول بالنبذة وبيانات التواصل في الواجهة العامة.
+        تتحكّم هذه الحقول ببيانات التواصل في الواجهة العامة.
       </p>
 
       <form action={updateSettings} className="space-y-6">
@@ -36,15 +36,6 @@ export default async function SettingsPage() {
           <div>
             <label className={labelCls}>الشعار/العنوان</label>
             <input name="title_ar" defaultValue={s?.title_ar ?? ""} className={field} />
-          </div>
-          <div className="sm:col-span-2">
-            <label className={labelCls}>النبذة</label>
-            <textarea
-              name="bio_ar"
-              rows={4}
-              defaultValue={s?.bio_ar ?? ""}
-              className={field}
-            />
           </div>
           <div>
             <label className={labelCls}>البريد الإلكتروني</label>
@@ -64,26 +55,6 @@ export default async function SettingsPage() {
               defaultValue={s?.whatsapp ?? ""}
               className={`${field} text-start`}
               placeholder="9665xxxxxxxx"
-            />
-          </div>
-          <div>
-            <label className={labelCls}>رابط الشوريل</label>
-            <input
-              name="showreel_url"
-              dir="ltr"
-              defaultValue={s?.showreel_url ?? ""}
-              className={`${field} text-start`}
-              placeholder="https://..."
-            />
-          </div>
-          <div>
-            <label className={labelCls}>رابط ريل التعليق الصوتي</label>
-            <input
-              name="voicereel_url"
-              dir="ltr"
-              defaultValue={s?.voicereel_url ?? ""}
-              className={`${field} text-start`}
-              placeholder="https://..."
             />
           </div>
         </div>

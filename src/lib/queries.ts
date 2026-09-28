@@ -53,13 +53,23 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
   return data;
 }
 
-/** مشروع منشور واحد عبر الـ slug (لصفحة Case Study). */
+/** مشروع منشور واحد عبر الـ slug (لصفحة Case Study).
+ *  يطابق بصرف النظر عن تطبيع Unicode (NFC/NFD) لأنّ المتصفّح قد يمرّر الـ slug
+ *  العربي بصيغة مختلفة عن المخزَّنة. */
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
+  // هذه النسخة من Next لا تفكّ ترميز معامل المسار تلقائيًّا، فنفكّه يدويًّا.
+  let s = slug;
+  try {
+    s = decodeURIComponent(slug);
+  } catch {
+    /* slug غير مُرمَّز */
+  }
   const supabase = await createClient();
+  const candidates = [...new Set([s, s.normalize("NFC"), s.normalize("NFD")])];
   const { data, error } = await supabase
     .from("projects")
     .select("*")
-    .eq("slug", slug)
+    .in("slug", candidates)
     .eq("is_published", true)
     .maybeSingle();
   if (error) {

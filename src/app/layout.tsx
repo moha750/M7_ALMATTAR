@@ -1,33 +1,12 @@
 import type { Metadata } from "next";
-import {
-  Aref_Ruqaa,
-  Tajawal,
-  IBM_Plex_Sans_Arabic,
-  Space_Grotesk,
-} from "next/font/google";
+import localFont from "next/font/local";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-// عناوين كبرى — رقعة عربية حرّة تناغم انسيابية الشعار
-const aref = Aref_Ruqaa({
-  subsets: ["arabic"],
-  weight: ["400", "700"],
-  variable: "--font-aref",
-  display: "swap",
-});
-
-// عناوين فرعية — هندسي دافئ واضح
-const tajawal = Tajawal({
-  subsets: ["arabic"],
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-tajawal",
-  display: "swap",
-});
-
-// المتن والأوصاف ولوحة التحكم — وضوح عالٍ في الأحجام الصغيرة
-const plex = IBM_Plex_Sans_Arabic({
-  subsets: ["arabic"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-plex",
+// الخط الأساسي لكامل الموقع
+const mandisaa = localFont({
+  src: "./fonts/mandisaa.ttf",
+  variable: "--font-mandisaa",
   display: "swap",
 });
 
@@ -41,11 +20,11 @@ const grotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: "محمد بن إسماعيل — مُبدِعٌ واحد، خمسُ حِرَف",
-    template: "%s · محمد بن إسماعيل",
+    default: "محمد المطر — مُبدِعٌ واحد، خمسُ حِرَف",
+    template: "%s · محمد المطر",
   },
   description:
-    "بورتفوليو محمد بن إسماعيل: تصميم جرافيك، مونتاج، موشن جرافيك، برمجة، وتعليق صوتي. حِسٌّ إبداعي واحد يتجلّى في خمس حِرَف.",
+    "بورتفوليو محمد المطر: تصميم جرافيك، مونتاج، موشن جرافيك، برمجة، وتعليق صوتي. حِسٌّ إبداعي واحد يتجلّى في خمس حِرَف.",
   keywords: [
     "بورتفوليو",
     "تصميم جرافيك",
@@ -57,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "ar_SA",
-    title: "محمد بن إسماعيل — مُبدِعٌ واحد، خمسُ حِرَف",
+    title: "محمد المطر — مُبدِعٌ واحد، خمسُ حِرَف",
     description:
       "حِسٌّ إبداعي واحد يتجلّى في خمس حِرَف: جرافيك، مونتاج، موشن، برمجة، وتعليق صوتي.",
   },
@@ -72,9 +51,11 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`${aref.variable} ${tajawal.variable} ${plex.variable} ${grotesk.variable} h-full antialiased`}
+      className={`${mandisaa.variable} ${grotesk.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className={`${mandisaa.className} min-h-full flex flex-col`}>
+        {children}
+      </body>
     </html>
   );
 }

@@ -8,13 +8,9 @@ type SiteSettingsRow = {
   id: number;
   name_ar: string;
   title_ar: string | null;
-  bio_ar: string | null;
-  avatar_path: string | null;
   email: string | null;
   whatsapp: string | null;
   socials: Record<string, string>;
-  showreel_url: string | null;
-  voicereel_url: string | null;
   cv_url: string | null;
   updated_at: string;
 };

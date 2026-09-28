@@ -17,12 +17,11 @@ on conflict (slug) do update set
   sort_order     = excluded.sort_order;
 
 -- إعدادات الموقع (الصف الوحيد)
-insert into public.site_settings (id, name_ar, title_ar, bio_ar, email, socials)
+insert into public.site_settings (id, name_ar, title_ar, email, socials)
 values (
   1,
-  'محمد بن إسماعيل',
+  'محمد المطر',
   'مُبدِعٌ واحد، خمسُ حِرَف',
-  'مبدع خليجي متعدّد التخصصات: أصمّم، وأُحرّك، وأروي بصوتي. حِسٌّ إبداعي واحد يجمع التصميم الجرافيكي والمونتاج والموشن جرافيك والبرمجة والتعليق الصوتي.',
   'mohammad.bin.ismael@gmail.com',
   '{}'::jsonb
 )

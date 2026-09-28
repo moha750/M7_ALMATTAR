@@ -1,4 +1,11 @@
-import { Palette, Film, Sparkles, Code, Mic, type LucideIcon } from "lucide-react";
+import {
+  PenTool,
+  Clapperboard,
+  Film,
+  CodeXml,
+  Mic,
+  type LucideIcon,
+} from "lucide-react";
 
 export type DisciplineSlug =
   | "graphic"
@@ -25,28 +32,28 @@ export const DISCIPLINES: Discipline[] = [
     slug: "graphic",
     title: "تصميم جرافيك",
     tagline: "هويات بصرية تُروى بلا كلمات",
-    icon: Palette,
+    icon: PenTool,
     color: "var(--color-craft-graphic)",
   },
   {
     slug: "editing",
     title: "مونتاج",
     tagline: "إيقاعٌ يمسك الأنفاس",
-    icon: Film,
+    icon: Clapperboard,
     color: "var(--color-craft-editing)",
   },
   {
     slug: "motion",
     title: "موشن جرافيك",
     tagline: "أفكارٌ تنبض وتتحرّك",
-    icon: Sparkles,
+    icon: Film,
     color: "var(--color-craft-motion)",
   },
   {
     slug: "code",
     title: "برمجة",
     tagline: "تجارب رقمية تعمل بإتقان",
-    icon: Code,
+    icon: CodeXml,
     color: "var(--color-craft-code)",
   },
   {

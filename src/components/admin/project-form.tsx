@@ -1,20 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
 import { useFormStatus } from "react-dom";
 import Image from "next/image";
 import { Loader2, Save, Upload } from "lucide-react";
 import { saveProject } from "@/app/admin/actions";
+import { createClient } from "@/lib/supabase/client";
 import type { Project } from "@/lib/database.types";
 
 type Cat = { slug: string; title: string };
 
-function SubmitButton() {
+function SubmitButton({ disabled }: { disabled?: boolean }) {
   const { pending } = useFormStatus();
   return (
     <button
       type="submit"
-      disabled={pending}
+      disabled={pending || disabled}
       className="inline-flex items-center gap-2 rounded-full bg-espresso px-6 py-3 font-semibold text-cream transition-transform hover:scale-[1.02] disabled:opacity-60"
     >
       {pending ? (
@@ -41,10 +42,59 @@ export function ProjectForm({
   currentCover?: string | null;
 }) {
   const [preview, setPreview] = useState<string | null>(currentCover ?? null);
+  const [coverPath, setCoverPath] = useState<string | null>(
+    project?.cover_path ?? null,
+  );
+  const [newId, setNewId] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const lastUpload = useRef<string | null>(null);
+
+  // رفع صورة الغلاف مباشرةً من المتصفّح إلى التخزين — يتجاوز حدّ 1MB على الـ Server Action
+  async function handleFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError(null);
+    setPreview(URL.createObjectURL(file));
+    setUploading(true);
+    try {
+      const supabase = createClient();
+
+      // مجلد ثابت للمشروع: معرّفه القائم، أو معرّف مُولّد للمشروع الجديد
+      let folder = project?.id ?? newId;
+      if (!folder) {
+        folder = crypto.randomUUID();
+        setNewId(folder);
+      }
+
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `projects/${folder}/cover-${crypto.randomUUID().slice(0, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("images")
+        .upload(path, file, { contentType: file.type, upsert: true });
+      if (upErr) throw new Error(upErr.message);
+
+      // تنظيف رفعة سابقة غير محفوظة ضمن هذه الجلسة
+      if (lastUpload.current && lastUpload.current !== path) {
+        await supabase.storage
+          .from("images")
+          .remove([lastUpload.current])
+          .catch(() => {});
+      }
+      lastUpload.current = path;
+      setCoverPath(path);
+    } catch (err) {
+      setError("فشل رفع الصورة: " + (err instanceof Error ? err.message : ""));
+    } finally {
+      setUploading(false);
+    }
+  }
 
   return (
     <form action={saveProject} className="space-y-6">
       {project && <input type="hidden" name="id" value={project.id} />}
+      {!project && <input type="hidden" name="new_id" value={newId} />}
+      <input type="hidden" name="cover_path" value={coverPath ?? ""} />
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="sm:col-span-2">
@@ -151,22 +201,24 @@ export function ProjectForm({
                 unoptimized
               />
             )}
+            {uploading && (
+              <div className="absolute inset-0 grid place-items-center bg-espresso/40">
+                <Loader2 className="h-5 w-5 animate-spin text-cream" />
+              </div>
+            )}
           </div>
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-espresso/15 px-4 py-2.5 text-sm font-medium transition-colors hover:bg-espresso/5">
             <Upload className="h-4 w-4" />
             اختر صورة
             <input
               type="file"
-              name="cover"
               accept="image/*"
               className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) setPreview(URL.createObjectURL(f));
-              }}
+              onChange={handleFile}
             />
           </label>
         </div>
+        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       </div>
 
       {/* المفاتيح */}
@@ -191,7 +243,7 @@ export function ProjectForm({
         </label>
       </div>
 
-      <SubmitButton />
+      <SubmitButton disabled={uploading} />
     </form>
   );
 }

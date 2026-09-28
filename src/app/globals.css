@@ -20,12 +20,6 @@
   --color-craft-motion: #d98e44; /* موشن — برتقالي عنبري */
   --color-craft-code: #7c8a6a; /* برمجة — زيتوني هادئ */
   --color-craft-voice: #a8744f; /* تعليق صوتي — بنّي دافئ */
-
-  /* --- الخطوط (المتغيّرات تأتي من next/font في layout.tsx) --- */
-  --font-display: var(--font-aref), "Aref Ruqaa", serif; /* عناوين كبرى */
-  --font-heading: var(--font-tajawal), "Tajawal", sans-serif; /* عناوين فرعية */
-  --font-sans: var(--font-plex), "IBM Plex Sans Arabic", sans-serif; /* المتن */
-  --font-tech: var(--font-grotesk), "Space Grotesk", monospace; /* لاتيني/تقني */
 }
 
 /* ===========================================================================
@@ -34,6 +28,13 @@
 :root {
   --background: var(--color-cream);
   --foreground: var(--color-espresso);
+
+  /* الخطوط (المتغيّرات تأتي من next/font) — معرّفة في :root لتُطبَّق دائمًا.
+     خط mandisaa لكامل الموقع، وSpace Grotesk للاتيني/الأرقام. */
+  --font-display: var(--font-mandisaa), system-ui, sans-serif;
+  --font-heading: var(--font-mandisaa), system-ui, sans-serif;
+  --font-sans: var(--font-mandisaa), system-ui, sans-serif;
+  --font-tech: var(--font-grotesk), "Space Grotesk", monospace;
 }
 
 @layer base {

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Mail, MessageCircle } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { Hero } from "@/components/hero";
@@ -6,8 +5,6 @@ import { SiteFooter } from "@/components/site-footer";
 import { Section } from "@/components/section";
 import { Reveal } from "@/components/reveal";
 import { WorkGallery } from "@/components/sections/work-gallery";
-import { Showreel } from "@/components/sections/showreel";
-import { VoiceReel } from "@/components/sections/voice-reel";
 import { ContactForm } from "@/components/sections/contact-form";
 import { DISCIPLINES } from "@/lib/disciplines";
 import {
@@ -17,7 +14,6 @@ import {
   getTestimonials,
 } from "@/lib/queries";
 import { resolveIcon } from "@/lib/icons";
-import { publicUrl } from "@/lib/storage";
 import type { LucideIcon } from "lucide-react";
 
 type Craft = {
@@ -62,8 +58,6 @@ export default async function Home() {
           color: d.color,
         }));
 
-  const avatar = publicUrl(settings?.avatar_path) ?? "/brand/profile.jpg";
-  const bio = settings?.bio_ar;
   const socials = (settings?.socials ?? {}) as Record<string, string>;
   const socialEntries = Object.entries(socials).filter(([, v]) => v);
 
@@ -71,7 +65,7 @@ export default async function Home() {
     <>
       <SiteHeader />
       <main className="flex-1">
-        <Hero bio={bio} />
+        <Hero name={settings?.name_ar} />
 
         {/* التخصصات الخمسة */}
         <Section id="services" eyebrow="ما أقدّمه" title="خمسُ حِرَف">
@@ -118,37 +112,6 @@ export default async function Home() {
               قريبًا — تُضاف الأعمال من لوحة التحكم لتظهر هنا تلقائيًّا.
             </p>
           )}
-        </Section>
-
-        {/* الشوريل */}
-        <Section id="showreel" eyebrow="بانوراما" title="الشوريل" dark>
-          <Showreel url={settings?.showreel_url} />
-        </Section>
-
-        {/* ريل التعليق الصوتي */}
-        <Section id="voice" eyebrow="استمع" title="ريل التعليق الصوتي" dark>
-          <VoiceReel url={settings?.voicereel_url} />
-        </Section>
-
-        {/* نبذة عنّي */}
-        <Section id="about" eyebrow="من أنا" title="نبذة عنّي">
-          <Reveal>
-            <div className="grid items-center gap-8 sm:grid-cols-[260px_1fr]">
-              <div className="relative mx-auto aspect-[3/4] w-52 overflow-hidden rounded-2xl border border-gold/30 bg-parchment sm:mx-0 sm:w-full">
-                <Image
-                  src={avatar}
-                  alt={settings?.name_ar ?? "الصورة الشخصية"}
-                  fill
-                  sizes="260px"
-                  className="object-cover"
-                />
-              </div>
-              <p className="text-lg leading-loose text-espresso/80">
-                {bio ??
-                  "مبدع خليجي متعدّد التخصصات: أصمّم، وأُحرّك، وأروي بصوتي. حِسٌّ إبداعي واحد يجمع التصميم الجرافيكي والمونتاج والموشن جرافيك والبرمجة والتعليق الصوتي."}
-              </p>
-            </div>
-          </Reveal>
         </Section>
 
         {/* آراء العملاء */}

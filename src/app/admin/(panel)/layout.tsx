@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Logo } from "@/components/logo";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ExternalLink, LogOut } from "lucide-react";
@@ -28,13 +28,7 @@ export default async function PanelLayout({
       {/* الشريط الجانبي (يبدأ من اليمين في RTL) */}
       <aside className="section-dark sticky top-0 hidden h-dvh w-64 shrink-0 flex-col p-5 md:flex">
         <Link href="/admin" className="mb-8 flex items-center gap-2">
-          <Image
-            src="/brand/logo.png"
-            alt="الشعار"
-            width={120}
-            height={68}
-            className="h-9 w-auto"
-          />
+          <Logo className="h-9 w-auto" />
           <span className="text-sm font-semibold text-cream/80">لوحة التحكم</span>
         </Link>
 

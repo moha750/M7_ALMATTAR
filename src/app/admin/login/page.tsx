@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Logo } from "@/components/logo";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { LoginForm } from "./login-form";
@@ -17,14 +17,7 @@ export default async function LoginPage() {
     <main className="grain flex min-h-dvh items-center justify-center bg-cream px-6">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center text-center">
-          <Image
-            src="/brand/logo.png"
-            alt="الشعار"
-            width={140}
-            height={80}
-            priority
-            className="h-14 w-auto"
-          />
+          <Logo className="h-14 w-auto" />
           <h1 className="mt-5 font-[family-name:var(--font-heading)] text-2xl font-bold text-espresso">
             لوحة التحكم
           </h1>
