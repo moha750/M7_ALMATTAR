@@ -12,6 +12,10 @@ type SiteSettingsRow = {
   whatsapp: string | null;
   socials: Record<string, string>;
   cv_url: string | null;
+  // 0003
+  about_ar?: string | null;
+  voice_path?: string | null;
+  learning_now_ar?: string | null;
   updated_at: string;
 };
 
@@ -41,6 +45,14 @@ type ProjectRow = {
   sort_order: number;
   created_at: string;
   updated_at: string;
+  // 0003 — رحلة الفكرة
+  subtitle_ar?: string | null;
+  challenge_ar?: string | null;
+  idea_ar?: string | null;
+  execution_ar?: string | null;
+  roles_ar?: string[] | null;
+  sketch_path?: string | null;
+  video_url?: string | null;
 };
 
 type ProjectMediaRow = {
@@ -80,7 +92,30 @@ type ContactMessageRow = {
   name: string;
   email: string;
   message: string;
+  intent?: string | null;
   is_read: boolean;
+  created_at: string;
+};
+
+type SkillRow = {
+  id: string;
+  title_ar: string;
+  title_en: string | null;
+  is_learning: boolean;
+  sort_order: number;
+  created_at: string;
+};
+
+type ExperienceRow = {
+  id: string;
+  org_ar: string;
+  org_en: string | null;
+  role_ar: string | null;
+  role_en: string | null;
+  description_ar: string | null;
+  description_en: string | null;
+  period: string | null;
+  sort_order: number;
   created_at: string;
 };
 
@@ -147,9 +182,22 @@ export interface Database {
           name: string;
           email: string;
           message: string;
+          intent?: string | null;
           is_read?: boolean;
         };
         Update: Partial<ContactMessageRow>;
+        Relationships: [];
+      };
+      skills: {
+        Row: SkillRow;
+        Insert: Partial<SkillRow> & { title_ar: string };
+        Update: Partial<SkillRow>;
+        Relationships: [];
+      };
+      experiences: {
+        Row: ExperienceRow;
+        Insert: Partial<ExperienceRow> & { org_ar: string };
+        Update: Partial<ExperienceRow>;
         Relationships: [];
       };
     };
@@ -171,3 +219,5 @@ export type ProjectMedia = ProjectMediaRow;
 export type Service = ServiceRow;
 export type Testimonial = TestimonialRow;
 export type ContactMessage = ContactMessageRow;
+export type Skill = SkillRow;
+export type Experience = ExperienceRow;

@@ -39,6 +39,11 @@ export default async function MessagesPage() {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span className="font-semibold">{m.name}</span>
+                  {m.intent && (
+                    <span className="rounded-full bg-gold/20 px-2.5 py-0.5 text-xs font-medium text-gold-deep">
+                      {m.intent}
+                    </span>
+                  )}
                   <a
                     href={`mailto:${m.email}`}
                     dir="ltr"

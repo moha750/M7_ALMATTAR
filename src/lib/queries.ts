@@ -1,11 +1,18 @@
 import { createClient } from "@/lib/supabase/server";
 import type {
   Category,
+  Experience,
   Project,
   ProjectMedia,
   SiteSettings,
+  Skill,
   Testimonial,
 } from "@/lib/database.types";
+import {
+  FALLBACK_JOURNEYS,
+  journeyFromProject,
+  type Journey,
+} from "@/lib/journeys";
 
 /** التخصصات الخمسة من قاعدة البيانات (قراءة عامة عبر RLS). */
 export async function getCategories(): Promise<Category[]> {
@@ -109,4 +116,51 @@ export async function getTestimonials(): Promise<Testimonial[]> {
     return [];
   }
   return data ?? [];
+}
+
+/** المهارات (جدول 0003). يعيد [] إن لم يُطبَّق الترحيل بعد. */
+export async function getSkills(): Promise<Skill[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("skills")
+    .select("*")
+    .order("sort_order", { ascending: true });
+  if (error) return [];
+  return data ?? [];
+}
+
+/** المسيرة (جدول 0003). يعيد [] إن لم يُطبَّق الترحيل بعد. */
+export async function getExperiences(): Promise<Experience[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("experiences")
+    .select("*")
+    .order("sort_order", { ascending: true });
+  if (error) return [];
+  return data ?? [];
+}
+
+/** الرحلات المعروضة: من قاعدة البيانات، أو الافتراضية حين تكون فارغة. */
+export async function getJourneys(): Promise<Journey[]> {
+  const projects = await getPublishedProjects();
+  if (projects.length === 0) return FALLBACK_JOURNEYS;
+  return projects.map(journeyFromProject);
+}
+
+/** رحلة واحدة (صفحة العمل): من قاعدة البيانات، أو الافتراضية بالـ slug نفسه. */
+export async function getJourneyBySlug(
+  slug: string,
+): Promise<{ journey: Journey; project: Project | null } | null> {
+  const project = await getProjectBySlug(slug);
+  if (project) return { journey: journeyFromProject(project), project };
+  let s = slug;
+  try {
+    s = decodeURIComponent(slug);
+  } catch {
+    /* غير مُرمَّز */
+  }
+  const fb = FALLBACK_JOURNEYS.find(
+    (j) => j.slug.normalize("NFC") === s.normalize("NFC"),
+  );
+  return fb ? { journey: fb, project: null } : null;
 }

@@ -55,6 +55,17 @@ export async function saveProject(formData: FormData) {
     project_url: str(formData, "project_url"),
     // الصورة تُرفع من المتصفّح مباشرةً إلى التخزين، ونستقبل مسارها فقط
     cover_path: str(formData, "cover_path"),
+    // رحلة الفكرة (0003)
+    subtitle_ar: str(formData, "subtitle_ar"),
+    challenge_ar: str(formData, "challenge_ar"),
+    idea_ar: str(formData, "idea_ar"),
+    execution_ar: str(formData, "execution_ar"),
+    roles_ar: (str(formData, "roles_ar") ?? "")
+      .split(/[،,]/)
+      .map((r) => r.trim())
+      .filter(Boolean),
+    sketch_path: str(formData, "sketch_path"),
+    video_url: str(formData, "video_url"),
     is_published: bool(formData, "is_published"),
     is_featured: bool(formData, "is_featured"),
     sort_order: Number(str(formData, "sort_order") ?? "0") || 0,
@@ -133,6 +144,11 @@ export async function updateSettings(formData: FormData) {
       email: str(formData, "email"),
       whatsapp: str(formData, "whatsapp"),
       socials,
+      // 0003
+      about_ar: str(formData, "about_ar"),
+      learning_now_ar: str(formData, "learning_now_ar"),
+      cv_url: str(formData, "cv_url"),
+      voice_path: str(formData, "voice_path"),
     })
     .eq("id", 1);
   if (error) throw new Error(error.message);

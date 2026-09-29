@@ -21,7 +21,7 @@ insert into public.site_settings (id, name_ar, title_ar, email, socials)
 values (
   1,
   'محمد المطر',
-  'مُبدِعٌ واحد، خمسُ حِرَف',
+  'أعيش الفكرة',
   'mohammad.bin.ismael@gmail.com',
   '{}'::jsonb
 )

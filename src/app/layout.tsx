@@ -1,16 +1,36 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { Space_Grotesk } from "next/font/google";
+import {
+  Aref_Ruqaa,
+  IBM_Plex_Sans_Arabic,
+  Space_Grotesk,
+} from "next/font/google";
 import "./globals.css";
 
-// الخط الأساسي لكامل الموقع
+// خط العناوين — مانديسا
 const mandisaa = localFont({
   src: "./fonts/mandisaa.ttf",
   variable: "--font-mandisaa",
   display: "swap",
 });
 
-// اللاتيني المرافق — أرقام وروابط ومصطلحات تقنية
+// خط اليد — للملاحظات والهوامش (رقعة)
+const ruqaa = Aref_Ruqaa({
+  subsets: ["arabic"],
+  weight: ["400", "700"],
+  variable: "--font-ruqaa",
+  display: "swap",
+});
+
+// خط المتن — وضوح عالٍ في الأحجام الصغيرة
+const plex = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-plex",
+  display: "swap",
+});
+
+// اللاتيني التقني
 const grotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
@@ -18,28 +38,37 @@ const grotesk = Space_Grotesk({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://m7-almattar.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "محمد المطر — مُبدِعٌ واحد، خمسُ حِرَف",
+    default: "محمد المطر — أعيش الفكرة",
     template: "%s · محمد المطر",
   },
   description:
-    "بورتفوليو محمد المطر: تصميم جرافيك، مونتاج، موشن جرافيك، برمجة، وتعليق صوتي. حِسٌّ إبداعي واحد يتجلّى في خمس حِرَف.",
+    "محمد المطر: آخذ الفكرة من أول شرارة، وأحلّق بها حتى تنضج، ثم أنفّذها بنفسي: تصميم، وبرمجة، وحركة، وصوت.",
   keywords: [
-    "بورتفوليو",
+    "محمد المطر",
+    "معرض أعمال",
     "تصميم جرافيك",
     "مونتاج",
     "موشن جرافيك",
     "برمجة",
     "تعليق صوتي",
+    "الأحساء",
   ],
   openGraph: {
     type: "website",
     locale: "ar_SA",
-    title: "محمد المطر — مُبدِعٌ واحد، خمسُ حِرَف",
+    title: "محمد المطر — أعيش الفكرة",
     description:
-      "حِسٌّ إبداعي واحد يتجلّى في خمس حِرَف: جرافيك، مونتاج، موشن، برمجة، وتعليق صوتي.",
+      "آخذ الفكرة من أول شرارة، وأحلّق بها حتى تنضج، ثم أنفّذها بنفسي.",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a1c30",
 };
 
 export default function RootLayout({
@@ -51,11 +80,9 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`${mandisaa.variable} ${grotesk.variable} h-full antialiased`}
+      className={`${mandisaa.variable} ${ruqaa.variable} ${plex.variable} ${grotesk.variable} h-full antialiased`}
     >
-      <body className={`${mandisaa.className} min-h-full flex flex-col`}>
-        {children}
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

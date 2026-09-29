@@ -1,63 +1,79 @@
 @import "tailwindcss";
 
 /* ===========================================================================
-   نظام التصميم — «الهوية الواحدة بخمسة أوجه»
-   ألوان مستوحاة مباشرةً من شعار العميل الذهبي وصورته والخلفية الكريمية.
+   نظام التصميم — «أعيش الفكرة» (اتجاه التحليق)
+   كحلي ليلي عميق، والذهبي يُستخدم كضوء: لمعة وخيط ومسار.
    =========================================================================== */
 @theme {
-  /* --- لوحة الألوان --- */
-  --color-gold: #d2a45c; /* الذهبي العتيق (الشعار، الأكسنت، الأزرار) */
-  --color-gold-deep: #b07e3a; /* كراميل محروق (تدرّجات، نص ذهبي صغير) */
-  --color-cream: #e9e3d7; /* الكريمي الدافئ (خلفية فاتحة أساسية) */
-  --color-parchment: #f4efe6; /* كريمي فاتح (بطاقات، أسطح مرتفعة) */
-  --color-espresso: #1c1a17; /* فحمي بنّي (النص، خلفية الوضع الداكن) */
-  --color-walnut: #2a2621; /* بنّي دخاني (أسطح داكنة مرفوعة، حدود) */
-  --color-taupe: #8a8073; /* رمادي طيني (نص ثانوي، تواريخ) */
+  /* --- الهوية الجديدة --- */
+  --color-night: #0a1c30; /* الخلفية الأساسية */
+  --color-midnight: #0e2a47; /* أسطح مرفوعة */
+  --color-abyss: #081a2e; /* نهاية التدرّجات */
+  --color-harbor: #13365a; /* بداية التدرّجات */
+  --color-ivory: #f2ebdd; /* النص الأساسي */
+  --color-gilt: #d8a850; /* الذهبي — لون الشعار */
+  --color-gilt-light: #f0d38f; /* ذهبي فاتح للملاحظات */
+  --color-gilt-deep: #a87b35; /* ذهبي عميق للتدرّجات */
 
-  /* --- نبضات التخصصات الخمسة (ألوان فرعية متناغمة مع الدفء) --- */
-  --color-craft-graphic: #d2a45c; /* جرافيك — ذهبي */
-  --color-craft-editing: #c0703c; /* مونتاج — نحاسي محروق */
-  --color-craft-motion: #d98e44; /* موشن — برتقالي عنبري */
-  --color-craft-code: #7c8a6a; /* برمجة — زيتوني هادئ */
-  --color-craft-voice: #a8744f; /* تعليق صوتي — بنّي دافئ */
+  /* --- ألوان لوحة التحكم (فاتحة) --- */
+  --color-gold: #d2a45c;
+  --color-gold-deep: #9a6f2e;
+  --color-cream: #efe9dd;
+  --color-parchment: #f7f3eb;
+  --color-espresso: #0e2a47;
+  --color-walnut: #1c3a5c;
+  --color-taupe: #6d7888;
+
+  /* --- ألوان التخصصات (للوحة التحكم) --- */
+  --color-craft-graphic: #d8a850;
+  --color-craft-editing: #c0703c;
+  --color-craft-motion: #d98e44;
+  --color-craft-code: #7c8a6a;
+  --color-craft-voice: #a8744f;
+}
+
+/* الخطوط تأتي من next/font كمتغيّرات على <html> */
+@theme inline {
+  --font-display: var(--font-mandisaa), var(--font-plex), system-ui, sans-serif;
+  --font-hand: var(--font-ruqaa), serif;
+  --font-sans: var(--font-plex), system-ui, sans-serif;
+  --font-tech: var(--font-grotesk), ui-monospace, monospace;
 }
 
 /* ===========================================================================
    الأساس
    =========================================================================== */
 :root {
-  --background: var(--color-cream);
-  --foreground: var(--color-espresso);
-
-  /* الخطوط (المتغيّرات تأتي من next/font) — معرّفة في :root لتُطبَّق دائمًا.
-     خط mandisaa لكامل الموقع، وSpace Grotesk للاتيني/الأرقام. */
-  --font-display: var(--font-mandisaa), system-ui, sans-serif;
-  --font-heading: var(--font-mandisaa), system-ui, sans-serif;
-  --font-sans: var(--font-mandisaa), system-ui, sans-serif;
-  --font-tech: var(--font-grotesk), "Space Grotesk", monospace;
+  /* متغيّرات قديمة تستخدمها لوحة التحكم */
+  --font-heading: var(--font-mandisaa), var(--font-plex), system-ui, sans-serif;
+  --font-display: var(--font-mandisaa), var(--font-plex), system-ui, sans-serif;
+  --font-tech: var(--font-grotesk), ui-monospace, monospace;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 96px;
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
     font-family: var(--font-sans);
-    font-size: 1.125rem; /* 18px أساس مريح للعربية */
+    font-size: 1.0625rem;
     line-height: 1.85;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background-color: var(--color-gold);
-    color: var(--color-espresso);
+    background-color: var(--color-gilt);
+    color: var(--color-night);
   }
 
-  /* احترام تفضيل تقليل الحركة */
+  :focus-visible {
+    outline: 2px solid var(--color-gilt);
+    outline-offset: 3px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -66,37 +82,69 @@
 }
 
 /* ===========================================================================
-   أدوات مساعدة للهوية
+   أدوات الهوية
    =========================================================================== */
 @layer utilities {
+  /* حاوية الصفحة */
+  .shell {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .shell {
+      padding-inline: 2rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .shell {
+      padding-inline: 72px;
+    }
+  }
+
+  /* شبكة المخطّط الخفيفة */
+  .blueprint {
+    background-color: var(--color-night);
+    background-image:
+      linear-gradient(rgba(216, 168, 80, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(216, 168, 80, 0.055) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: center top;
+  }
+
+  /* لوحة «النتيجة» المصقولة */
+  .panel-result {
+    background:
+      radial-gradient(
+        ellipse 60% 80% at 50% 100%,
+        rgba(216, 168, 80, 0.2) 0%,
+        rgba(216, 168, 80, 0) 70%
+      ),
+      linear-gradient(160deg, var(--color-harbor) 0%, var(--color-abyss) 100%);
+  }
+
+  /* --- توافق مع لوحة التحكم --- */
+  .section-dark {
+    background-color: var(--color-midnight);
+    color: var(--color-cream);
+  }
+  .grain {
+    position: relative;
+  }
+
   /* نص بتدرّج ذهبي */
-  .text-gold-gradient {
+  .text-gilt-gradient {
     background: linear-gradient(
-      135deg,
-      var(--color-gold) 0%,
-      var(--color-gold-deep) 100%
+      100deg,
+      var(--color-gilt-deep) 0%,
+      var(--color-gilt) 30%,
+      #f7e3ae 50%,
+      var(--color-gilt) 70%,
+      var(--color-gilt-deep) 100%
     );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-  }
-
-  /* قسم داكن غامر (الشوريل + التعليق الصوتي) */
-  .section-dark {
-    background-color: var(--color-espresso);
-    color: var(--color-cream);
-  }
-
-  /* حبيبات خفيفة تعطي إحساس الورق/الفيلم */
-  .grain {
-    position: relative;
-  }
-  .grain::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }

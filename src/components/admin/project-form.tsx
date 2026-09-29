@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Loader2, Save, Upload } from "lucide-react";
 import { saveProject } from "@/app/admin/actions";
 import { createClient } from "@/lib/supabase/client";
+import { FileUploadField } from "@/components/admin/file-upload-field";
 import type { Project } from "@/lib/database.types";
 
 type Cat = { slug: string; title: string };
@@ -142,6 +143,52 @@ export function ProjectForm({
             className={field}
             placeholder="جملة تختصر المشروع"
           />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className={labelCls}>سطر تعريفي (يظهر تحت العنوان)</label>
+          <input
+            name="subtitle_ar"
+            defaultValue={project?.subtitle_ar ?? ""}
+            className={field}
+            placeholder="مثال: حملة «ما فاتك شي» لنادي أدِيب"
+          />
+        </div>
+
+        <div className="sm:col-span-2 rounded-2xl border border-espresso/10 p-5">
+          <p className="mb-4 text-sm font-semibold text-espresso">رحلة الفكرة</p>
+          <div className="grid gap-4">
+            <div>
+              <label className={labelCls}>التحدي</label>
+              <textarea name="challenge_ar" rows={2} defaultValue={project?.challenge_ar ?? ""} className={field} placeholder="ما المشكلة أو السؤال الذي بدأت منه؟" />
+            </div>
+            <div>
+              <label className={labelCls}>الفكرة</label>
+              <textarea name="idea_ar" rows={2} defaultValue={project?.idea_ar ?? ""} className={field} placeholder="ما الفكرة التي حلّقت بها؟" />
+            </div>
+            <div>
+              <label className={labelCls}>التنفيذ</label>
+              <textarea name="execution_ar" rows={3} defaultValue={project?.execution_ar ?? ""} className={field} placeholder="كيف نفّذتها؟ ما الأدوات والتفاصيل؟" />
+            </div>
+            <div>
+              <label className={labelCls}>أدوارك (افصل بينها بفاصلة)</label>
+              <input name="roles_ar" defaultValue={(project?.roles_ar ?? []).join("، ")} className={field} placeholder="الفكرة، الإخراج، المونتاج" />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FileUploadField
+                name="sketch_path"
+                label="صورة المسودة / لوحة القصة"
+                bucket="images"
+                folder={`projects/${project?.id ?? "drafts"}/sketch`}
+                accept="image/*"
+                initialPath={project?.sketch_path ?? null}
+              />
+              <div>
+                <label className={labelCls}>رابط الفيديو (يوتيوب/فيميو/ملف)</label>
+                <input name="video_url" defaultValue={project?.video_url ?? ""} dir="ltr" className={`${field} text-start`} placeholder="https://..." />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="sm:col-span-2">

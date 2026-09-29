@@ -1,6 +1,7 @@
 import { Save } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { updateSettings } from "../../actions";
+import { FileUploadField } from "@/components/admin/file-upload-field";
 
 export const metadata = { title: "إعدادات الموقع" };
 
@@ -57,6 +58,33 @@ export default async function SettingsPage() {
               placeholder="9665xxxxxxxx"
             />
           </div>
+        </div>
+
+        <div className="grid gap-5">
+          <h2 className="font-[family-name:var(--font-heading)] text-lg font-bold">عنّي</h2>
+          <div>
+            <label className={labelCls}>النبذة</label>
+            <textarea name="about_ar" rows={4} defaultValue={s?.about_ar ?? ""} className={field} />
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label className={labelCls}>أتعلّم الآن</label>
+              <input name="learning_now_ar" defaultValue={s?.learning_now_ar ?? ""} className={field} placeholder="المهارة التي تتعلمها حاليًّا" />
+            </div>
+            <div>
+              <label className={labelCls}>رابط السيرة الذاتية (PDF)</label>
+              <input name="cv_url" dir="ltr" defaultValue={s?.cv_url ?? ""} className={`${field} text-start`} placeholder="https://..." />
+            </div>
+          </div>
+          <FileUploadField
+            name="voice_path"
+            label="النبذة الصوتية بصوتك"
+            bucket="audio"
+            folder="voice"
+            accept="audio/*"
+            initialPath={s?.voice_path ?? null}
+            hint="ملف mp3 أو m4a قصير (دقيقة تقريبًا)."
+          />
         </div>
 
         <div>
