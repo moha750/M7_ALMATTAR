@@ -28,6 +28,8 @@ export type Journey = {
   bridge: string | null;
   /** محتوى ناقص ينتظر معلومات */
   placeholder: boolean;
+  category: string;
+  featured: boolean;
 };
 
 type Extras = Pick<Journey, "art" | "storyboard" | "sketchNote" | "bridge">;
@@ -87,6 +89,8 @@ export function journeyFromProject(p: Project): Journey {
     videoUrl: p.video_url ?? null,
     projectUrl: p.project_url,
     placeholder: false,
+    category: p.category,
+    featured: p.is_featured,
   });
 }
 
@@ -110,6 +114,8 @@ const RAW: Array<Omit<Journey, keyof Extras | "href">> = [
     videoUrl: null,
     projectUrl: null,
     placeholder: false,
+    category: "editing",
+    featured: true,
   },
   {
     slug: "منصة-أديب",
@@ -126,6 +132,8 @@ const RAW: Array<Omit<Journey, keyof Extras | "href">> = [
     videoUrl: null,
     projectUrl: null,
     placeholder: false,
+    category: "code",
+    featured: true,
   },
   {
     slug: "دربك-خضر",
@@ -141,6 +149,8 @@ const RAW: Array<Omit<Journey, keyof Extras | "href">> = [
     videoUrl: null,
     projectUrl: null,
     placeholder: true,
+    category: "graphic",
+    featured: false,
   },
 ];
 

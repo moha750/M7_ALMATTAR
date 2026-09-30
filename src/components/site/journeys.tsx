@@ -5,8 +5,10 @@ import { Reveal } from "@/components/reveal";
 import { SketchPanel, ResultPanel } from "@/components/site/journey-panels";
 import type { Journey } from "@/lib/journeys";
 
-export function Journeys({ journeys }: { journeys: Journey[] }) {
+export function Journeys({ journeys, total }: { journeys: Journey[]; total: number }) {
   const [featured, ...rest] = journeys;
+  // خانة الأرشيف تكمل الشبكة حين يكون عدد البطاقات فرديًّا، أو حين يوجد المزيد
+  const showArchive = total > journeys.length || rest.length % 2 === 1;
   return (
     <section id="work" className="relative z-10 scroll-mt-24">
       <div className="shell pt-16 lg:pt-[96px]">
@@ -29,6 +31,11 @@ export function Journeys({ journeys }: { journeys: Journey[] }) {
                 <JourneyCard j={j} />
               </Reveal>
             ))}
+            {showArchive && (
+              <Reveal delay={0.1}>
+                <ArchiveTeaser total={total} />
+              </Reveal>
+            )}
           </div>
         )}
       </div>
@@ -127,6 +134,28 @@ function FeaturedJourney({ j }: { j: Journey }) {
         </div>
       </Reveal>
     </article>
+  );
+}
+
+function ArchiveTeaser({ total }: { total: number }) {
+  const n = new Intl.NumberFormat("ar-SA").format(total);
+  return (
+    <Link
+      href="/work"
+      className="group flex h-full min-h-[340px] flex-col justify-between rounded-2xl border-[1.5px] border-dashed border-gilt/50 p-7 transition-colors hover:border-gilt hover:bg-gilt/5 sm:p-9"
+    >
+      <span className="text-[15px] font-semibold text-gilt">الأرشيف</span>
+      <div className="flex flex-col gap-3">
+        <span className="font-display text-5xl leading-[1.3] sm:text-[60px]">كل الأعمال</span>
+        <span className="text-lg text-ivory/75">
+          {n} عملًا بين المنصات والفيديو والصوت والهوية.
+        </span>
+      </div>
+      <span className="inline-flex items-center gap-2 self-start rounded-[10px] bg-gilt px-5 py-3 text-[16px] font-semibold text-night transition-transform group-hover:scale-[1.03]">
+        تصفّح الأرشيف
+        <ArrowLeft className="h-4 w-4" />
+      </span>
+    </Link>
   );
 }
 

@@ -48,11 +48,11 @@ export default async function JourneyPage({
         <div className="shell pt-10 lg:pt-16">
           <div className="flex justify-end">
             <Link
-              href="/#work"
+              href="/work"
               className="inline-flex items-center gap-1.5 py-2 text-[15px] text-ivory/65 hover:text-gilt-light"
             >
               <ArrowRight className="h-4 w-4" />
-              كل الرحلات
+              كل الأعمال
             </Link>
           </div>
 

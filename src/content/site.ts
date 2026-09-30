@@ -49,7 +49,7 @@ export const EXPERIENCES_FALLBACK: ExperienceItem[] = [
     period: "[السنة]",
     org: "وزارة الموارد البشرية والتنمية الاجتماعية",
     role: null,
-    description: "شاركت في إنشاء مبادرة «منتديات أثر» لموظفي الوزارة.",
+    description: "شاركت في إنشاء مبادرة «مساحة أثر» لموظفي الوزارة.",
   },
   {
     period: "[سنوات الدراسة]",
@@ -67,5 +67,17 @@ export const SOCIAL_LABELS: Record<string, string> = {
   behance: "بيهانس",
   tiktok: "تيك توك",
 };
+
+/** تصنيفات الأرشيف — مبنية على عمود category في المشاريع. */
+export const WORK_TYPES = [
+  { key: "code", label: "منصات وبرمجة", cats: ["code"] },
+  { key: "video", label: "فيديو وحملات", cats: ["editing", "motion"] },
+  { key: "voice", label: "صوت وبودكاست", cats: ["voice"] },
+  { key: "design", label: "هوية وتصميم", cats: ["graphic"] },
+] as const;
+
+export function workTypeLabel(category: string): string {
+  return WORK_TYPES.find((t) => (t.cats as readonly string[]).includes(category))?.label ?? "";
+}
 
 export const CONTACT_INTENTS = ["مشروع", "وظيفة", "تعاون", "شيء آخر"] as const;

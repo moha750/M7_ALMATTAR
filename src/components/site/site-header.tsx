@@ -7,6 +7,7 @@ import AnimatedLogo from "@/components/animated-logo";
 
 const NAV = [
   { href: "/#work", label: "الرحلات" },
+  { href: "/work", label: "كل الأعمال" },
   { href: "/#about", label: "عنّي" },
   { href: "/#career", label: "المسيرة" },
   { href: "/#contact", label: "تواصل" },

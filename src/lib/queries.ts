@@ -140,11 +140,17 @@ export async function getExperiences(): Promise<Experience[]> {
   return data ?? [];
 }
 
-/** الرحلات المعروضة: من قاعدة البيانات، أو الافتراضية حين تكون فارغة. */
+/** كل الأعمال المنشورة: من قاعدة البيانات، أو الافتراضية حين تكون فارغة. */
 export async function getJourneys(): Promise<Journey[]> {
   const projects = await getPublishedProjects();
   if (projects.length === 0) return FALLBACK_JOURNEYS;
   return projects.map(journeyFromProject);
+}
+
+/** المختارات للصفحة الرئيسية: المميّزة، أو أول ستة إن لم يُميَّز شيء. */
+export function pickFeatured(all: Journey[], max = 6): Journey[] {
+  const featured = all.filter((j) => j.featured);
+  return (featured.length > 0 ? featured : all).slice(0, max);
 }
 
 /** رحلة واحدة (صفحة العمل): من قاعدة البيانات، أو الافتراضية بالـ slug نفسه. */

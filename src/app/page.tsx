@@ -9,6 +9,7 @@ import {
   getJourneys,
   getSiteSettings,
   getSkills,
+  pickFeatured,
 } from "@/lib/queries";
 import { publicUrl } from "@/lib/storage";
 import {
@@ -45,7 +46,7 @@ export default async function Home() {
   return (
     <PageShell>
       <Hero />
-      <Journeys journeys={journeys} />
+      <Journeys journeys={pickFeatured(journeys)} total={journeys.length} />
       <About
         bio={settings?.about_ar ?? ABOUT_FALLBACK}
         skills={regularSkills.length > 0 ? regularSkills : SKILLS_FALLBACK}
