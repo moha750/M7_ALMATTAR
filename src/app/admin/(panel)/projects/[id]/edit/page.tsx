@@ -6,6 +6,8 @@ import { getCategories } from "@/lib/queries";
 import { DISCIPLINES } from "@/lib/disciplines";
 import { publicUrl } from "@/lib/storage";
 import { ProjectForm } from "@/components/admin/project-form";
+import { MediaManager } from "@/components/admin/media-manager";
+import type { ProjectMedia } from "@/lib/database.types";
 
 export const metadata = { title: "تعديل المشروع" };
 
@@ -24,7 +26,14 @@ export default async function EditProjectPage({
 
   if (!project) notFound();
 
-  const categories = await getCategories();
+  const [categories, { data: media }] = await Promise.all([
+    getCategories(),
+    supabase.from("project_media").select("*").eq("project_id", id).order("sort_order"),
+  ]);
+  const items = ((media ?? []) as ProjectMedia[]).map((m) => ({
+    ...m,
+    url: m.kind === "image" ? (publicUrl(m.storage_path) ?? m.external_url) : null,
+  }));
   const cats =
     categories.length > 0
       ? categories.map((c) => ({ slug: c.slug, title: c.title_ar }))
@@ -47,6 +56,7 @@ export default async function EditProjectPage({
         project={project}
         currentCover={publicUrl(project.cover_path)}
       />
+      <MediaManager projectId={project.id} initial={items} coverPath={project.cover_path} />
     </div>
   );
 }

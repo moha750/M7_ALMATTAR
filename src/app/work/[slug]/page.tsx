@@ -157,9 +157,17 @@ function MediaItem({ item, alt }: { item: ProjectMedia; alt: string }) {
     const src = publicUrl(item.storage_path) ?? item.external_url;
     if (!src) return null;
     return (
-      <div className="relative aspect-video overflow-hidden rounded-[24px] border border-bone/10">
-        <Image src={src} alt={item.alt_ar ?? alt} fill sizes="(max-width: 1520px) 100vw, 1410px" className="object-cover" />
-      </div>
+      <figure>
+        <Image
+          src={src}
+          alt={item.alt_ar ?? alt}
+          width={1600}
+          height={1000}
+          sizes="(max-width: 1480px) 100vw, 1360px"
+          className="h-auto w-full rounded-[24px] border border-bone/10"
+        />
+        {item.alt_ar && <figcaption className="mt-3 text-[14px] text-bone/55">{item.alt_ar}</figcaption>}
+      </figure>
     );
   }
   if (item.kind === "video") {

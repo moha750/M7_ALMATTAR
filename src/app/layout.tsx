@@ -38,9 +38,11 @@ export const metadata: Metadata = {
     "تعليق صوتي",
     "الأحساء",
   ],
+  twitter: { card: "summary_large_image", images: ["/og.png"] },
   openGraph: {
     type: "website",
     locale: "ar_SA",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "محمد المطر — مصمم جرافيك" }],
     title: "محمد المطر — مصمم جرافيك",
     description:
       "أصمّم، وأُكمل الباقي: فيديو، وحركة، وموقع، وصوت.",

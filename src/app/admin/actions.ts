@@ -81,23 +81,28 @@ export async function saveProject(formData: FormData) {
   };
 
   const supabase = await createClient();
+  let createdId: string | null = null;
 
   if (id) {
     const { error } = await supabase.from("projects").update(fields).eq("id", id);
     if (error) throw new Error(error.message);
   } else {
     // معرّف مُولّد من العميل ليطابق مجلد الرفع؛ وإلا تتكفّل قاعدة البيانات به
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("projects")
-      .insert({ ...fields, ...(newId ? { id: newId } : {}) });
+      .insert({ ...fields, ...(newId ? { id: newId } : {}) })
+      .select("id")
+      .single();
     if (error) throw new Error(error.message);
+    createdId = data.id;
   }
 
   revalidatePath("/admin/projects");
   revalidatePath("/");
   revalidatePath("/work");
   revalidatePath("/skills/[skill]", "page");
-  redirect("/admin/projects");
+  // عمل جديد: افتحه مباشرة لإضافة معرض الصور
+  redirect(createdId ? `/admin/projects/${createdId}/edit` : "/admin/projects");
 }
 
 export async function deleteProject(formData: FormData) {
