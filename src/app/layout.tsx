@@ -23,11 +23,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://m7-almattar.vercel
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "محمد المطر — أعيش الفكرة",
+    default: "محمد المطر — مصمم جرافيك",
     template: "%s · محمد المطر",
   },
   description:
-    "محمد المطر من الأحساء: تصميم جرافيك، ومونتاج، وموشن جرافيك، وبرمجة، وتعليق صوتي.",
+    "محمد المطر، مصمم جرافيك من الأحساء. أصمّم، وأُكمل الباقي: فيديو، وحركة، وموقع، وصوت.",
   keywords: [
     "محمد المطر",
     "معرض أعمال",
@@ -41,14 +41,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "ar_SA",
-    title: "محمد المطر — أعيش الفكرة",
+    title: "محمد المطر — مصمم جرافيك",
     description:
-      "تصميم جرافيك، ومونتاج، وموشن جرافيك، وبرمجة، وتعليق صوتي.",
+      "أصمّم، وأُكمل الباقي: فيديو، وحركة، وموقع، وصوت.",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f4f1ea",
+  themeColor: "#070e18",
 };
 
 export default function RootLayout({
