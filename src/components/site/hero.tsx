@@ -1,12 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Voice } from "@/components/site/voice";
+import { Typewriter } from "@/components/site/typewriter";
 import { HERO, TRUST } from "@/content/site";
 import { DISCIPLINES, skillHref } from "@/lib/disciplines";
 import { worksLabel } from "@/lib/format";
 import type { Discipline } from "@/lib/database.types";
 
 const ar = new Intl.NumberFormat("ar-SA");
+const SKILL_WORDS = DISCIPLINES.map((d) => d.title);
 
 /** القسم ١: أنا ومهاراتي. */
 export function Hero({
@@ -18,7 +20,6 @@ export function Hero({
   total: number;
   voiceSrc: string | null;
 }) {
-  const last = HERO.lines.length - 1;
   return (
     <section className="relative isolate overflow-hidden pt-[112px] lg:pt-[120px]">
       {/* الإضاءة */}
@@ -36,29 +37,17 @@ export function Hero({
           {/* النص */}
           <div>
 
-            <h1 className="font-display text-[clamp(84px,9.2vw,156px)] leading-[1.08]">
-              <span className="sr-only">{HERO.name}: </span>
-              {HERO.lines.map((l, i) => (
-                <span key={l} className="line-mask">
-                  <span style={{ animationDelay: `${i * 0.12}s` }} className={i === last ? "relative text-sun" : ""}>
-                    {l}
-                    {i === last && (
-                      <svg
-                        aria-hidden
-                        viewBox="0 0 300 30"
-                        preserveAspectRatio="none"
-                        className="absolute -bottom-[.06em] -right-[2%] h-[.3em] w-[104%] overflow-visible"
-                      >
-                        <path d="M4 22 C 80 6, 200 4, 296 16" className="draw-line" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
-                      </svg>
-                    )}
-                  </span>
-                </span>
-              ))}
+            <h1 className="font-display leading-[1.12]">
+              <span className="line-mask text-[clamp(64px,9.2vw,156px)]">
+                <span>{HERO.name}</span>
+              </span>
+              <span className="fade-up mt-1 block min-h-[1.2em] text-[clamp(40px,5.6vw,96px)] text-sun" style={{ animationDelay: ".35s" }}>
+                <Typewriter words={SKILL_WORDS} />
+              </span>
             </h1>
 
             <p className="fade-up mt-7 max-w-[580px] text-[clamp(18px,1.5vw,22px)] leading-[1.85] text-bone/62" style={{ animationDelay: ".55s" }}>
-              <b className="font-semibold text-bone">{HERO.name}</b>، {HERO.lead}
+              {HERO.lead}
             </p>
 
             <div className="fade-up mt-9 flex flex-wrap items-center gap-3.5" style={{ animationDelay: ".7s" }}>
