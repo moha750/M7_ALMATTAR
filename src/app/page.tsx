@@ -6,13 +6,13 @@ import { countBySkill } from "@/components/site/work-grid";
 import { getJourneys, getSiteSettings, pickFeatured } from "@/lib/queries";
 import { publicUrl } from "@/lib/storage";
 
-// ثلاثة أقسام: أنا ومهاراتي ← أبرز أعمالي ← تواصل معي
+// ثلاثة أقسام: أنا ومهاراتي ← أعمال مختارة ← تواصل معي
 export default async function Home() {
   const [settings, works] = await Promise.all([getSiteSettings(), getJourneys()]);
 
   return (
     <Shell>
-      <Hero counts={countBySkill(works)} voiceSrc={publicUrl(settings?.voice_path ?? null, "audio")} />
+      <Hero counts={countBySkill(works)} total={works.length} voiceSrc={publicUrl(settings?.voice_path ?? null, "audio")} />
       <Featured works={pickFeatured(works, 3)} total={works.length} />
       <Contact email={settings?.email ?? null} socials={(settings?.socials ?? {}) as Record<string, string>} />
     </Shell>

@@ -27,7 +27,7 @@ export function Player({ url, title, children }: { url: string; title: string; c
   return (
     <button type="button" onClick={() => setOn(true)} className="group absolute inset-0 block" aria-label={`شاهد ${title}`}>
       {children}
-      <span className="absolute bottom-6 right-6 flex items-center gap-3 bg-paper px-5 py-3 text-[16px] font-semibold text-ink transition-colors group-hover:bg-accent">
+      <span className="absolute bottom-6 right-6 flex items-center gap-3 rounded-full bg-bone px-5 py-3 text-[16px] font-semibold text-void transition-colors group-hover:bg-sun">
         <Play className="h-4 w-4 fill-current" />
         شاهد العمل
       </span>

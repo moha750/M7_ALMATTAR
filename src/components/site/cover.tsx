@@ -3,19 +3,11 @@ import type { Journey } from "@/lib/journeys";
 import type { Discipline } from "@/lib/database.types";
 
 /**
- * غلاف العمل: الصورة المرفوعة، وإن لم توجد فملصق مسطّح جريء
+ * غلاف العمل: الصورة المرفوعة، وإن لم توجد فملصق
  * (مخصص للأعمال المختارة، وبلون المهارة الأساسية لبقية الأعمال).
- * يملأ أباه — الأب يحدد النسبة و relative و overflow-hidden.
+ * يملأ أباه — الأب يحدد المقاس و relative و overflow-hidden.
  */
-export function Cover({
-  w,
-  sizes,
-  priority = false,
-}: {
-  w: Journey;
-  sizes: string;
-  priority?: boolean;
-}) {
+export function Cover({ w, sizes, priority = false }: { w: Journey; sizes: string; priority?: boolean }) {
   if (w.cover) {
     return (
       <Image
@@ -24,77 +16,93 @@ export function Cover({
         fill
         sizes={sizes}
         priority={priority}
-        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
       />
     );
   }
   const Poster = POSTERS[w.slug];
   return (
-    <div className="@container absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.03]">
+    <div className="@container absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
       {Poster ? <Poster /> : <TitlePoster title={w.title} skill={w.category} />}
     </div>
   );
 }
 
-const SKILL_BG: Record<Discipline, { bg: string; fg: string }> = {
-  graphic: { bg: "bg-skill-graphic", fg: "text-ink" },
-  editing: { bg: "bg-skill-editing", fg: "text-paper" },
-  motion: { bg: "bg-skill-motion", fg: "text-paper" },
-  code: { bg: "bg-skill-code", fg: "text-paper" },
-  voice: { bg: "bg-skill-voice", fg: "text-paper" },
+const SKILL_GRAD: Record<Discipline, string> = {
+  graphic: "linear-gradient(135deg,#f0c463,#c78a28)",
+  editing: "linear-gradient(135deg,#ef7a5f,#a8321f)",
+  motion: "linear-gradient(135deg,#a99dff,#5a48d6)",
+  code: "linear-gradient(135deg,#3fd08a,#0f6a45)",
+  voice: "linear-gradient(135deg,#6cc0ff,#1d6fb8)",
 };
 
 function TitlePoster({ title, skill }: { title: string; skill: Discipline }) {
-  const c = SKILL_BG[skill];
   return (
-    <div className={`flex h-full w-full items-center justify-center px-[8cqw] ${c.bg}`}>
-      <span className={`text-center font-display text-[13cqw] leading-[1.15] ${c.fg}`}>{title}</span>
+    <div className="flex h-full w-full items-center justify-center px-[8cqw]" style={{ background: SKILL_GRAD[skill] }}>
+      <span className="text-center font-display text-[14cqw] leading-[1.15] text-[#0b1220]">{title}</span>
     </div>
   );
 }
-
-// ---------------------------------------------------------------------------
-// ملصقات الأعمال المختارة
-// ---------------------------------------------------------------------------
 
 /** خلف الأبواب: باب مفتوح في العتمة، وضوؤه يمتد نحوك. */
 function DoorPoster() {
   return (
     <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" className="h-full w-full" aria-hidden>
       <defs>
-        <linearGradient id="dp-light" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#FBE9BC" />
-          <stop offset="1" stopColor="#D9A646" />
+        <radialGradient id="door-bg" cx=".5" cy=".55" r=".6">
+          <stop offset="0" stopColor="#1c3354" />
+          <stop offset="1" stopColor="#060c16" />
+        </radialGradient>
+        <linearGradient id="door-light" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#fff3cf" />
+          <stop offset="1" stopColor="#e3a63b" />
         </linearGradient>
-        <linearGradient id="dp-spill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#E9C06A" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#E9C06A" stopOpacity="0" />
+        <linearGradient id="door-spill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#f2c56a" stopOpacity=".7" />
+          <stop offset="1" stopColor="#f2c56a" stopOpacity="0" />
         </linearGradient>
+        <radialGradient id="door-halo" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stopColor="#f6d58a" stopOpacity=".45" />
+          <stop offset="1" stopColor="#f6d58a" stopOpacity="0" />
+        </radialGradient>
       </defs>
-      <rect width="1600" height="900" fill="#0D1B2A" />
-      <rect y="690" width="1600" height="210" fill="#0A1622" />
-      <path d="M640 690 L860 690 L1120 900 L380 900 Z" fill="url(#dp-spill)" />
-      <path d="M640 690 V330 A110 110 0 0 1 860 330 V690 Z" fill="url(#dp-light)" />
-      <path d="M860 690 V330 L990 270 V760 Z" fill="#1B3149" />
-      <circle cx="962" cy="520" r="9" fill="#D9A646" />
+      <rect width="1600" height="900" fill="url(#door-bg)" />
+      <ellipse cx="760" cy="430" rx="520" ry="380" fill="url(#door-halo)" />
+      <rect y="640" width="1600" height="260" fill="#050a12" opacity=".75" />
+      <path d="M650 640 L870 640 L1260 900 L260 900 Z" fill="url(#door-spill)" />
+      <path d="M650 640 V300 A110 110 0 0 1 870 300 V640 Z" fill="url(#door-light)" />
+      <path d="M870 640 V300 L1010 236 V720 Z" fill="#20395a" />
+      <circle cx="980" cy="480" r="10" fill="#e3b04b" />
     </svg>
   );
 }
 
-/** ركضة وطن: مضمار أخضر يمتد نحو شمس الأفق. */
+/** ركضة وطن: مضمار نحو شمس الأفق. */
 function TrackPoster() {
   return (
     <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" className="h-full w-full" aria-hidden>
       <defs>
-        <clipPath id="tp-sky">
-          <rect width="1600" height="440" />
-        </clipPath>
+        <linearGradient id="track-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#062a1d" />
+          <stop offset=".75" stopColor="#0f6a45" />
+          <stop offset="1" stopColor="#e8b04a" />
+        </linearGradient>
+        <radialGradient id="track-sun" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stopColor="#fff0c4" />
+          <stop offset=".55" stopColor="#f2c057" />
+          <stop offset="1" stopColor="#f2c057" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="track-road" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#f6e7c4" />
+          <stop offset="1" stopColor="#ffffff" />
+        </linearGradient>
       </defs>
-      <rect width="1600" height="900" fill="#0E4D35" />
-      <rect y="440" width="1600" height="460" fill="#0A3B29" />
-      <circle cx="800" cy="440" r="120" fill="#E2B64F" clipPath="url(#tp-sky)" />
-      <path d="M360 900 L770 440 L830 440 L1240 900 Z" fill="#F4F1EA" />
-      <path d="M650 900 L790 440 M950 900 L810 440" stroke="#0A3B29" strokeWidth="9" />
+      <rect width="1600" height="470" fill="url(#track-sky)" />
+      <circle cx="800" cy="470" r="260" fill="url(#track-sun)" />
+      <rect y="470" width="1600" height="430" fill="#063a27" />
+      <path d="M330 900 L776 470 L824 470 L1270 900 Z" fill="url(#track-road)" />
+      <path d="M630 900 L792 470 M970 900 L808 470" stroke="#0b5136" strokeWidth="10" />
+      <path d="M800 900 L800 470" stroke="#e3b04b" strokeWidth="8" strokeDasharray="40 46" />
     </svg>
   );
 }
@@ -104,14 +112,18 @@ const ADEEB_CHAPTERS = ["بدءُ الحكاية", "حكايةٌ تتناقله�
 /** منصة أدِيب: حكاية النادي في أربعة فصول. */
 function ChaptersPoster() {
   return (
-    <div className="flex h-full w-full flex-col justify-center gap-[1.2cqw] bg-skill-graphic px-[7cqw] text-ink">
+    <div
+      className="flex h-full w-full flex-col justify-start gap-[.2cqw] px-[6cqw] pt-[4.5cqw] text-[#0b1220]"
+      style={{ background: "linear-gradient(135deg,#f0c463,#c78a28)" }}
+    >
       {ADEEB_CHAPTERS.map((c, i) => (
-        <div key={c} className="flex items-baseline gap-[2.5cqw]" style={{ opacity: 1 - i * 0.2 }}>
-          <span className="w-[4cqw] font-sans text-[2.4cqw] font-semibold">
-            {new Intl.NumberFormat("ar-SA").format(i + 1)}
-          </span>
-          <span className={`font-display leading-[1.25] ${i === 0 ? "text-[8.5cqw]" : "text-[5.6cqw]"}`}>{c}</span>
-        </div>
+        <span
+          key={c}
+          className={`font-display leading-[1.25] ${i === 0 ? "text-[8cqw]" : "text-[3.8cqw]"}`}
+          style={{ opacity: [1, 0.62, 0.38, 0.2][i] }}
+        >
+          {c}
+        </span>
       ))}
     </div>
   );

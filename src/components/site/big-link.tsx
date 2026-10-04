@@ -1,19 +1,14 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 
-/** سطر رابط عريض يمتلئ بالحبر عند المرور — لـ«كل الأعمال» و«التالي». */
+/** زر عريض بإطار ذهبي يمتلئ عند المرور — لـ«التالي» و«كل الأعمال». */
 export function BigLink({ href, label, meta }: { href: string; label: string; meta?: string }) {
   return (
     <Link
       href={href}
-      className="group relative flex items-center justify-between gap-6 overflow-hidden border-y border-ink px-1 py-8 lg:py-10"
+      className="flex items-center justify-between gap-5 rounded-[28px] border-[1.5px] border-sun px-7 py-6 text-sun transition-all duration-300 hover:-translate-y-1 hover:bg-sun hover:text-[#120c02] sm:px-9 sm:py-8"
     >
-      <span aria-hidden className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-500 ease-out group-hover:scale-y-100" />
-      <span className="t-lg relative transition-colors duration-300 group-hover:px-4 group-hover:text-paper">{label}</span>
-      <span className="relative flex items-center gap-4 transition-colors duration-300 group-hover:text-paper">
-        {meta && <span className="t-meta">{meta}</span>}
-        <ArrowLeft className="h-8 w-8 transition-transform duration-300 group-hover:-translate-x-2 lg:h-11 lg:w-11" strokeWidth={1.5} />
-      </span>
+      <b className="font-display text-[clamp(32px,3.6vw,56px)] font-normal leading-[1.2]">{label}</b>
+      <span className="text-[15px] font-semibold sm:text-[16px]">{meta ? `${meta} ←` : "←"}</span>
     </Link>
   );
 }

@@ -19,7 +19,7 @@ export type Discipline = {
   title: string;
   tagline: string;
   icon: LucideIcon;
-  /** متغيّر لون النبضة الفرعية المعرّف في globals.css */
+  /** لون المهارة (متغيّر CSS من globals.css) */
   color: string;
 };
 
@@ -33,35 +33,35 @@ export const DISCIPLINES: Discipline[] = [
     title: "تصميم جرافيك",
     tagline: "هويات بصرية تُروى بلا كلمات",
     icon: PenTool,
-    color: "var(--color-craft-graphic)",
+    color: "var(--color-s-graphic)",
   },
   {
     slug: "editing",
     title: "مونتاج",
     tagline: "إيقاعٌ يمسك الأنفاس",
     icon: Clapperboard,
-    color: "var(--color-craft-editing)",
+    color: "var(--color-s-editing)",
   },
   {
     slug: "motion",
     title: "موشن جرافيك",
     tagline: "أفكارٌ تنبض وتتحرّك",
     icon: Film,
-    color: "var(--color-craft-motion)",
+    color: "var(--color-s-motion)",
   },
   {
     slug: "code",
     title: "برمجة",
     tagline: "تجارب رقمية تعمل بإتقان",
     icon: CodeXml,
-    color: "var(--color-craft-code)",
+    color: "var(--color-s-code)",
   },
   {
     slug: "voice",
     title: "تعليق صوتي",
     tagline: "صوتٌ يصنع الثقة",
     icon: Mic,
-    color: "var(--color-craft-voice)",
+    color: "var(--color-s-voice)",
   },
 ];
 

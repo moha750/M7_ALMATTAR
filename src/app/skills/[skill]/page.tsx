@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import { Shell } from "@/components/site/shell";
+import { PageHead } from "@/components/site/page-head";
 import { BigLink } from "@/components/site/big-link";
 import { SkillTabs, WorkGrid, countBySkill } from "@/components/site/work-grid";
 import { getJourneys } from "@/lib/queries";
 import { DISCIPLINES, isSkill, skillHref } from "@/lib/disciplines";
-import { indexLabel } from "@/lib/format";
+import { worksLabel } from "@/lib/format";
 import { SKILL_INTROS } from "@/content/site";
 
 export function generateStaticParams() {
@@ -25,6 +26,7 @@ export default async function SkillPage({ params }: { params: Promise<{ skill: s
   const all = await getJourneys();
   const idx = DISCIPLINES.findIndex((d) => d.slug === skill);
   const d = DISCIPLINES[idx];
+  const Icon = d.icon;
   const next = DISCIPLINES[(idx + 1) % DISCIPLINES.length];
 
   // ما كانت هذه مهارته الأساسية أولًا، ثم ما شاركت فيه
@@ -33,20 +35,25 @@ export default async function SkillPage({ params }: { params: Promise<{ skill: s
 
   return (
     <Shell>
-      <section className="wrap pb-28 pt-8 lg:pb-40 lg:pt-14">
-        <p className="t-meta text-ink/55">
-          <span className="text-accent">{indexLabel(idx + 1)}</span> / {indexLabel(DISCIPLINES.length)} · مهارة
-        </p>
-        <h1 className="t-xl mt-3">{d.title}</h1>
-        <p className="mt-3 max-w-[760px] text-[20px] leading-[1.7] text-ink/70 lg:text-[24px]">{SKILL_INTROS[skill]}</p>
+      <PageHead>
+        <div style={{ "--c": d.color } as React.CSSProperties}>
+          <span className="inline-flex items-center gap-3 text-[13px] font-semibold text-[var(--c)]">
+            <span className="grid h-10 w-10 place-items-center rounded-[12px] bg-[color-mix(in_srgb,var(--c)_18%,transparent)]">
+              <Icon className="h-5 w-5" strokeWidth={1.8} />
+            </span>
+            {worksLabel(works.length)}
+          </span>
+          <h1 className="mt-4 font-display text-[clamp(60px,8vw,132px)] leading-[1.08]">{d.title}</h1>
+          <p className="mt-2 text-[clamp(18px,1.6vw,24px)] text-bone/65">{SKILL_INTROS[skill]}</p>
+        </div>
         <div className="mt-10">
           <SkillTabs active={skill} total={all.length} counts={countBySkill(all)} />
         </div>
-        <div className="mt-12 lg:mt-16">
-          <WorkGrid works={ordered} skill={skill} />
-        </div>
-        <div className="mt-24 lg:mt-32">
-          <p className="t-meta mb-3 text-ink/55">المهارة التالية</p>
+      </PageHead>
+      <section className="wrap pb-28 pt-12 lg:pb-36">
+        <WorkGrid works={ordered} skill={skill} />
+        <div className="mt-24">
+          <p className="mb-3 text-[13px] font-semibold text-bone/55">المهارة التالية</p>
           <BigLink href={skillHref(next.slug)} label={next.title} />
         </div>
       </section>

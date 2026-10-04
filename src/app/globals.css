@@ -1,23 +1,22 @@
 @import "tailwindcss";
 
 /* ===========================================================================
-   نظام التصميم — «حِبر»
-   ورقٌ وحبر: خلفية ورقية دافئة، حبر كحلي شبه أسود، ونقطة ذهبية واحدة.
-   القوة من الشبكة والمقاسات، لا من الزخرفة.
+   نظام التصميم — ليلي سينمائي: خلفية شبه سوداء، نص عاجي، وذهبي محمد.
+   لكل مهارة لونها. العناوين بمانديسا، والنص بـ IBM Plex Sans Arabic.
    =========================================================================== */
 @theme {
-  --color-paper: #f4f1ea; /* الخلفية */
-  --color-paper-2: #e9e4d8; /* سطح أغمق قليلًا */
-  --color-ink: #0d1b2a; /* الحبر: النص والأسطح الداكنة */
-  --color-ink-2: #16283c; /* سطح داكن مرفوع */
-  --color-accent: #c08a2e; /* النقطة الذهبية — بقلّة */
+  --color-void: #070e18; /* الخلفية */
+  --color-deep: #0b1220; /* أسطح داكنة */
+  --color-bone: #f3eee4; /* النص */
+  --color-sun: #e3b04b; /* الذهبي */
+  --color-sun-2: #f6d58a; /* ذهبي فاتح */
 
-  /* ألوان المهارات — لأغلفة الأعمال البديلة */
-  --color-skill-graphic: #c8962f;
-  --color-skill-editing: #0d1b2a;
-  --color-skill-motion: #24406a;
-  --color-skill-code: #0e4d35;
-  --color-skill-voice: #6b2d2d;
+  /* ألوان المهارات */
+  --color-s-graphic: #e3b04b;
+  --color-s-editing: #e0573c;
+  --color-s-motion: #8b7bff;
+  --color-s-code: #2bb673;
+  --color-s-voice: #3ba3f0;
 
   /* --- ألوان لوحة التحكم (لا تخص الواجهة العامة) --- */
   --color-gold: #d2a45c;
@@ -51,7 +50,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 80px;
+    scroll-padding-top: 88px;
   }
 
   body {
@@ -63,12 +62,12 @@
   }
 
   ::selection {
-    background-color: var(--color-ink);
-    color: var(--color-paper);
+    background-color: var(--color-sun);
+    color: var(--color-void);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-sun);
     outline-offset: 3px;
   }
 
@@ -76,49 +75,48 @@
     html {
       scroll-behavior: auto;
     }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
   }
 }
 
 @layer utilities {
-  /* الحاوية */
   .wrap {
     width: 100%;
-    max-width: 1520px;
+    max-width: 1480px;
     margin-inline: auto;
     padding-inline: 1.25rem;
   }
-  @media (min-width: 640px) {
+  @media (min-width: 768px) {
     .wrap {
       padding-inline: 2.5rem;
     }
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 1100px) {
     .wrap {
-      padding-inline: 3.5rem;
+      padding-inline: 4rem;
     }
   }
 
-  /* مقاسات العناوين — تتمدد مع الشاشة */
-  .t-mega {
-    font-family: var(--font-display);
-    font-size: clamp(4.75rem, 15vw, 15rem);
-    line-height: 1.12;
-    letter-spacing: -0.01em;
+  /* حبيبات الفيلم */
+  .film-grain {
+    position: fixed;
+    inset: -50%;
+    pointer-events: none;
+    z-index: 60;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite;
   }
-  .t-xl {
-    font-family: var(--font-display);
-    font-size: clamp(3.25rem, 8.4vw, 8.5rem);
-    line-height: 1.08;
-  }
-  .t-lg {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 5.6vw, 5.75rem);
-    line-height: 1.15;
-  }
-  .t-meta {
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.5;
+
+  .glass {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(243, 238, 228, 0.1);
   }
 
   /* --- توافق مع لوحة التحكم --- */
@@ -136,3 +134,40 @@
     color: transparent;
   }
 }
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes rise-in {
+  to { transform: none; }
+}
+@keyframes fade-in {
+  to { opacity: 1; transform: none; }
+}
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse-dot {
+  70% { box-shadow: 0 0 0 10px rgba(43, 182, 115, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(43, 182, 115, 0); }
+}
+@keyframes marquee {
+  to { transform: translateX(50%); }
+}
+
+/* حركة البطل */
+.line-mask { display: block; overflow: hidden; padding-block: 0.22em 0.14em; margin-block: -0.22em -0.14em; }
+.line-mask > span { display: inline-block; transform: translateY(110%); animation: rise-in 1.1s cubic-bezier(.2,.8,.2,1) forwards; }
+.fade-up { opacity: 0; transform: translateY(16px); animation: fade-in 0.9s cubic-bezier(.2,.8,.2,1) forwards; }
+.draw-line { stroke-dasharray: 900; stroke-dashoffset: 900; animation: draw 1.2s 0.9s ease forwards; }
+.spin-slow { animation: spin 18s linear infinite; }
+.pulse-dot { box-shadow: 0 0 0 0 rgba(43, 182, 115, 0.6); animation: pulse-dot 2s infinite; }
+.marquee { animation: marquee 34s linear infinite; }
