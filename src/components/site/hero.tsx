@@ -8,7 +8,6 @@ import { worksLabel } from "@/lib/format";
 import type { Discipline } from "@/lib/database.types";
 
 const ar = new Intl.NumberFormat("ar-SA");
-const SKILL_WORDS = DISCIPLINES.map((d) => d.title);
 
 /** القسم ١: أنا ومهاراتي. */
 export function Hero({
@@ -38,11 +37,13 @@ export function Hero({
           <div>
 
             <h1 className="font-display leading-[1.12]">
-              <span className="line-mask text-[clamp(64px,9.2vw,156px)]">
-                <span>{HERO.name}</span>
+              <span className="line-mask text-[clamp(52px,7.4vw,124px)]">
+                <span>
+                  {HERO.intro} {HERO.name}
+                </span>
               </span>
-              <span className="fade-up mt-1 block min-h-[1.2em] text-[clamp(40px,5.6vw,96px)] text-sun" style={{ animationDelay: ".35s" }}>
-                <Typewriter words={SKILL_WORDS} />
+              <span className="fade-up mt-1 block min-h-[1.2em] text-[clamp(40px,5.4vw,92px)] text-sun" style={{ animationDelay: ".35s" }}>
+                <Typewriter words={HERO.roles} />
               </span>
             </h1>
 
