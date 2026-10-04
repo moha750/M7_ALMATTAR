@@ -1,7 +1,6 @@
 import { PageShell } from "@/components/site/page-shell";
 import { Hero } from "@/components/site/hero";
 import { Journeys } from "@/components/site/journeys";
-import { About } from "@/components/site/about";
 import { Contact } from "@/components/site/contact";
 import { countBySkill } from "@/components/site/work-archive";
 import {
@@ -11,12 +10,9 @@ import {
   pickFeatured,
 } from "@/lib/queries";
 import { publicUrl } from "@/lib/storage";
-import {
-  ABOUT_FALLBACK,
-  LEARNING_FALLBACK,
-  SKILLS_FALLBACK,
-} from "@/content/site";
+import { ABOUT_FALLBACK } from "@/content/site";
 
+// الصفحة: من أنا (الشرارة) ← أعمالي (التحليق) ← التواصل (فكرتك)
 export default async function Home() {
   const [settings, journeys, skills] = await Promise.all([
     getSiteSettings(),
@@ -24,22 +20,17 @@ export default async function Home() {
     getSkills(),
   ]);
 
-  const regularSkills = skills.filter((s) => !s.is_learning).map((s) => s.title_ar);
   const learning =
-    settings?.learning_now_ar ??
-    skills.find((s) => s.is_learning)?.title_ar ??
-    LEARNING_FALLBACK;
+    settings?.learning_now_ar ?? skills.find((s) => s.is_learning)?.title_ar ?? null;
 
   return (
     <PageShell>
-      <Hero />
-      <Journeys journeys={pickFeatured(journeys)} total={journeys.length} counts={countBySkill(journeys)} />
-      <About
+      <Hero
         bio={settings?.about_ar ?? ABOUT_FALLBACK}
-        skills={regularSkills.length > 0 ? regularSkills : SKILLS_FALLBACK}
         learning={learning}
         voiceSrc={publicUrl(settings?.voice_path ?? null, "audio")}
       />
+      <Journeys journeys={pickFeatured(journeys)} total={journeys.length} counts={countBySkill(journeys)} />
       <Contact
         email={settings?.email ?? null}
         socials={(settings?.socials ?? {}) as Record<string, string>}

@@ -4,11 +4,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { Waypoint } from "@/components/site/waypoint";
+import { VoicePlayer } from "@/components/site/voice-player";
 import { HERO } from "@/content/site";
+import { DISCIPLINES, skillHref } from "@/lib/disciplines";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export function Hero() {
+export function Hero({
+  bio,
+  learning,
+  voiceSrc,
+}: {
+  bio: string;
+  /** المهارة التي يتعلمها الآن — تُخفى إن لم تُحدَّد */
+  learning: string | null;
+  voiceSrc: string | null;
+}) {
   const reduce = useReducedMotion();
   const rise = (delay: number) =>
     reduce
@@ -34,34 +45,60 @@ export function Hero() {
           </motion.h1>
 
           <motion.p
-            {...rise(0.35)}
-            className="mt-5 max-w-[560px] text-lg leading-[1.9] text-ivory/85 sm:text-[22px]"
-          >
-            {HERO.intro}
-          </motion.p>
-
-          <motion.p
             initial={reduce ? undefined : { opacity: 0, clipPath: "inset(0 0 0 100%)" }}
             animate={reduce ? undefined : { opacity: 1, clipPath: "inset(0 0 0 0%)" }}
-            transition={{ duration: 1.4, delay: 1.1, ease: "easeInOut" }}
-            className="mt-8 max-w-[600px] font-hand text-2xl leading-[1.7] text-gilt-light sm:text-[30px]"
+            transition={{ duration: 1.4, delay: 0.9, ease: "easeInOut" }}
+            className="mt-3 max-w-[600px] font-hand text-2xl leading-[1.7] text-gilt-light sm:text-[30px]"
           >
             {HERO.note}
           </motion.p>
 
-          <motion.div {...rise(0.55)} className="mt-10 flex flex-wrap gap-3.5">
+          <motion.p
+            {...rise(0.35)}
+            className="mt-6 max-w-[600px] text-lg leading-[1.9] text-ivory/85 sm:text-[21px]"
+          >
+            {bio}
+          </motion.p>
+
+          {/* المهارات الخمس — كل واحدة صفحة */}
+          <motion.ul {...rise(0.45)} aria-label="مهاراتي" className="mt-7 flex flex-wrap gap-2.5">
+            {DISCIPLINES.map((d) => (
+              <li key={d.slug}>
+                <Link
+                  href={skillHref(d.slug)}
+                  className="inline-block rounded-full border border-gilt/45 px-4 py-2 text-[15px] text-ivory transition-colors hover:border-gilt hover:bg-gilt/10 hover:text-gilt-light"
+                >
+                  {d.title}
+                </Link>
+              </li>
+            ))}
+            {learning && (
+              <li className="rounded-full border-[1.5px] border-dashed border-gilt bg-[#13304F] px-4 py-2 text-[15px] text-gilt-light">
+                أتعلّم الآن: {learning}
+              </li>
+            )}
+            <li className="rounded-full border border-dashed border-ivory/40 px-4 py-2 text-[15px] text-ivory/65">
+              + القادم
+            </li>
+          </motion.ul>
+
+          <motion.div {...rise(0.55)} className="mt-10 flex flex-wrap items-center gap-3.5">
             <Link
               href="/#contact"
               className="rounded-[10px] bg-gilt px-7 py-4 text-[17px] font-semibold text-night transition-transform hover:scale-[1.03]"
             >
               عندك فكرة؟ لنحلّق بها
             </Link>
-            <Link
-              href="/#work"
-              className="rounded-[10px] border border-dashed border-ivory/40 px-6 py-4 text-[17px] text-ivory transition-colors hover:border-gilt hover:text-gilt-light"
-            >
-              تتبّع المسار ↓
-            </Link>
+            {voiceSrc ? (
+              <VoicePlayer src={voiceSrc} compact />
+            ) : (
+              <Link
+                href="/#work"
+                className="rounded-[10px] border border-dashed border-ivory/40 px-6 py-4 text-[17px] text-ivory transition-colors hover:border-gilt hover:text-gilt-light"
+              >
+                تتبّع المسار ↓
+              </Link>
+            )}
           </motion.div>
         </div>
 
