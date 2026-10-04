@@ -6,9 +6,9 @@ import { Menu, X } from "lucide-react";
 import AnimatedLogo from "@/components/animated-logo";
 
 const NAV = [
-  { href: "/#work", label: "الرحلات" },
+  { href: "/#skills", label: "مهاراتي" },
+  { href: "/#work", label: "أعمالي" },
   { href: "/work", label: "كل الأعمال" },
-  { href: "/#contact", label: "تواصل" },
 ];
 
 export function SiteHeader() {
@@ -59,7 +59,7 @@ export function SiteHeader() {
             href="/#contact"
             className="hidden rounded-[10px] bg-gilt px-6 py-3 text-[15px] font-semibold text-night transition-transform hover:scale-[1.03] sm:inline-flex"
           >
-            لنبدأ
+            تواصل معي
           </Link>
           <button
             type="button"
@@ -93,7 +93,7 @@ export function SiteHeader() {
             onClick={() => setOpen(false)}
             className="mt-auto rounded-[10px] bg-gilt py-4 text-center text-lg font-semibold text-night"
           >
-            عندك فكرة؟ لنبدأ
+            تواصل معي
           </Link>
         </nav>
       )}

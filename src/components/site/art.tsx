@@ -33,12 +33,12 @@ export function DoorArt({ className = "" }: { className?: string }) {
 }
 
 /** فصول حكاية أدِيب — رسم بديل لنتيجة «منصة أدِيب». */
-export function ChaptersArt({ compact = false }: { compact?: boolean }) {
+export function ChaptersArt({ compact = false, limit }: { compact?: boolean; limit?: number }) {
   const fades = ["", "opacity-55", "opacity-35", "opacity-20"];
   return (
     <div className={`flex flex-col ${compact ? "gap-2" : "gap-3"}`}>
       <span className={`${compact ? "text-xs" : "text-sm"} text-ivory/60`}>حكاية النادي في أربعة فصول</span>
-      {ADEEB_CHAPTERS.map((c, i) => (
+      {ADEEB_CHAPTERS.slice(0, limit).map((c, i) => (
         <span
           key={c}
           className={`font-display leading-[1.6] ${
@@ -99,6 +99,29 @@ export function SparkIcon({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 44 44" className={className} aria-hidden>
       <path d="M22 0 L27 17 L44 22 L27 27 L22 44 L17 27 L0 22 L17 17 Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** مضمار يمتد نحو الأفق — رسم بديل لـ«ركضة وطن». */
+export function TrackArt({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 400 300" fill="none" aria-hidden className={className} preserveAspectRatio="xMidYMax meet">
+      <defs>
+        <radialGradient id="trackGlow" cx="0.5" cy="0.3" r="0.5">
+          <stop offset="0" stopColor="#F0D38F" stopOpacity="0.45" />
+          <stop offset="1" stopColor="#D8A850" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="trackFill" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stopColor="#D8A850" stopOpacity="0.16" />
+          <stop offset="1" stopColor="#D8A850" stopOpacity="0.02" />
+        </linearGradient>
+      </defs>
+      <ellipse cx="200" cy="92" rx="190" ry="70" fill="url(#trackGlow)" />
+      <path d="M30 300 L188 92 L212 92 L370 300 Z" fill="url(#trackFill)" />
+      <path d="M30 300 L188 92 M370 300 L212 92" stroke="#D8A850" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M143 300 L196 92 M257 300 L204 92" stroke="#D8A850" strokeOpacity="0.7" strokeWidth="2" strokeLinecap="round" strokeDasharray="6 12" />
+      <path d="M200 62 L205 80 L222 84 L205 88 L200 106 L195 88 L178 84 L195 80 Z" fill="#F0D38F" />
     </svg>
   );
 }

@@ -51,7 +51,7 @@ export function Contact({
   return (
     <section id="contact" className="relative z-10 scroll-mt-24">
       <div className="shell pb-28 pt-28 lg:pt-[140px]">
-        <Waypoint label="٣ · فكرتك" />
+        <Waypoint label="٣ · تواصل معي" />
         <div className="mt-6 flex flex-col items-center text-center">
           <h2 className="font-display text-[64px] leading-[1.3] sm:text-[120px]">عندك فكرة؟</h2>
           <p className="mt-1 font-hand text-3xl text-gilt-light sm:text-[44px]">لنحلّق بها معًا.</p>

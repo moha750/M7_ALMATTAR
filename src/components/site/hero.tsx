@@ -3,20 +3,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import { ArrowLeft, type LucideIcon } from "lucide-react";
 import { Waypoint } from "@/components/site/waypoint";
 import { VoicePlayer } from "@/components/site/voice-player";
 import { HERO } from "@/content/site";
 import { DISCIPLINES, skillHref } from "@/lib/disciplines";
+import type { Discipline } from "@/lib/database.types";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function Hero({
-  bio,
+  counts,
   learning,
   voiceSrc,
 }: {
-  bio: string;
-  /** المهارة التي يتعلمها الآن — تُخفى إن لم تُحدَّد */
+  counts: Record<Discipline, number>;
+  /** المهارة التي يتعلمها الآن — تحل محل «+ القادم» حين تُحدَّد */
   learning: string | null;
   voiceSrc: string | null;
 }) {
@@ -32,87 +34,122 @@ export function Hero({
 
   return (
     <section id="top" className="relative z-10">
-      <div className="shell grid items-start gap-10 pb-24 pt-8 sm:pt-12 lg:grid-cols-[minmax(0,1fr)_540px] lg:gap-12 lg:pb-12 lg:pt-[86px]">
-        {/* النص */}
-        <div className="flex flex-col">
-          <Waypoint label={HERO.waypoint} />
+      <div className="shell pb-24 pt-8 sm:pt-12 lg:pb-12 lg:pt-[72px]">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_480px] lg:gap-12">
+          {/* النص */}
+          <div className="flex flex-col">
+            <Waypoint label={HERO.waypoint} />
 
-          <motion.h1
-            {...rise(0.15)}
-            className="mt-6 font-display text-[72px] leading-[1.2] text-ivory sm:text-[112px] lg:text-[150px]"
-          >
-            {HERO.lead} <span className="text-gilt">{HERO.highlight}</span>
-          </motion.h1>
+            <motion.h1 {...rise(0.15)} className="mt-6">
+              <span className="block text-2xl font-medium text-ivory/80 sm:text-[30px]">{HERO.name}</span>
+              <span className="mt-1 block font-display text-[72px] leading-[1.2] text-ivory sm:text-[112px] lg:text-[140px]">
+                {HERO.lead} <span className="text-gilt">{HERO.highlight}</span>
+              </span>
+            </motion.h1>
 
-          <motion.p
-            initial={reduce ? undefined : { opacity: 0, clipPath: "inset(0 0 0 100%)" }}
-            animate={reduce ? undefined : { opacity: 1, clipPath: "inset(0 0 0 0%)" }}
-            transition={{ duration: 1.4, delay: 0.9, ease: "easeInOut" }}
-            className="mt-3 max-w-[600px] font-hand text-2xl leading-[1.7] text-gilt-light sm:text-[30px]"
-          >
-            {HERO.note}
-          </motion.p>
-
-          <motion.p
-            {...rise(0.35)}
-            className="mt-6 max-w-[600px] text-lg leading-[1.9] text-ivory/85 sm:text-[21px]"
-          >
-            {bio}
-          </motion.p>
-
-          {/* المهارات الخمس — كل واحدة صفحة */}
-          <motion.ul {...rise(0.45)} aria-label="مهاراتي" className="mt-7 flex flex-wrap gap-2.5">
-            {DISCIPLINES.map((d) => (
-              <li key={d.slug}>
-                <Link
-                  href={skillHref(d.slug)}
-                  className="inline-block rounded-full border border-gilt/45 px-4 py-2 text-[15px] text-ivory transition-colors hover:border-gilt hover:bg-gilt/10 hover:text-gilt-light"
-                >
-                  {d.title}
-                </Link>
-              </li>
-            ))}
-            {learning && (
-              <li className="rounded-full border-[1.5px] border-dashed border-gilt bg-[#13304F] px-4 py-2 text-[15px] text-gilt-light">
-                أتعلّم الآن: {learning}
-              </li>
-            )}
-            <li className="rounded-full border border-dashed border-ivory/40 px-4 py-2 text-[15px] text-ivory/65">
-              + القادم
-            </li>
-          </motion.ul>
-
-          <motion.div {...rise(0.55)} className="mt-10 flex flex-wrap items-center gap-3.5">
-            <Link
-              href="/#contact"
-              className="rounded-[10px] bg-gilt px-7 py-4 text-[17px] font-semibold text-night transition-transform hover:scale-[1.03]"
+            <motion.p
+              initial={reduce ? undefined : { opacity: 0, clipPath: "inset(0 0 0 100%)" }}
+              animate={reduce ? undefined : { opacity: 1, clipPath: "inset(0 0 0 0%)" }}
+              transition={{ duration: 1.4, delay: 0.9, ease: "easeInOut" }}
+              className="mt-3 max-w-[600px] font-hand text-2xl leading-[1.7] text-gilt-light sm:text-[30px]"
             >
-              عندك فكرة؟ لنحلّق بها
-            </Link>
-            {voiceSrc ? (
-              <VoicePlayer src={voiceSrc} compact />
-            ) : (
+              {HERO.note}
+            </motion.p>
+
+            <motion.div {...rise(0.45)} className="mt-9 flex flex-wrap items-center gap-3.5">
               <Link
-                href="/#work"
-                className="rounded-[10px] border border-dashed border-ivory/40 px-6 py-4 text-[17px] text-ivory transition-colors hover:border-gilt hover:text-gilt-light"
+                href="/#contact"
+                className="rounded-[10px] bg-gilt px-7 py-4 text-[17px] font-semibold text-night transition-transform hover:scale-[1.03]"
               >
-                تتبّع المسار ↓
+                تواصل معي
               </Link>
-            )}
-          </motion.div>
+              {voiceSrc ? (
+                <VoicePlayer src={voiceSrc} compact />
+              ) : (
+                <Link
+                  href="/#work"
+                  className="rounded-[10px] border border-dashed border-ivory/40 px-6 py-4 text-[17px] text-ivory transition-colors hover:border-gilt hover:text-gilt-light"
+                >
+                  أعمالي ↓
+                </Link>
+              )}
+            </motion.div>
+          </div>
+
+          {/* الصورة داخل الدائرة المرسومة */}
+          <PhotoOrbit />
         </div>
 
-        {/* الصورة داخل الدائرة المرسومة */}
-        <PhotoOrbit />
+        {/* مهاراتي — كل مهارة صفحة */}
+        <motion.div {...rise(0.6)} id="skills" className="mt-20 scroll-mt-28 lg:mt-24">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-[15px] font-semibold text-gilt">مهاراتي</h2>
+            <span className="rounded-full border border-dashed border-ivory/40 px-4 py-1.5 text-[14px] text-ivory/65">
+              {learning ? `أتعلّم الآن: ${learning}` : "+ القادم"}
+            </span>
+          </div>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-5">
+            {DISCIPLINES.map((d, i) => (
+              <li key={d.slug} className={i === DISCIPLINES.length - 1 ? "sm:col-span-2 lg:col-span-1" : ""}>
+                <SkillTile
+                  href={skillHref(d.slug)}
+                  title={d.title}
+                  Icon={d.icon}
+                  count={counts[d.slug] ?? 0}
+                />
+              </li>
+            ))}
+          </ul>
+        </motion.div>
       </div>
     </section>
+  );
+}
+
+function worksLabel(n: number): string {
+  const f = new Intl.NumberFormat("ar-SA").format(n);
+  if (n === 0) return "قريبًا";
+  if (n === 1) return "عمل واحد";
+  if (n === 2) return "عملان";
+  if (n <= 10) return `${f} أعمال`;
+  return `${f} عملًا`;
+}
+
+function SkillTile({
+  href,
+  title,
+  Icon,
+  count,
+}: {
+  href: string;
+  title: string;
+  Icon: LucideIcon;
+  count: number;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group relative flex h-full items-center gap-4 rounded-2xl border border-gilt/25 bg-night/75 p-4 transition-colors hover:border-gilt hover:bg-midnight lg:min-h-[196px] lg:flex-col lg:items-stretch lg:justify-between lg:gap-6 lg:p-6"
+    >
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-gilt/50 text-gilt transition-colors group-hover:bg-gilt group-hover:text-night">
+        <Icon className="h-5 w-5" strokeWidth={1.75} />
+      </span>
+      <span className="flex flex-col gap-0.5">
+        <span className="font-display text-[26px] leading-[1.35] lg:text-[32px]">{title}</span>
+        <span className="text-sm text-ivory/55">{worksLabel(count)}</span>
+      </span>
+      <ArrowLeft
+        aria-hidden
+        className="ms-auto h-5 w-5 shrink-0 text-gilt transition-all group-hover:-translate-x-1 lg:absolute lg:left-6 lg:top-6 lg:opacity-0 lg:group-hover:opacity-100"
+      />
+    </Link>
   );
 }
 
 function PhotoOrbit() {
   const reduce = useReducedMotion();
   return (
-    <div className="relative order-first mx-auto w-full max-w-[300px] pt-10 sm:max-w-[420px] lg:order-none lg:mx-0 lg:max-w-[540px]">
+    <div className="relative order-first mx-auto w-full max-w-[300px] pt-10 sm:max-w-[420px] lg:order-none lg:mx-0 lg:max-w-[480px]">
       {/* خط الأبعاد */}
       <motion.div
         initial={reduce ? undefined : { opacity: 0, scaleX: 0 }}
@@ -155,7 +192,7 @@ function PhotoOrbit() {
             alt="محمد المطر"
             fill
             priority
-            sizes="(max-width: 640px) 280px, (max-width: 1024px) 400px, 510px"
+            sizes="(max-width: 640px) 280px, (max-width: 1024px) 400px, 460px"
             className="object-contain object-bottom"
             style={{ transform: "translateY(2%) scale(0.93)", transformOrigin: "bottom" }}
           />

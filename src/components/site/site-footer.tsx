@@ -22,7 +22,7 @@ export function SiteFooter() {
             © {new Intl.NumberFormat("ar-SA", { useGrouping: false }).format(new Date().getFullYear())} محمد المطر · الأحساء
           </span>
           <Link href="/#top" className="py-2 text-ivory/80 hover:text-gilt-light">
-            عودة للشرارة ↑
+            للأعلى ↑
           </Link>
         </div>
       </div>

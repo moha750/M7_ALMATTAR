@@ -59,11 +59,6 @@ export function SketchPanel({
               {j.sketchNote}
             </p>
           )}
-          {!compact && (
-            <span className="mt-auto text-xs text-ivory/55">
-              [استبدلها بلوحة القصة أو مسودتك الحقيقية]
-            </span>
-          )}
         </>
       )}
     </div>
@@ -128,12 +123,8 @@ export function ResultPanel({
           <ChaptersArt compact={compact} />
         </div>
       ) : (
-        <span className="text-sm text-ivory/60">[صورة من {j.title}]</span>
-      )}
-
-      {!j.cover && !compact && j.art && (
-        <span className="absolute bottom-4 right-5 text-xs text-ivory/55">
-          [لقطة من العمل]
+        <span aria-hidden className="px-6 text-center font-display text-5xl leading-[1.3] text-ivory/[0.12] sm:text-6xl">
+          {j.title}
         </span>
       )}
 

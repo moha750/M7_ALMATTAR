@@ -3,12 +3,13 @@
 import type { Discipline } from "@/lib/database.types";
 
 export const HERO = {
-  waypoint: "١ · الشرارة",
+  waypoint: "١ · أنا",
+  name: "محمد المطر",
   lead: "أعيش",
   highlight: "الفكرة",
   note: "أغلب الأفكار تبدأ مني، والباقي أحلّق به حتى ينضج.",
   range: "المدى: مفتوح",
-  me: "هذا أنا، محمد",
+  me: "هذا أنا",
 };
 
 export const ABOUT_FALLBACK =
