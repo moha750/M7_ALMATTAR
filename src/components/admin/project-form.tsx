@@ -43,6 +43,10 @@ export function ProjectForm({
   currentCover?: string | null;
 }) {
   const [preview, setPreview] = useState<string | null>(currentCover ?? null);
+  const [primary, setPrimary] = useState<string>(project?.category ?? categories[0]?.slug ?? "graphic");
+  const [extra, setExtra] = useState<string[]>(
+    (project?.skills ?? []).filter((s) => s !== (project?.category ?? "")),
+  );
   const [coverPath, setCoverPath] = useState<string | null>(
     project?.cover_path ?? null,
   );
@@ -110,10 +114,11 @@ export function ProjectForm({
         </div>
 
         <div>
-          <label className={labelCls}>التخصص</label>
+          <label className={labelCls}>المهارة الأساسية</label>
           <select
             name="category"
-            defaultValue={project?.category ?? categories[0]?.slug}
+            value={primary}
+            onChange={(e) => setPrimary(e.target.value)}
             className={field}
           >
             {categories.map((c) => (
@@ -134,6 +139,37 @@ export function ProjectForm({
             placeholder="يُولّد تلقائيًّا من العنوان"
           />
         </div>
+
+        <fieldset className="sm:col-span-2">
+          <legend className={labelCls}>يظهر أيضًا في صفحات المهارات</legend>
+          <div className="flex flex-wrap gap-2">
+            {categories
+              .filter((c) => c.slug !== primary)
+              .map((c) => (
+                <label
+                  key={c.slug}
+                  className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-espresso/15 bg-parchment px-4 py-2 text-sm has-[:checked]:border-gold has-[:checked]:bg-gold/15"
+                >
+                  <input
+                    type="checkbox"
+                    name="skills"
+                    value={c.slug}
+                    checked={extra.includes(c.slug)}
+                    onChange={(e) =>
+                      setExtra((xs) =>
+                        e.target.checked ? [...xs, c.slug] : xs.filter((x) => x !== c.slug),
+                      )
+                    }
+                    className="accent-[var(--color-gold)]"
+                  />
+                  {c.title}
+                </label>
+              ))}
+          </div>
+          <p className="mt-1.5 text-xs text-espresso/55">
+            مثال: موقع صممته وبرمجته يظهر في «برمجة» و«تصميم جرافيك».
+          </p>
+        </fieldset>
 
         <div className="sm:col-span-2">
           <label className={labelCls}>ملخّص قصير</label>

@@ -15,10 +15,11 @@ if (!url || !key) {
 
 const T = "[التحدي]";
 
+// skills: كل المهارات التي يظهر فيها العمل، والأساسية (category) أولها.
 // المختارات (is_featured) تظهر كرحلات كاملة في الرئيسية: الباب، ركضة وطن، منصة أدِيب. والباقي في الأرشيف.
 const WORKS = [
   {
-    slug: "خلف-الأبواب", title_ar: "خلف الأبواب", category: "editing", is_featured: true,
+    slug: "خلف-الأبواب", title_ar: "خلف الأبواب", category: "editing", skills: ["editing","motion"], is_featured: true,
     subtitle_ar: "حملة «ما فاتك شي» لنادي أدِيب",
     summary_ar: "لقاء تلفزيوني ساخر ضيفه باب، لحملة التسجيل المفتوح طوال السنة.",
     challenge_ar: "فتح النادي التسجيل طوال السنة. كيف نقول للطلاب إن الباب لم يُغلق، بطريقة لا ينسونها؟",
@@ -27,7 +28,7 @@ const WORKS = [
     roles_ar: ["الفكرة", "الإخراج", "المونتاج", "المؤثرات البصرية", "الذكاء الاصطناعي"],
   },
   {
-    slug: "ركضة-وطن", title_ar: "ركضة وطن", category: "code", is_featured: true,
+    slug: "ركضة-وطن", title_ar: "ركضة وطن", category: "code", skills: ["code"], is_featured: true,
     subtitle_ar: "لعبة عدو ثلاثية الأبعاد لليوم الوطني",
     summary_ar: "لعبة جوال بلا نهاية، تُلعب من المتصفح مباشرة.",
     challenge_ar: T,
@@ -37,7 +38,7 @@ const WORKS = [
     project_url: "https://moha750.github.io/rakdat-watan-game",
   },
   {
-    slug: "منصة-أديب", title_ar: "منصة أدِيب", category: "code", is_featured: true,
+    slug: "منصة-أديب", title_ar: "منصة أدِيب", category: "code", skills: ["code","graphic","motion"], is_featured: true,
     subtitle_ar: "المنصة الرقمية لنادي أدِيب",
     summary_ar: "من موقع تعريفي إلى منصة شبه متكاملة.",
     challenge_ar: T,
@@ -46,7 +47,7 @@ const WORKS = [
     roles_ar: ["التصميم", "البرمجة", "الهوية الحركية", "Next.js", "Supabase"],
   },
   {
-    slug: "مساحة-أثر", title_ar: "مساحة أثر", category: "code", is_featured: false,
+    slug: "مساحة-أثر", title_ar: "مساحة أثر", category: "code", skills: ["code","graphic"], is_featured: false,
     subtitle_ar: "منصة منتديات موظفي وزارة الموارد البشرية والتنمية الاجتماعية",
     summary_ar: "مثل الأندية الطلابية في الجامعات، لكن لموظفي الوزارة.",
     challenge_ar: T,
@@ -55,7 +56,7 @@ const WORKS = [
     roles_ar: ["المشاركة في التأسيس", "التصميم", "البرمجة"],
   },
   {
-    slug: "مخلدات", title_ar: "مُخلّدات", category: "voice", is_featured: false,
+    slug: "مخلدات", title_ar: "مُخلّدات", category: "voice", skills: ["voice"], is_featured: false,
     subtitle_ar: "بودكاست تاريخي",
     summary_ar: "كل حلقة حضارة واحدة، والتاريخ عمودها الفقري.",
     challenge_ar: T,
@@ -64,7 +65,7 @@ const WORKS = [
     roles_ar: ["الإخراج"],
   },
   {
-    slug: "ديبو", title_ar: "ديبو", category: "graphic", is_featured: false,
+    slug: "ديبو", title_ar: "ديبو", category: "graphic", skills: ["graphic","code"], is_featured: false,
     subtitle_ar: "الشخصية الممثلة لنادي أدِيب",
     summary_ar: "وجه النادي وصوته: شخصية تبطل فيديوهاته، ومساعد ذكي يحمل اسمها.",
     challenge_ar: T,
@@ -75,58 +76,58 @@ const WORKS = [
 
   // --- الأرشيف ---
   {
-    slug: "فيديو-اليوم-الوطني", title_ar: "فيديو اليوم الوطني", category: "editing",
+    slug: "فيديو-اليوم-الوطني", title_ar: "فيديو اليوم الوطني", category: "editing", skills: ["editing","motion"],
     subtitle_ar: "نادي أدِيب · بطولة ديبو",
     summary_ar: "ديبو يحمل العلم ويتوسط الصفوف: محاط بالأمان وسط بلده.",
     roles_ar: ["الفكرة", "الذكاء الاصطناعي"],
   },
   {
-    slug: "أديب-ألمى", title_ar: "أدِيب × ألمى", category: "editing",
+    slug: "أديب-ألمى", title_ar: "أدِيب × ألمى", category: "editing", skills: ["editing"],
     subtitle_ar: "إعلان شراكة",
     summary_ar: "إعلان الشراكة بين نادي أدِيب ومقهى ألمى الداعم لفعاليات النادي.",
   },
   {
-    slug: "منعطف", title_ar: "منعطف", category: "voice",
+    slug: "منعطف", title_ar: "منعطف", category: "voice", skills: ["voice","editing"],
     subtitle_ar: "بودكاست إذاعة أدِيب",
     summary_ar: "إنتاج الحلقات ومحتواها، وهوية صوتية بُنيت من لحن دندنته.",
     roles_ar: ["الإنتاج", "الهوية الصوتية"],
   },
   {
-    slug: "مرمى", title_ar: "مرمى", category: "code",
+    slug: "مرمى", title_ar: "مرمى", category: "code", skills: ["code"],
     subtitle_ar: "منصة حجز وولاء للملاعب والمرافق الرياضية",
     summary_ar: "بدأت نظام حجز لملعب والدي، وصارت منتجًا لكل المرافق الرياضية في السعودية.",
     roles_ar: ["الفكرة", "المنتج", "البرمجة"],
   },
   {
-    slug: "loglink", title_ar: "LogLink", category: "code",
+    slug: "loglink", title_ar: "LogLink", category: "code", skills: ["code","graphic"],
     subtitle_ar: "تتبّع رسوم تأخير الحاويات في الموانئ السعودية",
     summary_ar: "موقع بواجهة ثلاثية الأبعاد تُروى بالتمرير، ولوحة تحكم عربية، وقصة عرض لهاكاثون فريق لوجيتكثون.",
     roles_ar: ["التصميم", "البرمجة", "قصة العرض"],
   },
   {
-    slug: "onehub", title_ar: "oneHub", category: "code",
+    slug: "onehub", title_ar: "oneHub", category: "code", skills: ["code"],
     subtitle_ar: "صفحات هبوط للتجار بالاشتراك",
     summary_ar: "خدمة اشتراك تمنح التاجر صفحة هبوط جاهزة.",
   },
   {
-    slug: "تطبيق-الأذان", title_ar: "تطبيق الأذان", category: "code",
+    slug: "تطبيق-الأذان", title_ar: "تطبيق الأذان", category: "code", skills: ["code"],
     subtitle_ar: "تطبيق للآيفون والأندرويد",
     summary_ar: "تطبيق مبني بـ React Native وExpo.",
     roles_ar: ["البرمجة"],
   },
   {
-    slug: "عام-بألف-ذكرى", title_ar: "عامٌ بألف ذكرى", category: "graphic",
+    slug: "عام-بألف-ذكرى", title_ar: "عامٌ بألف ذكرى", category: "graphic", skills: ["graphic"],
     subtitle_ar: "التقرير السنوي لنادي أدِيب",
     summary_ar: "كتيّب التقرير السنوي، بنسخة رقمية تُقلّب صفحاتها.",
     roles_ar: ["التصميم"],
   },
   {
-    slug: "كوكب-زمردة", title_ar: "كوكب زمردة", category: "graphic",
+    slug: "كوكب-زمردة", title_ar: "كوكب زمردة", category: "graphic", skills: ["graphic"],
     subtitle_ar: "تطبيق للخدمات النسائية",
     summary_ar: "مساحة تجمع مقدمات الخدمات النسائية بالمستفيدات.",
   },
   {
-    slug: "متنفس", title_ar: "مجتمع متنفّس", category: "graphic",
+    slug: "متنفس", title_ar: "مجتمع متنفّس", category: "graphic", skills: ["graphic"],
     subtitle_ar: "نادي أدِيب × أكاديمية أكسجين",
     summary_ar: "مجتمع إبداعي مفتوح لكل التخصصات، بهوية بصرية وخطة برامج لستة أشهر.",
     roles_ar: ["الهوية البصرية", "التخطيط"],
@@ -153,8 +154,8 @@ if (error) {
 }
 const { data } = await admin
   .from("projects")
-  .select("slug,is_published,is_featured,sort_order")
+  .select("slug,is_published,is_featured,sort_order,skills")
   .order("sort_order");
 console.log(`✅ ${rows.length} عملًا. في القاعدة الآن:`);
 for (const r of data ?? [])
-  console.log(` ${r.sort_order}. ${r.slug}${r.is_featured ? " ★" : ""}${r.is_published ? "" : " (غير منشور)"}`);
+  console.log(` ${r.sort_order}. ${r.slug}${r.is_featured ? " ★" : ""}${r.is_published ? "" : " (غير منشور)"} [${(r.skills ?? []).join("، ")}]`);

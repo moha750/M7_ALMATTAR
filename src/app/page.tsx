@@ -3,6 +3,7 @@ import { Hero } from "@/components/site/hero";
 import { Journeys } from "@/components/site/journeys";
 import { About } from "@/components/site/about";
 import { Contact } from "@/components/site/contact";
+import { countBySkill } from "@/components/site/work-archive";
 import {
   getJourneys,
   getSiteSettings,
@@ -29,11 +30,10 @@ export default async function Home() {
     skills.find((s) => s.is_learning)?.title_ar ??
     LEARNING_FALLBACK;
 
-
   return (
     <PageShell>
       <Hero />
-      <Journeys journeys={pickFeatured(journeys)} total={journeys.length} />
+      <Journeys journeys={pickFeatured(journeys)} total={journeys.length} counts={countBySkill(journeys)} />
       <About
         bio={settings?.about_ar ?? ABOUT_FALLBACK}
         skills={regularSkills.length > 0 ? regularSkills : SKILLS_FALLBACK}

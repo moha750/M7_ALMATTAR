@@ -4,8 +4,18 @@ import { Waypoint } from "@/components/site/waypoint";
 import { Reveal } from "@/components/reveal";
 import { SketchPanel, ResultPanel } from "@/components/site/journey-panels";
 import type { Journey } from "@/lib/journeys";
+import type { Discipline } from "@/lib/database.types";
+import { DISCIPLINES, skillHref } from "@/lib/disciplines";
 
-export function Journeys({ journeys, total }: { journeys: Journey[]; total: number }) {
+export function Journeys({
+  journeys,
+  total,
+  counts,
+}: {
+  journeys: Journey[];
+  total: number;
+  counts: Record<Discipline, number>;
+}) {
   const [featured, ...rest] = journeys;
   // خانة الأرشيف تكمل الشبكة حين يكون عدد البطاقات فرديًّا، أو حين يوجد المزيد
   const showArchive = total > journeys.length || rest.length % 2 === 1;
@@ -33,7 +43,7 @@ export function Journeys({ journeys, total }: { journeys: Journey[]; total: numb
             ))}
             {showArchive && (
               <Reveal delay={0.1} className={rest.length % 2 === 0 ? "md:col-span-2" : ""}>
-                <ArchiveTeaser total={total} wide={rest.length % 2 === 0} />
+                <ArchiveTeaser total={total} counts={counts} wide={rest.length % 2 === 0} />
               </Reveal>
             )}
           </div>
@@ -137,28 +147,52 @@ function FeaturedJourney({ j }: { j: Journey }) {
   );
 }
 
-function ArchiveTeaser({ total, wide = false }: { total: number; wide?: boolean }) {
+function ArchiveTeaser({
+  total,
+  counts,
+  wide = false,
+}: {
+  total: number;
+  counts: Record<Discipline, number>;
+  wide?: boolean;
+}) {
   const n = new Intl.NumberFormat("ar-SA").format(total);
+  const fmt = new Intl.NumberFormat("ar-SA");
   return (
-    <Link
-      href="/work"
-      className={`group flex h-full flex-col justify-between gap-8 rounded-2xl border-[1.5px] border-dashed border-gilt/50 p-7 transition-colors hover:border-gilt hover:bg-gilt/5 sm:p-9 ${
-        wide ? "md:flex-row md:items-end" : "min-h-[340px]"
+    <div
+      className={`flex h-full flex-col justify-between gap-8 rounded-2xl border-[1.5px] border-dashed border-gilt/50 p-7 sm:p-9 ${
+        wide ? "md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:items-end md:gap-12" : "min-h-[340px]"
       }`}
     >
-      <span className={`text-[15px] font-semibold text-gilt ${wide ? "md:hidden" : ""}`}>الأرشيف</span>
       <div className="flex flex-col gap-3">
-        {wide && <span className="hidden text-[15px] font-semibold text-gilt md:block">الأرشيف</span>}
-        <span className="font-display text-5xl leading-[1.3] sm:text-[60px]">كل الأعمال</span>
-        <span className="text-lg text-ivory/75">
-          {n} عملًا بين المنصات والفيديو والصوت والهوية.
-        </span>
+        <span className="text-[15px] font-semibold text-gilt">الأرشيف</span>
+        <Link href="/work" className="font-display text-5xl leading-[1.3] transition-colors hover:text-gilt-light sm:text-[60px]">
+          كل الأعمال
+        </Link>
+        <span className="text-lg text-ivory/75">{n} عملًا في خمس مهارات.</span>
       </div>
-      <span className="inline-flex items-center gap-2 self-start rounded-[10px] bg-gilt px-5 py-3 text-[16px] font-semibold text-night transition-transform group-hover:scale-[1.03]">
-        تصفّح الأرشيف
-        <ArrowLeft className="h-4 w-4" />
-      </span>
-    </Link>
+      <div className="flex flex-col gap-6">
+        <ul className="flex flex-wrap gap-2.5" aria-label="تصفّح حسب المهارة">
+          {DISCIPLINES.filter((d) => (counts[d.slug] ?? 0) > 0).map((d) => (
+            <li key={d.slug}>
+              <Link
+                href={skillHref(d.slug)}
+                className="inline-flex items-center gap-2 rounded-[10px] border border-dashed border-ivory/40 px-4 py-2.5 text-[15px] text-ivory transition-colors hover:border-gilt hover:text-gilt-light"
+              >
+                {d.title} <span className="opacity-60">{fmt.format(counts[d.slug])}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <Link
+          href="/work"
+          className="group inline-flex items-center gap-2 self-start rounded-[10px] bg-gilt px-5 py-3 text-[16px] font-semibold text-night transition-transform hover:scale-[1.03]"
+        >
+          تصفّح الأرشيف
+          <ArrowLeft className="h-4 w-4" />
+        </Link>
+      </div>
+    </div>
   );
 }
 

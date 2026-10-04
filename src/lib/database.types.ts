@@ -53,6 +53,8 @@ type ProjectRow = {
   roles_ar?: string[] | null;
   sketch_path?: string | null;
   video_url?: string | null;
+  // 0004 — كل المهارات التي يظهر فيها العمل (category هي الأساسية)
+  skills?: Discipline[] | null;
 };
 
 type ProjectMediaRow = {

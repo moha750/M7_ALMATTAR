@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:migrate": "node scripts/db-run.mjs supabase/migrations/0001_init.sql supabase/migrations/0002_remove_unused_settings.sql supabase/migrations/0003_tahleeq.sql",
+    "db:migrate": "node scripts/db-run.mjs supabase/migrations/0001_init.sql supabase/migrations/0002_remove_unused_settings.sql supabase/migrations/0003_tahleeq.sql supabase/migrations/0004_skills.sql",
     "db:seed": "node scripts/db-run.mjs supabase/seed.sql",
-    "db:setup": "node scripts/db-run.mjs supabase/migrations/0001_init.sql supabase/migrations/0002_remove_unused_settings.sql supabase/migrations/0003_tahleeq.sql supabase/seed.sql",
+    "db:setup": "node scripts/db-run.mjs supabase/migrations/0001_init.sql supabase/migrations/0002_remove_unused_settings.sql supabase/migrations/0003_tahleeq.sql supabase/migrations/0004_skills.sql supabase/seed.sql",
     "db:admin": "node scripts/create-admin.mjs",
     "db:works": "node scripts/seed-works.mjs"
   },

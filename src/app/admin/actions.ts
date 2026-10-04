@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Discipline } from "@/lib/database.types";
 
+const DISCIPLINE_SLUGS: Discipline[] = ["graphic", "editing", "motion", "code", "voice"];
+
 function slugify(s: string): string {
   const base = s
     .trim()
@@ -45,10 +47,17 @@ export async function saveProject(formData: FormData) {
   const title_ar = str(formData, "title_ar");
   if (!title_ar) throw new Error("العنوان مطلوب");
 
+  const category = (str(formData, "category") ?? "graphic") as Discipline;
+  // الأساسية أولًا، ثم المهارات الإضافية المختارة بلا تكرار
+  const skills = Array.from(
+    new Set([category, ...formData.getAll("skills").map(String)]),
+  ).filter((s): s is Discipline => DISCIPLINE_SLUGS.includes(s as Discipline));
+
   const fields = {
     title_ar,
     slug: slugify(str(formData, "slug") ?? title_ar),
-    category: (str(formData, "category") ?? "graphic") as Discipline,
+    category,
+    skills,
     summary_ar: str(formData, "summary_ar"),
     description_ar: str(formData, "description_ar"),
     client_name: str(formData, "client_name"),
@@ -86,6 +95,8 @@ export async function saveProject(formData: FormData) {
 
   revalidatePath("/admin/projects");
   revalidatePath("/");
+  revalidatePath("/work");
+  revalidatePath("/skills/[skill]", "page");
   redirect("/admin/projects");
 }
 

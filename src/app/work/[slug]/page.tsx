@@ -11,6 +11,7 @@ import { getJourneyBySlug, getJourneys, getProjectMedia } from "@/lib/queries";
 import { publicUrl } from "@/lib/storage";
 import { toEmbedUrl } from "@/lib/embed";
 import type { ProjectMedia } from "@/lib/database.types";
+import { skillHref, skillTitle } from "@/lib/disciplines";
 
 export async function generateMetadata({
   params,
@@ -67,7 +68,19 @@ export default async function JourneyPage({
             )}
           </Reveal>
 
-          <div className="mt-6 flex flex-wrap items-center gap-4">
+          <div className="mt-6 flex flex-wrap items-center gap-2.5">
+            {j.skills.map((s) => (
+              <Link
+                key={s}
+                href={skillHref(s)}
+                className="rounded-full border border-dashed border-gilt/50 px-4 py-2 text-[14px] text-gilt-light transition-colors hover:border-gilt hover:bg-gilt/10"
+              >
+                {skillTitle(s)}
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-5 flex flex-wrap items-center gap-4">
             {j.roles.length > 0 && <p className="text-[15px] text-ivory/70">{j.roles.join(" · ")}</p>}
             {j.projectUrl && (
               <a

@@ -1,5 +1,6 @@
 // محتوى الموقع الافتراضي — يُستخدم حين لا تتوفّر البيانات في قاعدة البيانات بعد.
 // ما بين [أقواس مربّعة] ينتظر معلومة من محمد.
+import type { Discipline } from "@/lib/database.types";
 
 export const HERO = {
   waypoint: "١ · الشرارة",
@@ -68,16 +69,13 @@ export const SOCIAL_LABELS: Record<string, string> = {
   tiktok: "تيك توك",
 };
 
-/** تصنيفات الأرشيف — مبنية على عمود category في المشاريع. */
-export const WORK_TYPES = [
-  { key: "code", label: "منصات وبرمجة", cats: ["code"] },
-  { key: "video", label: "فيديو وحملات", cats: ["editing", "motion"] },
-  { key: "voice", label: "صوت وبودكاست", cats: ["voice"] },
-  { key: "design", label: "هوية وتصميم", cats: ["graphic"] },
-] as const;
-
-export function workTypeLabel(category: string): string {
-  return WORK_TYPES.find((t) => (t.cats as readonly string[]).includes(category))?.label ?? "";
-}
+/** سطر تعريفي لكل مهارة في صفحتها (/skills/…). */
+export const SKILL_INTROS: Record<Discipline, string> = {
+  graphic: "شخصيات وهويات وكتيّبات، كلها تبدأ بسؤال واحد: كيف تُرى الفكرة؟",
+  editing: "إيقاع يمسك المشاهد من أول لقطة حتى آخرها.",
+  motion: "حين تحتاج الفكرة أن تتحرك حتى تُفهم.",
+  code: "منصات وتطبيقات ولعبة، أبنيها من الفكرة حتى آخر سطر.",
+  voice: "صوت يروي الحكاية، فيتخيلها المستمع قبل أن يراها.",
+};
 
 export const CONTACT_INTENTS = ["مشروع", "وظيفة", "تعاون", "شيء آخر"] as const;

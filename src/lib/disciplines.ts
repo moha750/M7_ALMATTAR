@@ -64,3 +64,17 @@ export const DISCIPLINES: Discipline[] = [
     color: "var(--color-craft-voice)",
   },
 ];
+
+const BY_SLUG = new Map(DISCIPLINES.map((d) => [d.slug, d]));
+
+export function isSkill(x: string): x is DisciplineSlug {
+  return BY_SLUG.has(x as DisciplineSlug);
+}
+
+export function skillTitle(slug: string): string {
+  return BY_SLUG.get(slug as DisciplineSlug)?.title ?? "";
+}
+
+export function skillHref(slug: DisciplineSlug): string {
+  return `/skills/${slug}`;
+}

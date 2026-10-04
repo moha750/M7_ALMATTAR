@@ -81,7 +81,7 @@ export default async function ProjectsPage() {
                   </div>
                   <div className="mt-1 flex items-center gap-2 text-xs">
                     <span className="rounded-full bg-espresso/8 px-2 py-0.5 text-espresso/70">
-                      {CAT_LABEL[p.category] ?? p.category}
+                      {(p.skills?.length ? p.skills : [p.category]).map((s) => CAT_LABEL[s] ?? s).join(" · ")}
                     </span>
                     <span
                       className={`rounded-full px-2 py-0.5 ${

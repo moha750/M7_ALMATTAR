@@ -1,4 +1,4 @@
-import type { Project } from "@/lib/database.types";
+import type { Discipline, Project } from "@/lib/database.types";
 import { publicUrl } from "@/lib/storage";
 
 // «رحلة» = عمل يُعرض من المسودة إلى النتيجة.
@@ -28,7 +28,10 @@ export type Journey = {
   bridge: string | null;
   /** محتوى ناقص ينتظر معلومات */
   placeholder: boolean;
-  category: string;
+  /** المهارة الأساسية */
+  category: Discipline;
+  /** كل المهارات التي يظهر فيها العمل، والأساسية أولها */
+  skills: Discipline[];
   featured: boolean;
 };
 
@@ -71,6 +74,11 @@ function withExtras(j: Omit<Journey, keyof Extras> & Partial<Extras>): Journey {
   } as Journey;
 }
 
+/** الأساسية أولًا ثم البقية بلا تكرار. */
+function withPrimary(primary: Discipline, skills?: Discipline[] | null): Discipline[] {
+  return [primary, ...(skills ?? []).filter((s) => s !== primary)];
+}
+
 /** يحوّل صف مشروع من قاعدة البيانات إلى رحلة. */
 export function journeyFromProject(p: Project): Journey {
   const fb = FALLBACK_JOURNEYS.find((f) => f.slug === p.slug);
@@ -90,6 +98,7 @@ export function journeyFromProject(p: Project): Journey {
     projectUrl: p.project_url,
     placeholder: false,
     category: p.category,
+    skills: withPrimary(p.category, p.skills),
     featured: p.is_featured,
   });
 }
@@ -115,6 +124,7 @@ const RAW: Array<Omit<Journey, keyof Extras | "href">> = [
     projectUrl: null,
     placeholder: false,
     category: "editing",
+    skills: ["editing", "motion"],
     featured: true,
   },
   {
@@ -133,6 +143,7 @@ const RAW: Array<Omit<Journey, keyof Extras | "href">> = [
     projectUrl: null,
     placeholder: false,
     category: "code",
+    skills: ["code", "graphic", "motion"],
     featured: true,
   },
   {
@@ -150,6 +161,7 @@ const RAW: Array<Omit<Journey, keyof Extras | "href">> = [
     projectUrl: null,
     placeholder: true,
     category: "graphic",
+    skills: ["graphic"],
     featured: false,
   },
 ];
