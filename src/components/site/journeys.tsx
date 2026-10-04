@@ -32,8 +32,8 @@ export function Journeys({ journeys, total }: { journeys: Journey[]; total: numb
               </Reveal>
             ))}
             {showArchive && (
-              <Reveal delay={0.1}>
-                <ArchiveTeaser total={total} />
+              <Reveal delay={0.1} className={rest.length % 2 === 0 ? "md:col-span-2" : ""}>
+                <ArchiveTeaser total={total} wide={rest.length % 2 === 0} />
               </Reveal>
             )}
           </div>
@@ -137,15 +137,18 @@ function FeaturedJourney({ j }: { j: Journey }) {
   );
 }
 
-function ArchiveTeaser({ total }: { total: number }) {
+function ArchiveTeaser({ total, wide = false }: { total: number; wide?: boolean }) {
   const n = new Intl.NumberFormat("ar-SA").format(total);
   return (
     <Link
       href="/work"
-      className="group flex h-full min-h-[340px] flex-col justify-between rounded-2xl border-[1.5px] border-dashed border-gilt/50 p-7 transition-colors hover:border-gilt hover:bg-gilt/5 sm:p-9"
+      className={`group flex h-full flex-col justify-between gap-8 rounded-2xl border-[1.5px] border-dashed border-gilt/50 p-7 transition-colors hover:border-gilt hover:bg-gilt/5 sm:p-9 ${
+        wide ? "md:flex-row md:items-end" : "min-h-[340px]"
+      }`}
     >
-      <span className="text-[15px] font-semibold text-gilt">الأرشيف</span>
+      <span className={`text-[15px] font-semibold text-gilt ${wide ? "md:hidden" : ""}`}>الأرشيف</span>
       <div className="flex flex-col gap-3">
+        {wide && <span className="hidden text-[15px] font-semibold text-gilt md:block">الأرشيف</span>}
         <span className="font-display text-5xl leading-[1.3] sm:text-[60px]">كل الأعمال</span>
         <span className="text-lg text-ivory/75">
           {n} عملًا بين المنصات والفيديو والصوت والهوية.

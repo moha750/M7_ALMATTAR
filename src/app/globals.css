@@ -35,9 +35,9 @@
 /* الخطوط تأتي من next/font كمتغيّرات على <html> */
 @theme inline {
   --font-display: var(--font-mandisaa), var(--font-plex), system-ui, sans-serif;
-  --font-hand: var(--font-ruqaa), serif;
+  --font-hand: var(--font-mandisaa), var(--font-plex), sans-serif;
   --font-sans: var(--font-plex), system-ui, sans-serif;
-  --font-tech: var(--font-grotesk), ui-monospace, monospace;
+  --font-tech: var(--font-plex), system-ui, sans-serif;
 }
 
 /* ===========================================================================
@@ -47,7 +47,7 @@
   /* متغيّرات قديمة تستخدمها لوحة التحكم */
   --font-heading: var(--font-mandisaa), var(--font-plex), system-ui, sans-serif;
   --font-display: var(--font-mandisaa), var(--font-plex), system-ui, sans-serif;
-  --font-tech: var(--font-grotesk), ui-monospace, monospace;
+  --font-tech: var(--font-plex), system-ui, sans-serif;
 }
 
 @layer base {

@@ -44,7 +44,7 @@ export function Hero() {
             initial={reduce ? undefined : { opacity: 0, clipPath: "inset(0 0 0 100%)" }}
             animate={reduce ? undefined : { opacity: 1, clipPath: "inset(0 0 0 0%)" }}
             transition={{ duration: 1.4, delay: 1.1, ease: "easeInOut" }}
-            className="mt-8 max-w-[600px] origin-right -rotate-2 font-hand text-2xl leading-[1.6] text-gilt-light sm:text-[32px]"
+            className="mt-8 max-w-[600px] font-hand text-2xl leading-[1.7] text-gilt-light sm:text-[30px]"
           >
             {HERO.note}
           </motion.p>
@@ -133,7 +133,7 @@ function PhotoOrbit() {
         className="pointer-events-none absolute -bottom-12 left-[4%] flex items-end gap-1 sm:-bottom-14"
         aria-hidden
       >
-        <span className="font-hand text-2xl text-gilt-light sm:text-[34px]">{HERO.me}</span>
+        <span className="font-hand text-2xl text-gilt-light sm:text-[30px]">{HERO.me}</span>
         <svg width="84" height="62" viewBox="0 0 110 80" fill="none" className="mb-6 -scale-x-100">
           <path d="M100 70 C 76 66, 40 50, 26 14" stroke="#F0D38F" strokeWidth="2.5" strokeLinecap="round" />
           <path d="M16 26 L26 12 L37 24" stroke="#F0D38F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
