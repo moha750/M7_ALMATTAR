@@ -35,12 +35,8 @@ export function Hero({
         <div className="grid items-center gap-12 lg:grid-cols-[1.45fr_.85fr] lg:gap-6">
           {/* النص */}
           <div>
-            <span className="fade-up glass inline-flex items-center gap-3 rounded-full px-4 py-2 text-[14px] font-medium text-bone/65">
-              <span className="pulse-dot h-2 w-2 rounded-full bg-s-code" />
-              {HERO.status}
-            </span>
 
-            <h1 className="mt-7 font-display text-[clamp(84px,9.2vw,156px)] leading-[1.08]">
+            <h1 className="font-display text-[clamp(84px,9.2vw,156px)] leading-[1.08]">
               <span className="sr-only">{HERO.name}: </span>
               {HERO.lines.map((l, i) => (
                 <span key={l} className="line-mask">
