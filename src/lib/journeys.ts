@@ -20,7 +20,7 @@ export type Journey = {
   videoUrl: string | null;
   projectUrl: string | null;
   /** رسم بديل حين لا توجد صورة للنتيجة */
-  art: "door" | "chapters" | null;
+  art: "door" | "chapters" | "track" | null;
   /** لوحة قصة بديلة حين لا توجد صورة للمسودة */
   storyboard: StoryFrame[] | null;
   sketchNote: string | null;
@@ -48,6 +48,11 @@ const EXTRAS: Record<string, Partial<Extras>> = {
     ],
     sketchNote: "ماذا لو كان الضيف بابًا؟",
     bridge: "٢٠ لقطة لاحقًا",
+  },
+  "ركضة-وطن": {
+    art: "track",
+    sketchNote: "عَدْو بلا نهاية، بروح اليوم الوطني",
+    bridge: "من فكرة إلى لعبة",
   },
   "منصة-أديب": {
     art: "chapters",

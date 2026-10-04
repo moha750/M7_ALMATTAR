@@ -9,6 +9,7 @@ import {
   ChaptersArt,
   DoorArt,
   StoryFrameCard,
+  TrackArt,
   WireframeArt,
 } from "@/components/site/art";
 
@@ -118,6 +119,8 @@ export function ResultPanel({
         />
       ) : j.art === "door" ? (
         <DoorArt className={compact ? "h-44 w-44" : "h-64 w-64 sm:h-[340px] sm:w-[340px]"} />
+      ) : j.art === "track" ? (
+        <TrackArt className="absolute inset-0 h-full w-full" />
       ) : j.art === "chapters" ? (
         <div className={compact ? "px-3 sm:px-5" : "px-10"}>
           <ChaptersArt compact={compact} />
