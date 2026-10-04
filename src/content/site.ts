@@ -3,6 +3,8 @@ import type { Discipline } from "@/lib/database.types";
 
 export const HERO = {
   name: "محمد المطر",
+  /** سنة البداية — سنوات الخبرة تُحسب منها (٧ سنوات في ٢٠٢٦) */
+  startYear: 2019,
   intro: "أنا",
   /** تُكتب تحت الاسم تباعًا بأسلوب الآلة الكاتبة */
   roles: ["مُصمم جرافيكي", "مونتير فيديو", "مُصمم موشن جرافيك", "مُبرمج ومطوّر", "مُعلّق صوتي"],
@@ -31,7 +33,6 @@ export const SOCIAL_LABELS: Record<string, string> = {
   youtube: "يوتيوب",
   behance: "بيهانس",
   tiktok: "تيك توك",
-  email: "البريد",
 };
 
 /** سطر تعريفي لكل مهارة في صفحتها (/skills/…). */

@@ -12,12 +12,7 @@ export default async function Home() {
 
   return (
     <Shell>
-      <Hero
-        counts={countBySkill(works)}
-        voiceSrc={publicUrl(settings?.voice_path ?? null, "audio")}
-        email={settings?.email ?? null}
-        socials={(settings?.socials ?? {}) as Record<string, string>}
-      />
+      <Hero counts={countBySkill(works)} voiceSrc={publicUrl(settings?.voice_path ?? null, "audio")} />
       <Featured works={pickFeatured(works, 3)} total={works.length} />
       <Contact email={settings?.email ?? null} socials={(settings?.socials ?? {}) as Record<string, string>} />
     </Shell>
