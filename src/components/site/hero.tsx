@@ -101,12 +101,17 @@ export function Hero({
               </svg>
               <span className="grid h-11 w-11 place-items-center rounded-full bg-sun text-[20px] text-[#120c02]">✦</span>
             </div>
-            {/* بطاقة الاسم */}
-            <div className="absolute -right-[2%] bottom-[7%] rounded-[18px] border border-bone/10 bg-void/80 px-[18px] py-3.5 backdrop-blur-md">
-              <b className="block font-display text-[22px] font-normal leading-[1.4]">{HERO.name}</b>
-              <span className="text-[13px] text-bone/60">
-                {worksLabel(total)} · {ar.format(DISCIPLINES.length)} مهارات
-              </span>
+            {/* أرقام */}
+            <div className="absolute -right-[2%] bottom-[7%] flex items-stretch rounded-[20px] border border-bone/10 bg-void/80 backdrop-blur-md">
+              {[
+                { n: total, label: total > 10 ? "عملًا" : "أعمال" },
+                { n: DISCIPLINES.length, label: "مهارات" },
+              ].map((x, i) => (
+                <div key={x.label} className={`flex flex-col items-center px-5 py-3 sm:px-6 ${i > 0 ? "border-r border-bone/10" : ""}`}>
+                  <b className="font-display text-[36px] font-normal leading-[1.15] text-sun sm:text-[44px]">{ar.format(x.n)}</b>
+                  <span className="text-[13px] text-bone/60">{x.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
