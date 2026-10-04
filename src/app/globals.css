@@ -1,21 +1,25 @@
 @import "tailwindcss";
 
 /* ===========================================================================
-   نظام التصميم — «أعيش الفكرة» (اتجاه التحليق)
-   كحلي ليلي عميق، والذهبي يُستخدم كضوء: لمعة وخيط ومسار.
+   نظام التصميم — «حِبر»
+   ورقٌ وحبر: خلفية ورقية دافئة، حبر كحلي شبه أسود، ونقطة ذهبية واحدة.
+   القوة من الشبكة والمقاسات، لا من الزخرفة.
    =========================================================================== */
 @theme {
-  /* --- الهوية الجديدة --- */
-  --color-night: #0a1c30; /* الخلفية الأساسية */
-  --color-midnight: #0e2a47; /* أسطح مرفوعة */
-  --color-abyss: #081a2e; /* نهاية التدرّجات */
-  --color-harbor: #13365a; /* بداية التدرّجات */
-  --color-ivory: #f2ebdd; /* النص الأساسي */
-  --color-gilt: #d8a850; /* الذهبي — لون الشعار */
-  --color-gilt-light: #f0d38f; /* ذهبي فاتح للملاحظات */
-  --color-gilt-deep: #a87b35; /* ذهبي عميق للتدرّجات */
+  --color-paper: #f4f1ea; /* الخلفية */
+  --color-paper-2: #e9e4d8; /* سطح أغمق قليلًا */
+  --color-ink: #0d1b2a; /* الحبر: النص والأسطح الداكنة */
+  --color-ink-2: #16283c; /* سطح داكن مرفوع */
+  --color-accent: #c08a2e; /* النقطة الذهبية — بقلّة */
 
-  /* --- ألوان لوحة التحكم (فاتحة) --- */
+  /* ألوان المهارات — لأغلفة الأعمال البديلة */
+  --color-skill-graphic: #c8962f;
+  --color-skill-editing: #0d1b2a;
+  --color-skill-motion: #24406a;
+  --color-skill-code: #0e4d35;
+  --color-skill-voice: #6b2d2d;
+
+  /* --- ألوان لوحة التحكم (لا تخص الواجهة العامة) --- */
   --color-gold: #d2a45c;
   --color-gold-deep: #9a6f2e;
   --color-cream: #efe9dd;
@@ -23,8 +27,7 @@
   --color-espresso: #0e2a47;
   --color-walnut: #1c3a5c;
   --color-taupe: #6d7888;
-
-  /* --- ألوان التخصصات (للوحة التحكم) --- */
+  --color-midnight: #0e2a47;
   --color-craft-graphic: #d8a850;
   --color-craft-editing: #c0703c;
   --color-craft-motion: #d98e44;
@@ -35,42 +38,37 @@
 /* الخطوط تأتي من next/font كمتغيّرات على <html> */
 @theme inline {
   --font-display: var(--font-mandisaa), var(--font-plex), system-ui, sans-serif;
-  --font-hand: var(--font-mandisaa), var(--font-plex), sans-serif;
   --font-sans: var(--font-plex), system-ui, sans-serif;
-  --font-tech: var(--font-plex), system-ui, sans-serif;
+  --font-tech: var(--font-plex), system-ui, sans-serif; /* لوحة التحكم */
 }
 
-/* ===========================================================================
-   الأساس
-   =========================================================================== */
 :root {
-  /* متغيّرات قديمة تستخدمها لوحة التحكم */
+  /* متغيّرات تستخدمها لوحة التحكم */
   --font-heading: var(--font-mandisaa), var(--font-plex), system-ui, sans-serif;
-  --font-display: var(--font-mandisaa), var(--font-plex), system-ui, sans-serif;
   --font-tech: var(--font-plex), system-ui, sans-serif;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 96px;
+    scroll-padding-top: 80px;
   }
 
   body {
     font-family: var(--font-sans);
     font-size: 1.0625rem;
-    line-height: 1.85;
+    line-height: 1.8;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background-color: var(--color-gilt);
-    color: var(--color-night);
+    background-color: var(--color-ink);
+    color: var(--color-paper);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-gilt);
+    outline: 2px solid var(--color-accent);
     outline-offset: 3px;
   }
 
@@ -81,47 +79,46 @@
   }
 }
 
-/* ===========================================================================
-   أدوات الهوية
-   =========================================================================== */
 @layer utilities {
-  /* حاوية الصفحة */
-  .shell {
+  /* الحاوية */
+  .wrap {
     width: 100%;
-    max-width: 1440px;
+    max-width: 1520px;
     margin-inline: auto;
     padding-inline: 1.25rem;
   }
   @media (min-width: 640px) {
-    .shell {
-      padding-inline: 2rem;
+    .wrap {
+      padding-inline: 2.5rem;
     }
   }
   @media (min-width: 1024px) {
-    .shell {
-      padding-inline: 72px;
+    .wrap {
+      padding-inline: 3.5rem;
     }
   }
 
-  /* شبكة المخطّط الخفيفة */
-  .blueprint {
-    background-color: var(--color-night);
-    background-image:
-      linear-gradient(rgba(216, 168, 80, 0.055) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(216, 168, 80, 0.055) 1px, transparent 1px);
-    background-size: 48px 48px;
-    background-position: center top;
+  /* مقاسات العناوين — تتمدد مع الشاشة */
+  .t-mega {
+    font-family: var(--font-display);
+    font-size: clamp(4.75rem, 15vw, 15rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
   }
-
-  /* لوحة «النتيجة» المصقولة */
-  .panel-result {
-    background:
-      radial-gradient(
-        ellipse 60% 80% at 50% 100%,
-        rgba(216, 168, 80, 0.2) 0%,
-        rgba(216, 168, 80, 0) 70%
-      ),
-      linear-gradient(160deg, var(--color-harbor) 0%, var(--color-abyss) 100%);
+  .t-xl {
+    font-family: var(--font-display);
+    font-size: clamp(3.25rem, 8.4vw, 8.5rem);
+    line-height: 1.08;
+  }
+  .t-lg {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5.6vw, 5.75rem);
+    line-height: 1.15;
+  }
+  .t-meta {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
   }
 
   /* --- توافق مع لوحة التحكم --- */
@@ -132,17 +129,8 @@
   .grain {
     position: relative;
   }
-
-  /* نص بتدرّج ذهبي */
   .text-gilt-gradient {
-    background: linear-gradient(
-      100deg,
-      var(--color-gilt-deep) 0%,
-      var(--color-gilt) 30%,
-      #f7e3ae 50%,
-      var(--color-gilt) 70%,
-      var(--color-gilt-deep) 100%
-    );
+    background: linear-gradient(100deg, #a87b35 0%, #d8a850 30%, #f7e3ae 50%, #d8a850 70%, #a87b35 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

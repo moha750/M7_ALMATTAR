@@ -1,34 +1,20 @@
-import { PageShell } from "@/components/site/page-shell";
+import { Shell } from "@/components/site/shell";
 import { Hero } from "@/components/site/hero";
-import { Journeys } from "@/components/site/journeys";
+import { Featured } from "@/components/site/featured";
 import { Contact } from "@/components/site/contact";
-import { countBySkill } from "@/components/site/work-archive";
-import { getJourneys, getSiteSettings, getSkills, pickFeatured } from "@/lib/queries";
+import { countBySkill } from "@/components/site/work-grid";
+import { getJourneys, getSiteSettings, pickFeatured } from "@/lib/queries";
 import { publicUrl } from "@/lib/storage";
 
-// ثلاثة أقسام فقط: أنا ومهاراتي ← أبرز أعمالي ← تواصل معي
+// ثلاثة أقسام: أنا ومهاراتي ← أبرز أعمالي ← تواصل معي
 export default async function Home() {
-  const [settings, journeys, skills] = await Promise.all([
-    getSiteSettings(),
-    getJourneys(),
-    getSkills(),
-  ]);
-
-  const learning =
-    settings?.learning_now_ar ?? skills.find((s) => s.is_learning)?.title_ar ?? null;
+  const [settings, works] = await Promise.all([getSiteSettings(), getJourneys()]);
 
   return (
-    <PageShell>
-      <Hero
-        counts={countBySkill(journeys)}
-        learning={learning}
-        voiceSrc={publicUrl(settings?.voice_path ?? null, "audio")}
-      />
-      <Journeys journeys={pickFeatured(journeys, 3)} total={journeys.length} />
-      <Contact
-        email={settings?.email ?? null}
-        socials={(settings?.socials ?? {}) as Record<string, string>}
-      />
-    </PageShell>
+    <Shell>
+      <Hero counts={countBySkill(works)} voiceSrc={publicUrl(settings?.voice_path ?? null, "audio")} />
+      <Featured works={pickFeatured(works, 3)} total={works.length} />
+      <Contact email={settings?.email ?? null} socials={(settings?.socials ?? {}) as Record<string, string>} />
+    </Shell>
   );
 }

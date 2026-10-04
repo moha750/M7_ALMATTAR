@@ -1,9 +1,7 @@
 import type { Discipline, Project } from "@/lib/database.types";
 import { publicUrl } from "@/lib/storage";
 
-// «رحلة» = عمل يُعرض من المسودة إلى النتيجة.
-
-export type StoryFrame = { label: string; kind: "person" | "door" };
+// «عمل» كما يُعرض في الواجهة — من قاعدة البيانات أو من البدائل أدناه.
 
 export type Journey = {
   slug: string;
@@ -16,16 +14,10 @@ export type Journey = {
   execution: string | null;
   roles: string[];
   cover: string | null;
+  /** صورة المسودة الحقيقية — تظهر مع النتيجة في صفحة العمل */
   sketch: string | null;
   videoUrl: string | null;
   projectUrl: string | null;
-  /** رسم بديل حين لا توجد صورة للنتيجة */
-  art: "door" | "chapters" | "track" | null;
-  /** لوحة قصة بديلة حين لا توجد صورة للمسودة */
-  storyboard: StoryFrame[] | null;
-  sketchNote: string | null;
-  /** عبارة الجسر بين المسودة والنتيجة */
-  bridge: string | null;
   /** محتوى ناقص ينتظر معلومات */
   placeholder: boolean;
   /** المهارة الأساسية */
@@ -35,48 +27,9 @@ export type Journey = {
   featured: boolean;
 };
 
-type Extras = Pick<Journey, "art" | "storyboard" | "sketchNote" | "bridge">;
-
-// لمسات تصميمية لكل رحلة (مستقلة عن قاعدة البيانات)
-const EXTRAS: Record<string, Partial<Extras>> = {
-  "خلف-الأبواب": {
-    art: "door",
-    storyboard: [
-      { label: "المذيع", kind: "person" },
-      { label: "المراسل", kind: "person" },
-      { label: "الضيف: باب!", kind: "door" },
-    ],
-    sketchNote: "ماذا لو كان الضيف بابًا؟",
-    bridge: "٢٠ لقطة لاحقًا",
-  },
-  "ركضة-وطن": {
-    art: "track",
-    sketchNote: "عَدْو بلا نهاية، بروح اليوم الوطني",
-    bridge: "من فكرة إلى لعبة",
-  },
-  "منصة-أديب": {
-    art: "chapters",
-    sketchNote: "أربعة فصول للحكاية",
-    bridge: "من فكرة إلى منصة",
-  },
-};
-
-export const ADEEB_CHAPTERS = [
-  "بدء الحكاية",
-  "حكاية تتناقلها الألسن",
-  "ذروة الحكاية",
-  "حكاية تجاوزت الأسوار",
-];
-
-function withExtras(j: Omit<Journey, keyof Extras> & Partial<Extras>): Journey {
-  const ex = EXTRAS[j.slug] ?? {};
-  return {
-    art: j.art ?? ex.art ?? null,
-    storyboard: j.storyboard ?? ex.storyboard ?? null,
-    sketchNote: j.sketchNote ?? ex.sketchNote ?? null,
-    bridge: j.bridge ?? ex.bridge ?? null,
-    ...j,
-  } as Journey;
+/** نص ينتظر معلومة من محمد ([بين أقواس]) — لا يظهر للزوار. */
+export function isPending(v?: string | null): boolean {
+  return !v || v.trim().startsWith("[");
 }
 
 /** الأساسية أولًا ثم البقية بلا تكرار. */
@@ -87,7 +40,7 @@ function withPrimary(primary: Discipline, skills?: Discipline[] | null): Discipl
 /** يحوّل صف مشروع من قاعدة البيانات إلى رحلة. */
 export function journeyFromProject(p: Project): Journey {
   const fb = FALLBACK_JOURNEYS.find((f) => f.slug === p.slug);
-  return withExtras({
+  return {
     slug: p.slug,
     href: `/work/${encodeURIComponent(p.slug)}`,
     title: p.title_ar,
@@ -105,13 +58,13 @@ export function journeyFromProject(p: Project): Journey {
     category: p.category,
     skills: withPrimary(p.category, p.skills),
     featured: p.is_featured,
-  });
+  };
 }
 
 // ---------------------------------------------------------------------------
-// رحلات افتراضية — تظهر حتى تُضاف الأعمال إلى قاعدة البيانات
+// أعمال افتراضية — تظهر حتى تُضاف الأعمال إلى قاعدة البيانات
 // ---------------------------------------------------------------------------
-const RAW: Array<Omit<Journey, keyof Extras | "href">> = [
+const RAW: Array<Omit<Journey, "href">> = [
   {
     slug: "خلف-الأبواب",
     title: "خلف الأبواب",
@@ -171,6 +124,7 @@ const RAW: Array<Omit<Journey, keyof Extras | "href">> = [
   },
 ];
 
-export const FALLBACK_JOURNEYS: Journey[] = RAW.map((r) =>
-  withExtras({ ...r, href: `/work/${encodeURIComponent(r.slug)}` }),
-);
+export const FALLBACK_JOURNEYS: Journey[] = RAW.map((r) => ({
+  ...r,
+  href: `/work/${encodeURIComponent(r.slug)}`,
+}));

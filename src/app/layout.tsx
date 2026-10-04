@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 
-// خطّا الموقع: مانديسا للعناوين والملاحظات، وIBM Plex Sans Arabic للمتن
+// خطّا الموقع: مانديسا للعناوين، وIBM Plex Sans Arabic للمتن
 const mandisaa = localFont({
   src: "./fonts/mandisaa.ttf",
   variable: "--font-mandisaa",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s · محمد المطر",
   },
   description:
-    "محمد المطر: آخذ الفكرة من أول شرارة، وأحلّق بها حتى تنضج، ثم أنفّذها بنفسي: تصميم، وبرمجة، وحركة، وصوت.",
+    "محمد المطر من الأحساء: تصميم جرافيك، ومونتاج، وموشن جرافيك، وبرمجة، وتعليق صوتي.",
   keywords: [
     "محمد المطر",
     "معرض أعمال",
@@ -43,12 +43,12 @@ export const metadata: Metadata = {
     locale: "ar_SA",
     title: "محمد المطر — أعيش الفكرة",
     description:
-      "آخذ الفكرة من أول شرارة، وأحلّق بها حتى تنضج، ثم أنفّذها بنفسي.",
+      "تصميم جرافيك، ومونتاج، وموشن جرافيك، وبرمجة، وتعليق صوتي.",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a1c30",
+  themeColor: "#f4f1ea",
 };
 
 export default function RootLayout({

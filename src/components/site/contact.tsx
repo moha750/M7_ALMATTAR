@@ -1,22 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { Waypoint } from "@/components/site/waypoint";
-import { CONTACT_INTENTS, SOCIAL_LABELS } from "@/content/site";
+import { CONTACT, CONTACT_INTENTS, SOCIAL_LABELS } from "@/content/site";
 
-const base =
-  "w-full rounded-[10px] border border-dashed border-ivory/35 bg-night px-4 text-[17px] text-ivory placeholder:text-ivory/40 outline-none transition focus:border-solid focus:border-gilt";
-const field = `${base} h-[52px]`;
+const field =
+  "w-full border-0 border-b border-paper/30 bg-transparent px-0 py-3 text-[19px] text-paper placeholder:text-paper/35 outline-none transition-colors focus:border-paper";
 
-export function Contact({
-  email,
-  socials,
-}: {
-  email: string | null;
-  socials: Record<string, string>;
-}) {
+/** القسم ٣: تواصل معي. */
+export function Contact({ email, socials }: { email: string | null; socials: Record<string, string> }) {
   const [intent, setIntent] = useState<string>(CONTACT_INTENTS[0]);
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
 
@@ -32,11 +25,8 @@ export function Contact({
       message: String(fd.get("message") ?? ""),
     };
     let { error } = await supabase.from("contact_messages").insert({ ...base, intent });
-    // قبل ترحيل 0003 لا يوجد عمود intent: نرسل النية داخل الرسالة
     if (error) {
-      ({ error } = await supabase
-        .from("contact_messages")
-        .insert({ ...base, message: `[${intent}] ${base.message}` }));
+      ({ error } = await supabase.from("contact_messages").insert({ ...base, message: `[${intent}] ${base.message}` }));
     }
     if (error) {
       setState("error");
@@ -46,105 +36,102 @@ export function Contact({
     form.reset();
   }
 
-  const socialEntries = Object.entries(socials).filter(([, v]) => v);
+  const links = Object.entries(socials).filter(([, v]) => v);
 
   return (
-    <section id="contact" className="relative z-10 scroll-mt-24">
-      <div className="shell pb-28 pt-28 lg:pt-[140px]">
-        <Waypoint label="٣ · تواصل معي" />
-        <div className="mt-6 flex flex-col items-center text-center">
-          <h2 className="font-display text-[64px] leading-[1.3] sm:text-[120px]">عندك فكرة؟</h2>
-          <p className="mt-1 font-hand text-3xl text-gilt-light sm:text-[44px]">لنحلّق بها معًا.</p>
+    <section id="contact" className="mt-28 scroll-mt-16 bg-ink text-paper lg:mt-44">
+      <div className="wrap pb-20 pt-20 lg:pb-28 lg:pt-28">
+        <p className="t-meta text-accent">تواصل معي</p>
+        <h2 className="t-mega mt-3">{CONTACT.title}</h2>
+        <p className="mt-3 text-[22px] text-paper/70 lg:text-[28px]">{CONTACT.line}</p>
 
-          {state === "done" ? (
-            <div className="mt-10 flex w-full max-w-[880px] flex-col items-center gap-3 rounded-[18px] border-[1.5px] border-gilt/60 bg-night/90 px-6 py-14">
-              <CheckCircle2 className="h-10 w-10 text-gilt" />
-              <p className="text-xl font-semibold">وصلت فكرتك، وبدأ التحليق.</p>
-              <p className="text-ivory/65">أرد عليك قريبًا.</p>
-              <button onClick={() => setState("idle")} className="mt-2 py-2 text-gilt-light hover:underline">
-                أرسل فكرة أخرى
-              </button>
-            </div>
-          ) : (
-            <form
-              onSubmit={onSubmit}
-              className="mt-10 flex w-full max-w-[880px] flex-col gap-5 rounded-[18px] border-[1.5px] border-dashed border-gilt/50 bg-night/90 p-5 text-right sm:p-10"
-            >
-              <fieldset className="flex flex-wrap items-center gap-2.5">
-                <legend className="sr-only">بخصوص</legend>
-                <span className="ml-1.5 text-[16px] text-ivory/75">بخصوص:</span>
-                {CONTACT_INTENTS.map((it) => (
-                  <button
-                    key={it}
-                    type="button"
-                    aria-pressed={intent === it}
-                    onClick={() => setIntent(it)}
-                    className={`rounded-[10px] px-5 py-3 text-[16px] transition-colors ${
-                      intent === it
-                        ? "border border-gilt bg-gilt text-night"
-                        : "border border-dashed border-ivory/40 text-ivory hover:border-gilt/70"
-                    }`}
-                  >
-                    {it}
-                  </button>
-                ))}
-              </fieldset>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="flex flex-col gap-2 text-[15px] text-ivory/75">
-                  الاسم
-                  <input name="name" required placeholder="اسمك أو اسم جهتك" className={field} />
-                </label>
-                <label className="flex flex-col gap-2 text-[15px] text-ivory/75">
-                  البريد
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    dir="ltr"
-                    placeholder="name@company.com"
-                    className={`${field} text-right`}
-                  />
-                </label>
-              </div>
-              <label className="flex flex-col gap-2 text-[15px] text-ivory/75">
-                الفكرة باختصار
-                <textarea
-                  name="message"
-                  required
-                  rows={5}
-                  placeholder="حدثني عن الفكرة، وما الذي تريد أن يحدث"
-                  className={`${base} h-40 resize-none py-3.5`}
-                />
-              </label>
-              {state === "error" && <p className="text-sm text-red-300">تعذّر الإرسال، حاول مرة أخرى.</p>}
-              <button
-                type="submit"
-                disabled={state === "loading"}
-                className="flex h-14 items-center justify-center gap-2 rounded-[10px] bg-gilt text-[18px] font-semibold text-night transition-transform hover:scale-[1.01] disabled:opacity-60"
-              >
-                {state === "loading" && <Loader2 className="h-5 w-5 animate-spin" />}
-                أطلق الفكرة
-              </button>
-            </form>
-          )}
-
-          {email && (
-            <p className="mt-8 text-[16px] text-ivory/70">
-              أو راسلني مباشرة:{" "}
-              <a href={`mailto:${email}`} dir="ltr" className="text-gilt-light underline underline-offset-4">
-                {email}
-              </a>
-            </p>
-          )}
-          {socialEntries.length > 0 && (
-            <nav aria-label="حساباتي" className="mt-4 flex flex-wrap justify-center gap-7 text-[17px]">
-              {socialEntries.map(([k, url]) => (
-                <a key={k} href={url} target="_blank" rel="noopener noreferrer" className="py-3 text-ivory/80 hover:text-gilt-light">
-                  {SOCIAL_LABELS[k] ?? k}
+        <div className="mt-14 grid gap-14 border-t border-paper/20 pt-10 lg:mt-20 lg:grid-cols-12 lg:gap-8 lg:pt-12">
+          <div className="flex flex-col gap-10 lg:col-span-5">
+            {email && (
+              <div>
+                <p className="t-meta text-paper/50">البريد</p>
+                <a
+                  href={`mailto:${email}`}
+                  dir="ltr"
+                  className="mt-2 inline-block whitespace-nowrap text-[clamp(1.125rem,1.95vw,2rem)] font-medium underline decoration-accent decoration-2 underline-offset-[10px] transition-colors hover:text-accent"
+                >
+                  {email}
                 </a>
-              ))}
-            </nav>
-          )}
+              </div>
+            )}
+            {links.length > 0 && (
+              <div>
+                <p className="t-meta text-paper/50">حساباتي</p>
+                <ul className="mt-3 flex flex-wrap gap-x-7 gap-y-2 text-[18px]">
+                  {links.map(([k, url]) => (
+                    <li key={k}>
+                      <a href={url} target="_blank" rel="noopener noreferrer" className="hover:text-accent">
+                        {SOCIAL_LABELS[k] ?? k} ↗
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          <div className="lg:col-span-7">
+            {state === "done" ? (
+              <div className="flex flex-col items-start gap-4 border-t border-paper/20 pt-8">
+                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-paper text-ink">
+                  <Check className="h-6 w-6" />
+                </span>
+                <p className="font-display text-[44px] leading-[1.2]">وصلت فكرتك.</p>
+                <p className="text-paper/65">أرد عليك قريبًا.</p>
+                <button onClick={() => setState("idle")} className="mt-2 text-[16px] underline underline-offset-8">
+                  أرسل فكرة أخرى
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={onSubmit} className="flex flex-col gap-8">
+                <fieldset className="flex flex-wrap items-center gap-2.5">
+                  <legend className="t-meta mb-3 text-paper/50">بخصوص</legend>
+                  {CONTACT_INTENTS.map((it) => (
+                    <button
+                      key={it}
+                      type="button"
+                      aria-pressed={intent === it}
+                      onClick={() => setIntent(it)}
+                      className={`h-11 px-5 text-[15px] font-medium transition-colors ${
+                        intent === it ? "bg-paper text-ink" : "border border-paper/30 text-paper hover:border-paper"
+                      }`}
+                    >
+                      {it}
+                    </button>
+                  ))}
+                </fieldset>
+                <div className="grid gap-8 sm:grid-cols-2">
+                  <label className="t-meta flex flex-col text-paper/50">
+                    الاسم
+                    <input name="name" required placeholder="اسمك أو اسم جهتك" className={field} />
+                  </label>
+                  <label className="t-meta flex flex-col text-paper/50">
+                    البريد
+                    <input name="email" type="email" required dir="ltr" placeholder="name@company.com" className={`${field} text-right`} />
+                  </label>
+                </div>
+                <label className="t-meta flex flex-col text-paper/50">
+                  الفكرة
+                  <textarea name="message" required rows={3} placeholder="باختصار: ما الذي تريد أن يحدث؟" className={`${field} resize-none`} />
+                </label>
+                {state === "error" && <p className="text-[15px] text-red-300">تعذّر الإرسال، حاول مرة أخرى.</p>}
+                <button
+                  type="submit"
+                  disabled={state === "loading"}
+                  className="group inline-flex h-14 items-center gap-3 self-start bg-paper px-8 text-[16px] font-semibold text-ink transition-colors hover:bg-accent disabled:opacity-60"
+                >
+                  {state === "loading" ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
+                  أرسل
+                  <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </section>
