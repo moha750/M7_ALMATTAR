@@ -31,6 +31,7 @@ export const SOCIAL_LABELS: Record<string, string> = {
   youtube: "يوتيوب",
   behance: "بيهانس",
   tiktok: "تيك توك",
+  email: "البريد",
 };
 
 /** سطر تعريفي لكل مهارة في صفحتها (/skills/…). */

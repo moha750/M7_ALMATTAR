@@ -2,23 +2,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { Voice } from "@/components/site/voice";
 import { Typewriter } from "@/components/site/typewriter";
-import { HERO, TRUST } from "@/content/site";
+import { HERO, SOCIAL_LABELS, TRUST } from "@/content/site";
+import { SocialIcon } from "@/components/site/social-icons";
 import { DISCIPLINES, skillHref } from "@/lib/disciplines";
 import { worksLabel } from "@/lib/format";
 import type { Discipline } from "@/lib/database.types";
 
-const ar = new Intl.NumberFormat("ar-SA");
 
 /** القسم ١: أنا ومهاراتي. */
+const SOCIAL_ORDER = ["behance", "instagram", "linkedin", "x", "youtube", "tiktok"];
+
 export function Hero({
   counts,
-  total,
   voiceSrc,
+  email,
+  socials,
 }: {
   counts: Record<Discipline, number>;
-  total: number;
   voiceSrc: string | null;
+  email: string | null;
+  socials: Record<string, string>;
 }) {
+  const links: Array<[string, string]> = [
+    ...SOCIAL_ORDER.filter((k) => socials[k]).map((k) => [k, socials[k]] as [string, string]),
+    ...(email ? [["email", `mailto:${email}`] as [string, string]] : []),
+  ];
   return (
     <section className="relative isolate overflow-hidden pt-[112px] lg:pt-[120px]">
       {/* الإضاءة */}
@@ -101,18 +109,28 @@ export function Hero({
               </svg>
               <span className="grid h-11 w-11 place-items-center rounded-full bg-sun text-[20px] text-[#120c02]">✦</span>
             </div>
-            {/* أرقام */}
-            <div className="absolute -right-[2%] bottom-[7%] flex items-stretch rounded-[20px] border border-bone/10 bg-void/80 backdrop-blur-md">
-              {[
-                { n: total, label: total > 10 ? "عملًا" : "أعمال" },
-                { n: DISCIPLINES.length, label: "مهارات" },
-              ].map((x, i) => (
-                <div key={x.label} className={`flex flex-col items-center px-5 py-3 sm:px-6 ${i > 0 ? "border-r border-bone/10" : ""}`}>
-                  <b className="font-display text-[36px] font-normal leading-[1.15] text-sun sm:text-[44px]">{ar.format(x.n)}</b>
-                  <span className="text-[13px] text-bone/60">{x.label}</span>
-                </div>
-              ))}
-            </div>
+            {/* حساباتي */}
+            {links.length > 0 && (
+              <div className="absolute -right-[2%] bottom-[7%] max-w-[248px] rounded-[20px] border border-bone/10 bg-void/80 px-4 py-3.5 backdrop-blur-md sm:max-w-none">
+                <span className="mb-2.5 block text-[12px] font-semibold text-bone/60">تابعني</span>
+                <ul className="flex flex-wrap gap-2">
+                  {links.map(([k, url]) => (
+                    <li key={k}>
+                      <a
+                        href={url}
+                        target={k === "email" ? undefined : "_blank"}
+                        rel="noopener noreferrer"
+                        aria-label={SOCIAL_LABELS[k] ?? k}
+                        title={SOCIAL_LABELS[k] ?? k}
+                        className="grid h-11 w-11 place-items-center rounded-full border border-bone/15 text-bone transition-all hover:-translate-y-0.5 hover:border-sun hover:bg-sun hover:text-[#120c02]"
+                      >
+                        <SocialIcon name={k} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
 
