@@ -18,10 +18,18 @@ const plex = IBM_Plex_Sans_Arabic({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://m7-almattar.vercel.app";
+// يُنظَّف من المسافات والأحرف الخفية (مثل BOM) — رابط غير صالح يكسر البناء
+function siteUrl(): URL {
+  const raw = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/[\uFEFF\u200B-\u200F\s]/g, "");
+  try {
+    return new URL(raw || "https://m7-almattar.vercel.app");
+  } catch {
+    return new URL("https://m7-almattar.vercel.app");
+  }
+}
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: siteUrl(),
   title: {
     default: "محمد المطر — مصمم جرافيك",
     template: "%s · محمد المطر",
